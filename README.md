@@ -1,124 +1,144 @@
-# MATCH - AI Crisis Resource Directory
+# MATCH — Peer Support & Crisis Resource Platform
 
-MATCH is an AI-powered prototype designed to instantly match individuals in crisis with verified, local support services (such as food pantries, emergency shelter, and mental health helplines). 
+**MATCH** is an AI-powered peer support platform that connects individuals with **accredited, vetted peer support buddies** for warm, judgment-free conversations — and provides a direct link to a **General Support Warmline** when professional support is needed.
 
-Developed for the **Google & Kaggle AI Agents Capstone**, this system leverages a robust Multi-Agent architecture to provide reliable, safe, and immediate resource guidance.
+Developed for the **Google & Kaggle AI Agents Capstone**, MATCH demonstrates a responsible, privacy-first multi-agent architecture built around human wellbeing.
 
 ---
 
-## 🛡️ Multi-Agent Architecture & Solution Design
+## 💡 What MATCH Does
 
-To guarantee distinct task separation, safety, and correctness, MATCH divides responsibilities across specialized agent layers:
+1. **Talk to an Accredited Buddy**: Users can reach out to a certified, vetted peer support buddy at any time. Buddies are real people who have passed certification and vetting requirements before appearing on the platform.
+
+2. **Access the General Warmline**: For situations where the user feels overwhelmed or needs professional support, the General Support Warmline is always one tap away — confidential and available 24/7.
+
+3. **Privacy-Protected Buddy Notifications**: When a user calls the warmline through the app:
+   - ✅ The buddy is notified *that* their peer called, and *for how long*.
+   - ❌ The buddy is **never** told what was discussed — that is fully private.
+   - This allows the buddy to proactively check in with care, without compromising the user's privacy.
+
+---
+
+## 🤖 Multi-Agent Architecture
 
 ```mermaid
 graph TD
-    User([User Prompt]) --> Orchestrator[Orchestrator Agent]
-    Orchestrator -->|1. Safety Classification| Safety{Is Severe Emergency?}
-    Safety -->|Yes| EmergencyResponse[Immediate Lifeline REDIRECTION]
-    Safety -->|No| Extraction[Extract Location & Category]
-    Extraction --> SearchAgent[Service Search Agent]
-    SearchAgent -->|2. Database Query| Database[(Verified Service DB)]
-    Database -->|Retrieve Matches| SearchAgent
-    SearchAgent -->|3. Filter & Sort| Synthesis[Synthesize Response]
-    Synthesis --> Output([UI Matching Cards & Guidance])
+    User([User Message]) --> Orchestrator[Orchestrator Agent]
+
+    Orchestrator -->|Classify need| Analysis{Support Type}
+    Analysis -->|General support| Buddy[Connect to Accredited Buddy]
+    Analysis -->|Feeling distressed| Both[Buddy + Warmline Recommended]
+
+    Buddy --> Search[Service Search Agent]
+    Both  --> Search
+
+    Search --> BuddyDB[(Buddy Directory)]
+    Search --> CrisisDB[(Warmline Info)]
+
+    Buddy  --> Response[Synthesized Response & Buddy Cards]
+    Both   --> Response
+
+    User -->|Calls Warmline| CallTimer[In-App Call Timer]
+    CallTimer -->|End Call| PrivacyGuard[Privacy Guard Agent]
+    PrivacyGuard -->|Metadata Only| BuddyNotif[Buddy Notification]
+    PrivacyGuard -->|No Transcript| NullStore[Content Discarded]
 ```
 
-1. **Orchestrator Agent (`agents/orchestrator.py`)**:
-   * **Input Safety Screening**: Inspects query text for severe, immediate life-threatening scenarios (e.g., active self-harm, active domestic violence).
-   * **Emergency Redirection**: If a severe crisis is detected, it bypasses database search and immediately serves critical hotlines (e.g. 988 or 911).
-   * **Intent Classification**: Normalizes requested support categories (e.g. `mental_health`, `food_assistance`, `shelter`, `medical`).
-   * **Geographic Entity Extraction**: Extracts cities, zip codes, and states mentioned in the prompt.
-   * **Structured Responses**: Dynamically synthesizes an empathetic and concise summary.
+### Agent Roles
 
-2. **Service Search Agent (`agents/search_agent.py`)**:
-   * **Database Querying**: Matches the extracted intent category against our verified support directories.
-   * **Geographic Filtering**: Matches location parameters against address, city, state, and zip code details.
-   * **Failsafe Support**: Returns national defaults if no local matches are found.
-
-3. **Frontend Visualization Panel**:
-   * During processing, the UI animates each agent status state (Orchestrator processing, Search agent querying, Security checks) so judges can visually inspect the multi-agent system execution flow.
+| Agent | Role |
+|---|---|
+| **Orchestrator Agent** (`agents/orchestrator.py`) | Classifies the user's emotional support needs (general/distressed), synthesizes warm responses, and routes to the appropriate resource. |
+| **Service Search Agent** (`agents/search_agent.py`) | Queries the buddy directory and warmline database, returning available buddies and crisis line info. |
+| **Privacy Guard** (via `app.py /api/crisis-call-log`) | Logs only call metadata (timestamp + duration) for the buddy. The call content is discarded and never stored or shared. |
 
 ---
 
-## 🔑 Key Features
-* **Zero-Friction Sandbox Mode**: Includes a secure settings modal where judges or users can input their own Gemini API Key. If the backend key hits a quota limit, the app gracefully runs queries on the custom key.
-* **Premium Dark Theme UI**: Built with responsive vanilla CSS, modern Outfit/Inter typography, subtle glassmorphism borders, and animated HTML5 dialog transitions.
-* **No hardcoded secrets**: All API keys are loaded strictly from standard environment configurations.
+## 🗂️ Project Structure
+
+```
+.
+├── agents/
+│   ├── orchestrator.py     # Triage, classification, response synthesis
+│   └── search_agent.py     # Buddy directory & crisis line querying
+├── data/
+│   └── resources.json      # Accredited buddies + General Warmline data
+├── static/
+│   ├── index.html          # Main UI dashboard
+│   ├── index.css           # Dark theme design system
+│   └── index.js            # Buddy cards, call timer, buddy notifications
+├── app.py                  # FastAPI server with support + call-log endpoints
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+└── .env.example
+```
 
 ---
 
-## 🚀 Setup & Execution
+## 🚀 Setup & Running Locally
 
-### Option A: Local Python Environment (Recommended)
+### Option A: Python Environment
 
-1. **Initialize the Virtual Environment**:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+```bash
+# 1. Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate
 
-2. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+# 2. Install dependencies
+pip install -r requirements.txt
 
-3. **Configure Environment**:
-   ```bash
-   cp .env.example .env
-   # Add your key to .env, or configure it dynamically inside the web interface
-   ```
+# 3. Configure environment
+cp .env.example .env
+# Edit .env and add your GEMINI_API_KEY
 
-4. **Launch the Application**:
-   ```bash
-   python app.py
-   ```
-   Open `http://localhost:8080` in your web browser.
+# 4. Run the server
+python app.py
+```
 
-### Option B: Docker Container
+Open **http://localhost:8080** in your browser.
 
-1. **Run with Docker Compose**:
-   ```bash
-   docker-compose up --build
-   ```
-   Open `http://localhost:8080` in your web browser.
+> **No API Key?** You can configure your key directly in the UI settings panel (🔑 API Key button) — it is stored in browser localStorage and sent securely per-request.
+
+### Option B: Docker
+
+```bash
+docker-compose up --build
+```
 
 ---
 
-## ☁️ Deployment (Google Cloud Run)
+## ☁️ Deploying to Google Cloud Run
 
-To deploy this application from your personal Google Cloud Platform account:
+```bash
+# Authenticate and set your project
+gcloud auth login
+gcloud config set project YOUR_GCP_PROJECT_ID
 
-1. **Install and Configure Google Cloud SDK**:
-   ```bash
-   gcloud auth login
-   gcloud config set project YOUR_GCP_PROJECT_ID
-   ```
+# Deploy from source
+gcloud run deploy match-peer-support \
+    --source . \
+    --platform managed \
+    --region us-central1 \
+    --allow-unauthenticated \
+    --set-env-vars="GEMINI_MODEL=gemini-2.5-flash"
 
-2. **Build and Deploy Directly from Codebase**:
-   ```bash
-   gcloud run deploy match-crisis-directory \
-       --source . \
-       --platform managed \
-       --region us-central1 \
-       --allow-unauthenticated \
-       --set-env-vars="GEMINI_MODEL=gemini-2.5-flash"
-   ```
-
-3. **Secure API Key Configuration**:
-   To prevent credentials leaking, configure your server-side API key using Google Cloud Secret Manager and mount it to your Cloud Run service:
-   ```bash
-   gcloud secrets create gemini-api-key --data-file=".env"
-   ```
+# Store your API key securely using Secret Manager
+gcloud secrets create gemini-api-key --data-file=".env"
+```
 
 ---
 
-## 📂 Project Structure
+## 🔒 Privacy Design Principles
 
-* [app.py](file:///vms_and_github/Github/kaggle-google-CAPSTONE-june-2026/app.py) - Main FastAPI Server entry point.
-* [agents/orchestrator.py](file:///vms_and_github/Github/kaggle-google-CAPSTONE-june-2026/agents/orchestrator.py) - Safety screening and intent parser.
-* [agents/search_agent.py](file:///vms_and_github/Github/kaggle-google-CAPSTONE-june-2026/agents/search_agent.py) - Database query layer.
-* [data/resources.json](file:///vms_and_github/Github/kaggle-google-CAPSTONE-june-2026/data/resources.json) - Verified emergency listings database.
-* [static/index.html](file:///vms_and_github/Github/kaggle-google-CAPSTONE-june-2026/static/index.html) - Visual matching interface dashboard.
-* [static/index.css](file:///vms_and_github/Github/kaggle-google-CAPSTONE-june-2026/static/index.css) - Theme stylesheets.
-* [static/index.js](file:///vms_and_github/Github/kaggle-google-CAPSTONE-june-2026/static/index.js) - App rendering controller.
-* [Dockerfile](file:///vms_and_github/Github/kaggle-google-CAPSTONE-june-2026/Dockerfile) - Production environment container blueprint.
+- **Content is never stored**: Warmline call transcripts are discarded. Only metadata (time, duration) is retained in-session for the buddy notification.
+- **No hardcoded secrets**: All API keys are loaded from environment variables or user-provided settings.
+- **Buddy boundary**: The buddy view shows only the notification card — never the conversation.
+
+---
+
+## 📋 Evaluation Track
+
+This project is submitted under the **Agents for Good** track of the Kaggle AI Agents Capstone.
+
+**License**: Developed for educational purposes under Kaggle AI Agents Capstone guidelines. All rights reserved by the author. [@genidma](https://github.com/genidma)

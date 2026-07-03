@@ -1,278 +1,407 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Elements
-  const queryForm = document.getElementById("queryForm");
-  const queryInput = document.getElementById("queryInput");
-  const welcomeView = document.getElementById("welcomeView");
-  const loadingView = document.getElementById("loadingView");
-  const resultsView = document.getElementById("resultsView");
-  const loadingText = document.getElementById("loadingText");
-  
-  const btnSettings = document.getElementById("btnSettings");
+
+  /* ---- DOM References ---- */
+  const welcomeView  = document.getElementById("welcomeView");
+  const loadingView  = document.getElementById("loadingView");
+  const resultsView  = document.getElementById("resultsView");
+  const loadingLabel = document.getElementById("loadingLabel");
+
+  const supportForm  = document.getElementById("supportForm");
+  const msgInput     = document.getElementById("msgInput");
+  const btnBack      = document.getElementById("btnBack");
+
+  const responseText     = document.getElementById("responseText");
+  const buddySection     = document.getElementById("buddySection");
+  const buddyGrid        = document.getElementById("buddyGrid");
+  const crisisSection    = document.getElementById("crisisSection");
+  const crisisLineName   = document.getElementById("crisisLineName");
+  const crisisLineDesc   = document.getElementById("crisisLineDesc");
+  const crisisLinePhone  = document.getElementById("crisisLinePhone");
+  const crisisLineHours  = document.getElementById("crisisLineHours");
+  const btnCallFromResults = document.getElementById("btnCallFromResults");
+
+  // Sidbar crisis button
+  const btnCallCrisis = document.getElementById("btnCallCrisis");
+
+  // Pipeline indicators
+  const pipelineOrchestrator = document.getElementById("pipelineOrchestrator");
+  const pipelineSearch       = document.getElementById("pipelineSearch");
+  const pipelinePrivacy      = document.getElementById("pipelinePrivacy");
+
+  // Settings dialog
+  const btnSettings    = document.getElementById("btnSettings");
   const settingsDialog = document.getElementById("settingsDialog");
-  const btnDialogClose = document.getElementById("btnDialogClose");
-  const btnSaveKey = document.getElementById("btnSaveKey");
-  const btnClearKey = document.getElementById("btnClearKey");
-  const apiKeyInput = document.getElementById("apiKeyInput");
-  
-  const btnBackToHome = document.getElementById("btnBackToHome");
-  const matchBadge = document.getElementById("matchBadge");
-  const responseSpeechText = document.getElementById("responseSpeechText");
-  const resourceGrid = document.getElementById("resourceGrid");
-  const resourceMatchSection = document.getElementById("resourceMatchSection");
-  
-  // Status indicators
-  const statusOrchestrator = document.getElementById("statusOrchestrator");
-  const statusSearch = document.getElementById("statusSearch");
-  const statusSecurity = document.getElementById("statusSecurity");
-  
-  // Load saved API Key from LocalStorage
+  const btnCloseSettings = document.getElementById("btnCloseSettings");
+  const btnSaveKey     = document.getElementById("btnSaveKey");
+  const btnClearKey    = document.getElementById("btnClearKey");
+  const apiKeyInput    = document.getElementById("apiKeyInput");
+
+  // Crisis call dialog
+  const crisisCallDialog = document.getElementById("crisisCallDialog");
+  const callTimerEl      = document.getElementById("callTimer");
+  const btnEndCall       = document.getElementById("btnEndCall");
+
+  // Buddy view dialog
+  const btnViewBuddy       = document.getElementById("btnViewBuddy");
+  const buddyViewDialog    = document.getElementById("buddyViewDialog");
+  const btnCloseBuddyView  = document.getElementById("btnCloseBuddyView");
+  const buddyNotificationArea = document.getElementById("buddyNotificationArea");
+
+  /* ---- State ---- */
   let geminiApiKey = localStorage.getItem("gemini_api_key") || "";
   apiKeyInput.value = geminiApiKey;
 
-  // Dialog Operations
-  btnSettings.addEventListener("click", () => {
-    settingsDialog.showModal();
-  });
-  
-  const closeDialog = () => {
-    settingsDialog.close();
-  };
-  
-  btnDialogClose.addEventListener("click", closeDialog);
-  
-  // Save API Key
+  let callIntervalId = null;
+  let callStartTime  = null;
+  let selectedBuddyId = null;  // buddy ID to notify after call
+  let crisisNotifications = []; // in-memory log for demo
+
+  /* ============================================================
+     DIALOG UTILITIES
+  ============================================================ */
+  function openDialog(dlg) { dlg.showModal(); }
+  function closeDialog(dlg) { dlg.close(); }
+
+  // Light-dismiss fallback for browsers without closedby support
+  function addLightDismiss(dlg) {
+    if ('closedBy' in HTMLDialogElement.prototype) return;
+    dlg.addEventListener("click", (e) => {
+      if (e.target !== dlg) return;
+      const r = dlg.getBoundingClientRect();
+      const inside = r.top <= e.clientY && e.clientY <= r.bottom &&
+                     r.left <= e.clientX && e.clientX <= r.right;
+      if (!inside) dlg.close();
+    });
+  }
+
+  [settingsDialog, crisisCallDialog, buddyViewDialog].forEach(addLightDismiss);
+
+  /* ---- Settings dialog ---- */
+  btnSettings.addEventListener("click",       () => openDialog(settingsDialog));
+  btnCloseSettings.addEventListener("click",  () => closeDialog(settingsDialog));
+
   btnSaveKey.addEventListener("click", () => {
     geminiApiKey = apiKeyInput.value.trim();
     localStorage.setItem("gemini_api_key", geminiApiKey);
-    closeDialog();
-    showNotification("API Key saved successfully!");
+    closeDialog(settingsDialog);
+    toast("API Key saved ✓");
   });
-  
-  // Clear API Key
+
   btnClearKey.addEventListener("click", () => {
     geminiApiKey = "";
     apiKeyInput.value = "";
     localStorage.removeItem("gemini_api_key");
-    closeDialog();
-    showNotification("API Key cleared.");
+    closeDialog(settingsDialog);
+    toast("API Key cleared");
   });
 
-  // Fallback for browsers without native closedby support (Light Dismiss)
-  if (!('closedBy' in HTMLDialogElement.prototype)) {
-    settingsDialog.addEventListener('click', (event) => {
-      if (event.target !== settingsDialog) return;
-      const rect = settingsDialog.getBoundingClientRect();
-      const isDialogContent = (
-        rect.top <= event.clientY &&
-        event.clientY <= rect.top + rect.height &&
-        rect.left <= event.clientX &&
-        event.clientX <= rect.left + rect.width
-      );
-      if (isDialogContent) return;
-      settingsDialog.close();
-    });
-  }
+  /* ---- Buddy View dialog ---- */
+  btnViewBuddy.addEventListener("click",       () => { renderBuddyNotifications(); openDialog(buddyViewDialog); });
+  btnCloseBuddyView.addEventListener("click",  () => closeDialog(buddyViewDialog));
 
-  // Pre-fill suggested scenarios
-  document.querySelectorAll(".scenario-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      queryInput.value = btn.getAttribute("data-query");
-      queryInput.focus();
+  /* ============================================================
+     PROMPT CHIPS
+  ============================================================ */
+  document.querySelectorAll(".prompt-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      msgInput.value = chip.dataset.msg;
+      msgInput.focus();
     });
   });
 
-  // Back to home button
-  btnBackToHome.addEventListener("click", () => {
-    resultsView.classList.add("hidden");
-    welcomeView.classList.remove("hidden");
-    resetTracker();
+  /* ============================================================
+     BACK BUTTON
+  ============================================================ */
+  btnBack.addEventListener("click", () => {
+    show(welcomeView);
+    resetPipeline();
   });
 
-  // Query Form Submit
-  queryForm.addEventListener("submit", async (e) => {
+  /* ============================================================
+     SUPPORT FORM SUBMIT
+  ============================================================ */
+  supportForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const query = queryInput.value.trim();
-    if (!query) return;
+    const message = msgInput.value.trim();
+    if (!message) return;
 
-    // Show loading UI
-    welcomeView.classList.add("hidden");
-    resultsView.classList.add("hidden");
-    loadingView.classList.remove("hidden");
-    
-    // Step 1: Orchestrator analyzing query
-    updateTrackerState("orchestrator", "active", "Analyzing intent...");
-    updateTrackerState("search", "idle", "Waiting...");
-    updateTrackerState("security", "idle", "Waiting...");
-    
+    show(loadingView);
+    setPipeline("orchestrator", "active", "Analyzing message...");
+    setPipeline("search", "idle", "Waiting...");
+    setPipeline("privacy", "idle", "Waiting...");
+
     try {
-      // Simulate multi-agent processing steps visually
-      loadingText.textContent = "Orchestrator: Parsing query and extracting location...";
-      await delay(800);
-      
-      // Step 2: Search agent active
-      loadingText.textContent = "Service Search: Querying verified directory...";
-      updateTrackerState("orchestrator", "completed", "Done");
-      updateTrackerState("search", "active", "Searching database...");
-      await delay(800);
+      loadingLabel.textContent = "Orchestrator: Classifying support needs...";
+      await wait(700);
 
-      // Step 3: Security check
-      loadingText.textContent = "Security Layer: Verifying matched resources...";
-      updateTrackerState("search", "completed", "Done");
-      updateTrackerState("security", "active", "Checking safety parameters...");
-      await delay(600);
+      setPipeline("orchestrator", "done", "Complete");
+      setPipeline("search", "active", "Querying buddy & crisis directory...");
+      loadingLabel.textContent = "Service Search: Finding available resources...";
+      await wait(700);
 
-      // Call API backend
-      const response = await fetch("/api/match", {
+      setPipeline("search", "done", "Complete");
+      setPipeline("privacy", "active", "Applying privacy guardrails...");
+      loadingLabel.textContent = "Privacy Guard: Confirming access policies...";
+      await wait(500);
+
+      const res = await fetch("/api/support", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          query: query,
-          custom_api_key: geminiApiKey
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, custom_api_key: geminiApiKey })
       });
 
-      if (!response.ok) {
-        throw new Error(`Server returned status ${response.status}`);
-      }
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const data = await res.json();
 
-      const data = await response.json();
-      
-      // Step 4: Completed
-      updateTrackerState("security", "completed", "Done");
-      await delay(200);
-      
-      displayResults(data);
+      setPipeline("privacy", "done", "Complete");
+      await wait(200);
+
+      renderResults(data);
 
     } catch (err) {
       console.error(err);
-      updateTrackerState("orchestrator", "error", "Error");
-      updateTrackerState("search", "error", "Error");
-      updateTrackerState("security", "error", "Error");
-      
-      loadingView.classList.add("hidden");
-      welcomeView.classList.remove("hidden");
-      alert(`An error occurred: ${err.message}. Please verify the backend is running.`);
+      setPipeline("orchestrator", "error", "Error");
+      setPipeline("search", "error", "Error");
+      setPipeline("privacy", "error", "Error");
+      show(welcomeView);
+      toast(`Error: ${err.message}`, "error");
     }
   });
 
-  // Display results
-  function displayResults(data) {
-    loadingView.classList.add("hidden");
-    resultsView.classList.remove("hidden");
+  /* ============================================================
+     RENDER RESULTS
+  ============================================================ */
+  function renderResults(data) {
+    // Response text
+    responseText.innerHTML = mdToHtml(data.response || "");
 
-    // Clear previous results
-    resourceGrid.innerHTML = "";
-    
-    // Set response text
-    responseSpeechText.innerHTML = formatMarkdown(data.response);
-    
-    // Set match status badge
-    if (data.status === "severe_crisis") {
-      matchBadge.textContent = "🚨 Severe Crisis Redirection";
-      matchBadge.className = "match-badge danger";
-      resourceMatchSection.classList.add("hidden");
-    } else if (data.status === "non_crisis") {
-      matchBadge.textContent = "⚠️ Non-Crisis Intent";
-      matchBadge.className = "match-badge warning";
-      resourceMatchSection.classList.add("hidden");
+    // Buddies
+    buddyGrid.innerHTML = "";
+    const resources = data.resources || {};
+    const buddies = resources.all_buddies || [];
+    const crisis  = resources.crisis_line || {};
+
+    if (buddies.length > 0) {
+      buddySection.classList.remove("hidden");
+      buddies.forEach(buddy => {
+        buddyGrid.appendChild(createBuddyCard(buddy));
+      });
     } else {
-      matchBadge.textContent = `✅ matched ${data.resources.length} resource(s)`;
-      matchBadge.className = "match-badge success";
-      resourceMatchSection.classList.remove("hidden");
+      buddySection.classList.add("hidden");
+    }
 
-      if (data.resources.length === 0) {
-        resourceMatchSection.classList.add("hidden");
-      } else {
-        // Render matches
-        data.resources.forEach(res => {
-          const card = document.createElement("div");
-          card.className = `resource-card category-${getCategoryClass(res.category)}`;
-          
-          card.innerHTML = `
-            <div class="resource-card-header">
-              <h4 class="resource-name">${res.name}</h4>
-              <span class="resource-type-tag">${res.category.replace("_", " ")}</span>
-            </div>
-            <p class="resource-desc">${res.description}</p>
-            <div class="resource-details">
-              <div class="detail-item">
-                <span class="detail-icon">📍</span>
-                <span class="detail-text">${res.address}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-icon">📞</span>
-                <span class="detail-text">${res.phone}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-icon">🕒</span>
-                <span class="detail-text">${res.hours}</span>
-              </div>
-            </div>
-          `;
-          resourceGrid.appendChild(card);
+    // Crisis line card
+    if (crisis.name) {
+      crisisSection.classList.remove("hidden");
+      crisisLineName.textContent  = crisis.name;
+      crisisLineDesc.textContent  = crisis.description || "";
+      crisisLinePhone.textContent = crisis.phone || "";
+      crisisLineHours.textContent = crisis.hours || "";
+    } else {
+      crisisSection.classList.add("hidden");
+    }
+
+    show(resultsView);
+  }
+
+  /* ============================================================
+     BUDDY CARD FACTORY
+  ============================================================ */
+  function createBuddyCard(buddy) {
+    const card = document.createElement("div");
+    card.className = "buddy-card";
+
+    const isOnline = buddy.availability?.toLowerCase() === "online";
+    const chipClass = isOnline ? "online" : "offline";
+    const specialtyTags = (buddy.specialties || [])
+      .map(s => `<span class="specialty-tag">${s}</span>`)
+      .join("");
+
+    card.innerHTML = `
+      <div class="buddy-card-top">
+        <div>
+          <div class="buddy-name">${buddy.name}</div>
+          <div class="buddy-cert">${buddy.certification}</div>
+        </div>
+        <span class="availability-chip ${chipClass}">${buddy.availability}</span>
+      </div>
+      <p class="buddy-bio">${buddy.bio}</p>
+      <div class="buddy-specialties">${specialtyTags}</div>
+      <div class="buddy-footer">
+        <span class="buddy-lang">🌐 ${(buddy.languages || []).join(", ")}</span>
+        <button
+          class="btn btn-connect"
+          data-buddy-id="${buddy.id}"
+          data-buddy-name="${buddy.name}"
+          ${!isOnline ? "disabled title='Buddy is offline'" : ""}
+        >
+          ${isOnline ? "Connect" : "Offline"}
+        </button>
+      </div>
+    `;
+
+    // Connect button → start crisis call timer (simulated chat connection)
+    const connectBtn = card.querySelector(".btn-connect");
+    if (isOnline) {
+      connectBtn.addEventListener("click", () => {
+        selectedBuddyId = buddy.id;
+        startCrisisCall();
+      });
+    }
+
+    return card;
+  }
+
+  /* ============================================================
+     CRISIS CALL TIMER
+  ============================================================ */
+  function startCrisisCall() {
+    callStartTime = Date.now();
+    callTimerEl.textContent = "00:00";
+    openDialog(crisisCallDialog);
+
+    callIntervalId = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - callStartTime) / 1000);
+      const mins = String(Math.floor(elapsed / 60)).padStart(2, "0");
+      const secs = String(elapsed % 60).padStart(2, "0");
+      callTimerEl.textContent = `${mins}:${secs}`;
+    }, 1000);
+  }
+
+  btnEndCall.addEventListener("click", endCrisisCall);
+
+  // Also end call if dialog is closed any other way
+  crisisCallDialog.addEventListener("close", () => {
+    if (callIntervalId) endCrisisCall();
+  });
+
+  async function endCrisisCall() {
+    if (!callIntervalId) return;
+
+    clearInterval(callIntervalId);
+    callIntervalId = null;
+
+    const durationSeconds = Math.floor((Date.now() - callStartTime) / 1000);
+    const durationMinutes = Math.max(1, Math.ceil(durationSeconds / 60));
+    const timestamp = new Date().toLocaleString("en-US", {
+      month: "short", day: "numeric",
+      hour: "2-digit", minute: "2-digit"
+    });
+
+    closeDialog(crisisCallDialog);
+
+    // Log the crisis call & notify buddy
+    if (selectedBuddyId) {
+      try {
+        const res = await fetch("/api/crisis-call-log", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            buddy_id: selectedBuddyId,
+            duration_minutes: durationMinutes,
+            timestamp
+          })
         });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === "success") {
+            crisisNotifications.push(data.notification);
+            toast("Your buddy has been notified (metadata only). ✓");
+          }
+        }
+      } catch (err) {
+        console.error("Crisis log error:", err);
       }
     }
   }
 
-  // Utilities
-  function updateTrackerState(agent, state, text) {
-    const el = agent === "orchestrator" ? statusOrchestrator :
-               agent === "search" ? statusSearch : statusSecurity;
-               
-    el.className = `tracker-item ${state}`;
-    el.querySelector(".tracker-state").textContent = text;
+  /* ---- Sidebar crisis button also starts a call ---- */
+  btnCallCrisis.addEventListener("click", () => {
+    selectedBuddyId = null; // no specific buddy for sidebar call
+    startCrisisCall();
+  });
+
+  btnCallFromResults.addEventListener("click", () => {
+    startCrisisCall();
+  });
+
+  /* ============================================================
+     BUDDY NOTIFICATION VIEW
+  ============================================================ */
+  function renderBuddyNotifications() {
+    if (crisisNotifications.length === 0) {
+      buddyNotificationArea.innerHTML = `<div class="empty-state">No warmline calls logged yet. Call the warmline to see a notification appear here.</div>`;
+      return;
+    }
+
+    buddyNotificationArea.innerHTML = "";
+    crisisNotifications.forEach(n => {
+      const div = document.createElement("div");
+      div.className = "buddy-notification";
+      div.innerHTML = `
+        <div class="notif-header">📋 Warmline Call Notification</div>
+        <div class="notif-meta">📅 ${n.timestamp} &nbsp;|&nbsp; ⏱ ${n.duration_minutes} min</div>
+        <div class="notif-body">${n.suggested_buddy_action}</div>
+        <div class="notif-privacy">🔒 ${n.privacy_note}</div>
+      `;
+      buddyNotificationArea.appendChild(div);
+    });
   }
 
-  function resetTracker() {
-    updateTrackerState("orchestrator", "idle", "Idle");
-    updateTrackerState("search", "idle", "Idle");
-    updateTrackerState("security", "idle", "Idle");
+  /* ============================================================
+     PIPELINE STATE HELPERS
+  ============================================================ */
+  function setPipeline(agent, state, label) {
+    const el = agent === "orchestrator" ? pipelineOrchestrator :
+               agent === "search"       ? pipelineSearch       : pipelinePrivacy;
+
+    el.className = `pipeline-item ${state}`;
+    el.querySelector(".pipeline-state").textContent = label;
   }
 
-  function getCategoryClass(cat) {
-    if (cat.includes("shelter")) return "shelter";
-    if (cat.includes("food")) return "food";
-    if (cat.includes("mental")) return "mental";
-    if (cat.includes("medical")) return "medical";
-    return "other";
+  function resetPipeline() {
+    ["orchestrator", "search", "privacy"].forEach(a => setPipeline(a, "idle", "Idle"));
   }
 
-  function formatMarkdown(text) {
-    // Basic formatting for bullet points and bold text
+  /* ============================================================
+     VIEW SWITCHER
+  ============================================================ */
+  const views = [welcomeView, loadingView, resultsView];
+
+  function show(view) {
+    views.forEach(v => {
+      if (v === view) { v.classList.remove("hidden"); }
+      else            { v.classList.add("hidden"); }
+    });
+  }
+
+  /* ============================================================
+     UTILITIES
+  ============================================================ */
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function mdToHtml(text) {
     return text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/^\* (.*?)$/gm, '<li>$1</li>')
-      .replace(/(<li>.*?<\/li>)/g, '<ul>$1</ul>')
-      .replace(/<\/ul>\s*<ul>/g, '') // Merge adjacent lists
-      .replace(/\n/g, '<br>');
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/\n/g, "<br>");
   }
 
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  function toast(msg, type = "success") {
+    const t = document.createElement("div");
+    t.style.cssText = `
+      position:fixed; bottom:24px; right:24px; z-index:9999;
+      padding:0.75rem 1.25rem; border-radius:10px;
+      font-size:0.85rem; font-weight:600;
+      background:${type === "error" ? "#f87171" : "#2dd4bf"};
+      color:${type === "error" ? "#fff" : "#060d16"};
+      box-shadow:0 4px 16px rgba(0,0,0,0.3);
+      animation: fadeIn 0.2s ease;
+    `;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
   }
 
-  function showNotification(msg) {
-    // Simple alert or toast notification (fallback)
-    const toast = document.createElement("div");
-    toast.style.position = "fixed";
-    toast.style.bottom = "20px";
-    toast.style.right = "20px";
-    toast.style.backgroundColor = "#10b981";
-    toast.style.color = "#0b0f19";
-    toast.style.padding = "0.75rem 1.5rem";
-    toast.style.borderRadius = "8px";
-    toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-    toast.style.fontWeight = "600";
-    toast.style.zIndex = "1000";
-    toast.textContent = msg;
-    
-    document.body.appendChild(toast);
-    setTimeout(() => {
-      toast.remove();
-    }, 3000);
-  }
 });
