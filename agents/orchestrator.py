@@ -1,44 +1,45 @@
 import os
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any
 from pydantic import BaseModel, Field
 from google import genai
 from google.genai import types
-from google.genai.errors import APIError
 
 from agents.search_agent import ServiceSearchAgent
 
-class CrisisAnalysis(BaseModel):
-    is_crisis: bool = Field(
-        description="Whether the query represents a crisis situation requiring support (e.g. food, housing, shelter, mental health, abuse)."
+
+class SupportAnalysis(BaseModel):
+    needs_support: bool = Field(
+        description="Whether the user is expressing a need for emotional support, stress relief, or general wellbeing help."
     )
-    severe_crisis: bool = Field(
-        description="Whether the query represents an immediate life-threatening emergency (e.g. active self-harm, medical emergency, active abuse)."
+    needs_crisis_line: bool = Field(
+        description="Whether the user may benefit from connecting directly with a professional crisis line (e.g. mentions feeling overwhelmed, alone, or in distress)."
     )
-    category: str = Field(
-        description="The primary category of support needed. Must be one of: 'mental_health', 'food_assistance', 'shelter', 'medical', 'other'."
+    urgency_level: str = Field(
+        description="Urgency level of the request. Must be one of: 'low' (general chat/loneliness), 'medium' (stress/anxiety/sadness), 'high' (in distress, needs immediate human support)."
     )
-    location: str = Field(
-        description="The extracted geographic location (city, state, zip code, or address) mentioned in the query. Leave empty if none is mentioned."
+    summary: str = Field(
+        description="A brief, empathetic one-sentence summary of what the user seems to be experiencing."
     )
-    needs_description: str = Field(
-        description="A concise summary of what the user is seeking."
+    suggested_action: str = Field(
+        description="Suggested next step: 'connect_buddy' (talk to an accredited buddy), 'use_crisis_line' (call the warmline), or 'both' (offer both options)."
     )
+
 
 class OrchestratorAgent:
     """
     Orchestrator Agent:
-    Manages user intent, screens queries for safety and crisis severity,
-    coordinates with the ServiceSearchAgent, and synthesizes the final guide.
+    - Screens user messages for emotional support needs.
+    - Triages between recommending an Accredited Buddy vs. the General Crisis Line.
+    - Manages the privacy-protected crisis call notification pipeline (metadata only).
     """
-    
+
     def __init__(self, search_agent: ServiceSearchAgent = None):
         self.search_agent = search_agent or ServiceSearchAgent()
-        
-        # Initialize Gemini Client if API key is present
+
         self.api_key = os.environ.get("GEMINI_API_KEY")
         self.model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-        
+
         if self.api_key:
             try:
                 self.client = genai.Client(api_key=self.api_key)
@@ -46,121 +47,101 @@ class OrchestratorAgent:
                 print(f"Error initializing Google GenAI Client: {e}")
                 self.client = None
         else:
-            print("Warning: GEMINI_API_KEY not found in environment. Running in sandbox/fallback mode.")
+            print("Warning: GEMINI_API_KEY not found. Running in sandbox/fallback mode.")
             self.client = None
 
-    def analyze_query(self, user_query: str) -> CrisisAnalysis:
+    def analyze_message(self, user_message: str) -> SupportAnalysis:
         """
-        Uses Gemini Structured Outputs to classify and extract information from the query.
-        Falls back to rule-based heuristics if the API call fails or is unconfigured.
+        Uses Gemini Structured Outputs to classify the user's support need.
+        Falls back to rule-based heuristics if API is unavailable.
         """
         if not self.client:
-            return self._fallback_analyze(user_query)
-            
+            return self._fallback_analyze(user_message)
+
         system_prompt = (
-            "You are the Security & Intent Analyzer for a crisis support directory. "
-            "Examine the user query to classify the type of crisis assistance requested, "
-            "assess the severity, and extract locations or entities to search for support services. "
-            "Be conservative with severity: if self-harm, suicide, or active threat is mentioned, set severe_crisis to True."
+            "You are the Triage Coordinator for a peer-support buddy platform called MATCH. "
+            "Your role is to gently and empathetically assess what kind of support the user needs. "
+            "The platform connects users with accredited peer support buddies for general emotional support, "
+            "and with a professional warmline when the user is feeling significantly distressed. "
+            "Classify the user's message carefully. Always be compassionate and non-judgmental."
         )
-        
+
         try:
             response = self.client.models.generate_content(
                 model=self.model_name,
-                contents=user_query,
+                contents=user_message,
                 config=types.GenerateContentConfig(
                     response_mime_type="application/json",
-                    response_schema=CrisisAnalysis,
+                    response_schema=SupportAnalysis,
                     system_instruction=system_prompt,
                     temperature=0.0
                 )
             )
-            # Parse response json
             data = json.loads(response.text)
-            return CrisisAnalysis(**data)
+            return SupportAnalysis(**data)
         except Exception as e:
             print(f"GenAI API Error: {e}. Falling back to heuristics.")
-            return self._fallback_analyze(user_query)
+            return self._fallback_analyze(user_message)
 
-    def _fallback_analyze(self, query: str) -> CrisisAnalysis:
-        """Rule-based heuristic parsing when API is unavailable."""
-        query_lower = query.lower()
-        
-        # Heuristics for severe crisis
-        severe_keywords = ["suicide", "kill myself", "harm myself", "ending my life", "abuse", "beaten", "domestic violence", "911", "dying"]
-        severe_crisis = any(kw in query_lower for kw in severe_keywords)
-        
-        # Heuristics for category
-        category = "other"
-        if any(kw in query_lower for kw in ["depressed", "anxious", "mental", "sad", "crying", "therapy", "suicidal", "psychology", "lonely"]):
-            category = "mental_health"
-        elif any(kw in query_lower for kw in ["food", "hungry", "eat", "pantry", "meals", "groceries", "starving"]):
-            category = "food_assistance"
-        elif any(kw in query_lower for kw in ["shelter", "homeless", "housing", "rent", "sleep", "bed"]):
-            category = "shelter"
-        elif any(kw in query_lower for kw in ["doctor", "medical", "hospital", "clinic", "pain", "hurt", "injury"]):
-            category = "medical"
-            
-        # Heuristics for location
-        location = ""
-        if "new york" in query_lower or "nyc" in query_lower:
-            location = "New York"
-        elif "san francisco" in query_lower or "sf" in query_lower:
-            location = "San Francisco"
-        elif "chicago" in query_lower:
-            location = "Chicago"
-            
-        is_crisis = severe_crisis or category != "other" or "help" in query_lower
-        
-        return CrisisAnalysis(
-            is_crisis=is_crisis,
-            severe_crisis=severe_crisis,
-            category=category,
-            location=location,
-            needs_description=f"Fallback parsed: {query[:50]}"
+    def _fallback_analyze(self, message: str) -> SupportAnalysis:
+        """Rule-based heuristic triage when API is unavailable."""
+        msg = message.lower()
+
+        crisis_keywords = ["overwhelmed", "can't cope", "cannot cope", "hopeless", "desperate",
+                           "alone", "no one cares", "need help now", "breaking down", "falling apart"]
+        medium_keywords = ["stressed", "anxious", "sad", "worried", "struggling", "not okay",
+                           "difficult", "hard time", "feeling low", "upset"]
+
+        needs_crisis = any(kw in msg for kw in crisis_keywords)
+        needs_medium = any(kw in msg for kw in medium_keywords)
+        needs_support = needs_crisis or needs_medium or "help" in msg or "talk" in msg
+
+        if needs_crisis:
+            urgency = "high"
+            action = "both"
+        elif needs_medium:
+            urgency = "medium"
+            action = "connect_buddy"
+        else:
+            urgency = "low"
+            action = "connect_buddy"
+
+        return SupportAnalysis(
+            needs_support=needs_support,
+            needs_crisis_line=needs_crisis,
+            urgency_level=urgency,
+            summary=f"User seems to be seeking support. (Fallback analysis: '{message[:60]}...')" if len(message) > 60 else f"User: '{message}'",
+            suggested_action=action
         )
 
-    def process_request(self, user_query: str) -> Dict[str, Any]:
+    def process_request(self, user_message: str) -> Dict[str, Any]:
         """
         Main processing pipeline:
-        1. Safety Analysis
-        2. Delegation to ServiceSearchAgent
-        3. Response synthesis
+        1. Analyze the user's message and triage their needs.
+        2. Delegate to ServiceSearchAgent to find appropriate resources.
+        3. Synthesize an empathetic, actionable response.
         """
-        # Step 1: Analyze query
-        analysis = self.analyze_query(user_query)
-        
-        # Immediate life safety warning if severe crisis
-        if analysis.severe_crisis:
+        analysis = self.analyze_message(user_message)
+
+        if not analysis.needs_support:
             return {
-                "status": "severe_crisis",
+                "status": "general_inquiry",
                 "analysis": analysis.model_dump(),
                 "response": (
-                    "IMMEDIATE ASSISTANCE REQUIRED: If you are in immediate danger or experiencing a life-threatening emergency, "
-                    "please call 911 or go to the nearest emergency room immediately.\n\n"
-                    "For free, confidential, 24/7 support in a suicide or mental health crisis, please call or text 988 "
-                    "to reach the Suicide & Crisis Lifeline (in the US/Canada)."
+                    "Hello! I'm MATCH, a peer-support platform. I'm here to connect you with "
+                    "accredited support buddies or a professional warmline whenever you need someone to talk to. "
+                    "Feel free to share what's on your mind."
                 ),
-                "resources": []
+                "resources": {}
             }
-            
-        if not analysis.is_crisis:
-            return {
-                "status": "non_crisis",
-                "analysis": analysis.model_dump(),
-                "response": (
-                    "I am programmed to assist primarily with crisis matching (food, shelter, mental health, and emergency medical services). "
-                    "If you are seeking general information, please let me know how I can guide you towards support services."
-                ),
-                "resources": []
-            }
-            
-        # Step 2: Query database using ServiceSearchAgent
-        resources = self.search_agent.search(category=analysis.category, location=analysis.location)
-        
-        # Step 3: Synthesize guidance
-        response_text = self._synthesize_response(analysis, resources)
-        
+
+        # Query the ServiceSearchAgent
+        resources = self.search_agent.search(
+            needs_crisis_line=(analysis.suggested_action in ["use_crisis_line", "both"])
+        )
+
+        response_text = self._synthesize_response(analysis)
+
         return {
             "status": "success",
             "analysis": analysis.model_dump(),
@@ -168,24 +149,58 @@ class OrchestratorAgent:
             "resources": resources
         }
 
-    def _synthesize_response(self, analysis: CrisisAnalysis, resources: List[Dict[str, Any]]) -> str:
-        """Generates an empathetic and informative matching summary."""
-        category_label = analysis.category.replace("_", " ").title()
-        
-        if not resources:
-            location_clause = f" in '{analysis.location}'" if analysis.location else ""
+    def _synthesize_response(self, analysis: SupportAnalysis) -> str:
+        """Generates a warm, empathetic, action-oriented response."""
+        base = f"**{analysis.summary}**\n\n"
+
+        if analysis.suggested_action == "connect_buddy":
             return (
-                f"We identified a request for **{category_label}** support{location_clause}.\n\n"
-                "Unfortunately, we did not find direct matches in our verified directory for this specific location. "
-                "However, you can connect with national helplines for immediate guidance:\n\n"
-                "* **988 Suicide & Crisis Lifeline**: Call or text 988 (Confidential, 24/7 support)\n"
-                "* **211 Essential Community Services**: Call 211 or visit 211.org to find local resources for food, shelter, and utilities."
+                base +
+                "It sounds like you could use someone to talk to right now, and that's completely okay. "
+                "We have accredited peer support buddies available who are here to listen — "
+                "no judgment, just a caring ear. Would you like to connect with one of them?"
             )
-            
-        location_str = f" in **{analysis.location}**" if analysis.location else ""
-        intro = (
-            f"Based on your request, I matched your query to verified **{category_label}** resources{location_str}.\n\n"
-            f"Here are the local verified support services that match your needs:"
-        )
-        
-        return intro
+        elif analysis.suggested_action == "use_crisis_line":
+            return (
+                base +
+                "Thank you for reaching out — it takes courage. When things feel overwhelming, "
+                "connecting with a professional warmline can make a real difference. "
+                "Our General Support Warmline is available 24/7 and completely confidential. "
+                "Your buddy will know you reached out (but not what was discussed), "
+                "so they can check in on you afterward."
+            )
+        else:  # both
+            return (
+                base +
+                "I'm really glad you reached out. We want to make sure you have all the support you need right now. "
+                "You can connect with one of our caring peer buddies for a warm conversation, "
+                "or reach the General Support Warmline directly for professional, confidential support. "
+                "Your buddy will be notified that you used the warmline (but not the details), "
+                "so they can follow up with you."
+            )
+
+    def log_crisis_call(self, buddy_id: str, duration_minutes: int, timestamp: str) -> Dict[str, Any]:
+        """
+        Privacy-protected crisis call logger.
+        Records ONLY metadata (time, duration) visible to the buddy.
+        The actual conversation content is never stored or shared.
+        """
+        buddy = self.search_agent.get_buddy_by_id(buddy_id)
+        if not buddy:
+            return {"status": "error", "message": "Buddy not found."}
+
+        notification = {
+            "buddy_id": buddy_id,
+            "buddy_name": buddy.get("name"),
+            "event": "warmline_call",
+            "timestamp": timestamp,
+            "duration_minutes": duration_minutes,
+            "privacy_note": "Call content is confidential and has not been recorded or shared.",
+            "suggested_buddy_action": (
+                f"Your matched user connected with the Support Warmline on {timestamp} "
+                f"for approximately {duration_minutes} minute(s). "
+                "Consider checking in with them when they're ready. Their conversation remains private."
+            )
+        }
+
+        return {"status": "success", "notification": notification}

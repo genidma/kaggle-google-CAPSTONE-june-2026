@@ -1,81 +1,65 @@
 import json
 import os
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 class ServiceSearchAgent:
     """
     Service Search Agent:
-    Responsible for querying the verified resource database to find support services
-    matching specific categories and geographic locations.
+    Responsible for querying the verified resource database to find accredited
+    buddies and crisis line information based on availability and user needs.
     """
-    
+
     def __init__(self, database_path: str = None):
         if database_path is None:
-            # Resolve path relative to project root
             base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             self.database_path = os.path.join(base_dir, "data", "resources.json")
         else:
             self.database_path = database_path
-            
-        self.resources = self._load_database()
 
-    def _load_database(self) -> List[Dict[str, Any]]:
-        """Loads verified resource listings from the JSON database."""
+        self.data = self._load_database()
+
+    def _load_database(self) -> Dict[str, Any]:
+        """Loads the resource directory from the JSON database."""
         try:
             if os.path.exists(self.database_path):
                 with open(self.database_path, "r", encoding="utf-8") as f:
                     return json.load(f)
-            return []
+            return {}
         except Exception as e:
             print(f"Error loading resource database: {e}")
-            return []
+            return {}
 
-    def search(self, category: str, location: str) -> List[Dict[str, Any]]:
+    def get_crisis_line(self) -> Dict[str, Any]:
+        """Returns the general crisis/warmline contact information."""
+        return self.data.get("general_crisis_line", {})
+
+    def get_available_buddies(self) -> List[Dict[str, Any]]:
+        """Returns all accredited buddies who are currently online/available."""
+        buddies = self.data.get("accredited_buddies", [])
+        return [b for b in buddies if b.get("availability", "").lower() == "online"]
+
+    def get_all_buddies(self) -> List[Dict[str, Any]]:
+        """Returns all accredited buddies regardless of availability."""
+        return self.data.get("accredited_buddies", [])
+
+    def get_buddy_by_id(self, buddy_id: str) -> Optional[Dict[str, Any]]:
+        """Returns a specific buddy by their ID."""
+        buddies = self.data.get("accredited_buddies", [])
+        return next((b for b in buddies if b.get("id") == buddy_id), None)
+
+    def search(self, needs_crisis_line: bool = False) -> Dict[str, Any]:
         """
-        Queries the database for matching services based on category and location.
-        
+        Main search method called by the Orchestrator.
+
         Args:
-            category (str): The resource category (e.g., 'mental_health', 'shelter', 'food_assistance').
-            location (str): The user's location query (e.g., 'New York', 'San Francisco', 'Chicago').
-            
+            needs_crisis_line: If True, include the crisis line prominently in results.
+
         Returns:
-            List[Dict[str, Any]]: Filtered and ranked resource listings.
+            Dict containing crisis_line and matched buddies.
         """
-        # Normalize category
-        category = category.lower().strip() if category else ""
-        
-        # Normalize location
-        location_norm = location.lower().strip() if location else ""
-        
-        matches = []
-        for resource in self.resources:
-            # Check category match (if category is specified)
-            category_match = True
-            if category:
-                # Direct match or substring match
-                category_match = (
-                    category in resource.get("category", "").lower() or 
-                    resource.get("category", "").lower() in category
-                )
-            
-            # Check location match (if location is specified)
-            location_match = True
-            if location_norm:
-                city = resource.get("city", "").lower()
-                state = resource.get("state", "").lower()
-                zip_code = resource.get("zip_code", "").lower()
-                address = resource.get("address", "").lower()
-                
-                # Check if the query location matches city, state, zip code, or address
-                location_match = (
-                    location_norm in city or
-                    location_norm in state or
-                    location_norm in zip_code or
-                    location_norm in address or
-                    any(word in address for word in location_norm.split())
-                )
-            
-            if category_match and location_match:
-                matches.append(resource)
-                
-        return matches
+        return {
+            "crisis_line": self.get_crisis_line(),
+            "available_buddies": self.get_available_buddies(),
+            "all_buddies": self.get_all_buddies(),
+            "needs_crisis_line": needs_crisis_line
+        }
