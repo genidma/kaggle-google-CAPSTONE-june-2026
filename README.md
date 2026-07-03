@@ -1,7 +1,9 @@
 # kaggle-google-CAPSTONE-june-2026
 
 ## Overview
-This project is an AI-powered directory designed to instantly match individuals in crisis with verified, local support services. Developed for the Google & Kaggle AI Agents Capstone, this system leverages a Multi-Agent architecture to provide reliable, safe, and actionable resource guidance.
+This project is a prototype or MVP (minimum viable product) that is designed to be an AI-powered directory that is built to instantly match individuals in crisis with verified, local support services. 
+
+Developed for the Google & Kaggle AI Agents Capstone [link](https://www.kaggle.com/competitions/vibecoding-agents-capstone-project/overview/evaluation), this system leverages a Multi-Agent architecture to provide reliable, safe, and actionable resource guidance.
 
 ## Architecture
 The system is built on an agentic framework featuring:
