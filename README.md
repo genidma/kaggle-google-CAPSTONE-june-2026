@@ -34,12 +34,22 @@ To provide a secure, scalable, and responsive interface for crisis support, meet
    echo "OPENAI_API_KEY=your_key_here" >> .env
    echo "MCP_SERVER_ENDPOINT=your_endpoint_here" >> .env
 
-4. **Install the required project dependencies**:
+4. Setup python virtual environment (activate and deactivate as necessary)
+   ```bash
+   python3 -m venv venv
+   # For Linux/macOS:
+   source venv/bin/activate
+   # For Windows:
+   venv\Scripts\activate
+   # Deactivate the virtual environment (When finished)
+deactivate
+
+5. **Install the required project dependencies**:
    ```bash
    pip install -r requirements.txt
 
 
-5. Run the application:
+6. Run the application:
    ```bash
    python app.py
 
