@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MATCH - AI Crisis Support Matching Directory</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <span class="logo-icon">🛡️</span>
+        <div class="logo-text">
+          <h1>MATCH</h1>
+          <span class="logo-tagline">AI Crisis Resource Directory</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btnSettings" class="btn btn-secondary">
+          <span class="btn-icon">🔑</span> API Settings
+        </button>
+      </div>
+    </header>
+    
+    <!-- Main Content Layout -->
+    <main class="app-main">
+      
+      <!-- Left Panel: Context & Safety -->
+      <aside class="sidebar-panel">
+        
+        <!-- Live Agent Activity tracker -->
+        <section class="sidebar-section">
+          <h3>Agent Status Tracker</h3>
+          <div class="agent-tracker">
+            <div id="statusOrchestrator" class="tracker-item idle">
+              <div class="status-indicator"></div>
+              <div class="tracker-info">
+                <span class="tracker-name">Orchestrator Agent</span>
+                <span class="tracker-state">Idle</span>
+              </div>
+            </div>
+            <div id="statusSearch" class="tracker-item idle">
+              <div class="status-indicator"></div>
+              <div class="tracker-info">
+                <span class="tracker-name">Service Search Agent</span>
+                <span class="tracker-state">Idle</span>
+              </div>
+            </div>
+            <div id="statusSecurity" class="tracker-item idle">
+              <div class="status-indicator"></div>
+              <div class="tracker-info">
+                <span class="tracker-name">Security Guardrails</span>
+                <span class="tracker-state">Idle</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Urgent National Resources -->
+        <section class="sidebar-section helpline-section">
+          <h3 class="danger-heading">Immediate Lifelines</h3>
+          <p class="section-desc">If you are in immediate danger, please use these direct resources:</p>
+          <div class="helpline-card">
+            <div class="helpline-number">988</div>
+            <div class="helpline-name">Suicide & Crisis Lifeline</div>
+            <div class="helpline-details">Call or Text 24/7 (English & Español)</div>
+          </div>
+          <div class="helpline-card">
+            <div class="helpline-number">211</div>
+            <div class="helpline-name">Essential Services Hotline</div>
+            <div class="helpline-details">Call 211 for local utility/food support</div>
+          </div>
+        </section>
+
+        <!-- Suggested Queries for Testing -->
+        <section class="sidebar-section">
+          <h3>Suggested Scenarios</h3>
+          <div class="scenarios-list">
+            <button class="scenario-btn" data-query="I'm feeling extremely anxious and alone in Chicago, IL. Is there someone I can talk to?">
+              🧠 Mental health in Chicago
+            </button>
+            <button class="scenario-btn" data-query="Need shelter for the night in New York. I don't have anywhere to sleep.">
+              🏠 Emergency shelter in NYC
+            </button>
+            <button class="scenario-btn" data-query="Looking for a local food pantry or hot meals in San Francisco, CA.">
+              🍲 Food assistance in SF
+            </button>
+          </div>
+        </section>
+        
+      </aside>
+      
+      <!-- Right/Central Panel: Agent Interface & Output -->
+      <section class="interface-panel">
+        
+        <!-- Welcome Screen (Default View) -->
+        <div id="welcomeView" class="welcome-container">
+          <div class="welcome-brand">
+            <span class="brand-badge">MVP Prototype</span>
+            <h2>How can we support you today?</h2>
+            <p>Describe your needs, including your city or zip code (e.g. New York, San Francisco, Chicago), to be matched with verified support services.</p>
+          </div>
+          
+          <div class="features-grid">
+            <div class="feature-card">
+              <span class="feature-icon">🛡️</span>
+              <h4>Orchestrator Screen</h4>
+              <p>Screens inputs for immediate self-harm or threat, directing severe requests to lifelines instantly.</p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-icon">🔍</span>
+              <h4>Service Search</h4>
+              <p>Extracts locations and category intents to filter verified, local resources automatically.</p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-icon">🔑</span>
+              <h4>Sandbox Key Input</h4>
+              <p>Fully supports dynamic API key configuration to avoid system quota blocks during testing.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Query Loading / Agent Processing View -->
+        <div id="loadingView" class="loading-container hidden">
+          <div class="spinner-outer">
+            <div class="spinner-inner"></div>
+          </div>
+          <h3 id="loadingText">Orchestrator: Parsing query and location...</h3>
+          <p>Please wait while our agent network searches the directory.</p>
+        </div>
+        
+        <!-- Results View -->
+        <div id="resultsView" class="results-container hidden">
+          <div class="result-header-bar">
+            <button id="btnBackToHome" class="btn btn-text">← Back to Search</button>
+            <div class="match-badge" id="matchBadge">Success</div>
+          </div>
+          
+          <div class="agent-synthesis-card">
+            <div class="agent-avatar">🛡️</div>
+            <div class="agent-speech">
+              <h4>Orchestrator Response</h4>
+              <div id="responseSpeechText">Response text here...</div>
+            </div>
+          </div>
+          
+          <div id="resourceMatchSection">
+            <h3 class="matches-title">Verified Matching Services</h3>
+            <div class="resource-grid" id="resourceGrid">
+              <!-- Cards dynamically inserted -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Query Input Form -->
+        <div class="input-container">
+          <form id="queryForm" class="query-form">
+            <textarea 
+              id="queryInput" 
+              placeholder="E.g., 'Need shelter for the night in New York...'" 
+              required
+              rows="3"
+            ></textarea>
+            <button type="submit" class="btn btn-primary" id="btnSubmit">
+              Search Services
+            </button>
+          </form>
+        </div>
+        
+      </section>
+    </main>
+    
+    <!-- API Key Settings Dialog (Using HTML5 <dialog> with closedby="any") -->
+    <dialog id="settingsDialog" closedby="any" aria-labelledby="dialogTitle">
+      <div class="dialog-content">
+        <div class="dialog-header">
+          <h2 id="dialogTitle">API Key Configuration</h2>
+          <button id="btnDialogClose" class="dialog-close-btn">&times;</button>
+        </div>
+        <p class="dialog-desc">Configure your Gemini API key to run queries. This key is stored in your local browser storage and used directly in the headers of your requests to bypass backend server quotas.</p>
+        
+        <div class="form-group">
+          <label for="apiKeyInput">Gemini API Key</label>
+          <input 
+            type="password" 
+            id="apiKeyInput" 
+            placeholder="AIzaSy..." 
+            autocomplete="off"
+          >
+          <small class="helper-text">Leave blank to use the server's default configuration if set.</small>
+        </div>
+        
+        <div class="dialog-actions">
+          <button id="btnClearKey" class="btn btn-secondary">Clear Key</button>
+          <button id="btnSaveKey" class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </dialog>
+    
+  </div>
+
+  <!-- JavaScript -->
+  <script src="index.js"></script>
+</body>
+</html>

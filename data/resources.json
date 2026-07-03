@@ -1,0 +1,110 @@
+[
+  {
+    "id": "ny_shelter_1",
+    "name": "The Bowery Mission",
+    "category": "shelter",
+    "description": "Providing meals, shelter, clothing, and medical care for homeless and hungry New Yorkers.",
+    "address": "227 Bowery, New York, NY 10002",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "10002",
+    "phone": "(212) 674-3456",
+    "hours": "24/7 emergency shelter, meals served daily"
+  },
+  {
+    "id": "ny_food_1",
+    "name": "Food Bank For New York City",
+    "category": "food_assistance",
+    "description": "Distributing food and offering nutrition education and counseling to fight hunger across NYC.",
+    "address": "39 Broadway, New York, NY 10006",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "10006",
+    "phone": "(212) 566-7855",
+    "hours": "Mon-Fri: 9:00 AM - 5:00 PM"
+  },
+  {
+    "id": "ny_mental_1",
+    "name": "NYC Well Helpline",
+    "category": "mental_health",
+    "description": "Free, confidential crisis counseling, mental health referrals, and support via text, call, or chat.",
+    "address": "Citywide Hotline, New York, NY",
+    "city": "New York",
+    "state": "NY",
+    "zip_code": "",
+    "phone": "1-888-692-9355 (or text WELL to 65173)",
+    "hours": "24/7/365"
+  },
+  {
+    "id": "sf_shelter_1",
+    "name": "St. Vincent de Paul Society - MSC South",
+    "category": "shelter",
+    "description": "One of the largest homeless shelters in San Francisco, providing beds, meals, and support services.",
+    "address": "525 5th St, San Francisco, CA 94107",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip_code": "94107",
+    "phone": "(415) 597-7960",
+    "hours": "24/7 shelter services"
+  },
+  {
+    "id": "sf_food_1",
+    "name": "SF-Marin Food Bank",
+    "category": "food_assistance",
+    "description": "Distributing pantry items and fresh groceries to individuals and families in San Francisco and Marin.",
+    "address": "900 Pennsylvania Ave, San Francisco, CA 94107",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip_code": "94107",
+    "phone": "(415) 282-1900",
+    "hours": "Mon-Fri: 8:00 AM - 5:00 PM"
+  },
+  {
+    "id": "sf_mental_1",
+    "name": "San Francisco Suicide Prevention Hotline",
+    "category": "mental_health",
+    "description": "Providing immediate, confidential crisis intervention and suicide prevention helpline.",
+    "address": "Crisis Line, San Francisco, CA",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip_code": "94102",
+    "phone": "(415) 781-0500",
+    "hours": "24/7/365"
+  },
+  {
+    "id": "chi_shelter_1",
+    "name": "Pacific Garden Mission",
+    "category": "shelter",
+    "description": "Providing shelter, meals, clothing, and spiritual guidance to homeless men and women in Chicago.",
+    "address": "1458 S Canal St, Chicago, IL 60607",
+    "city": "Chicago",
+    "state": "IL",
+    "zip_code": "60607",
+    "phone": "(312) 492-9410",
+    "hours": "24/7 intake"
+  },
+  {
+    "id": "chi_food_1",
+    "name": "Greater Chicago Food Depository",
+    "category": "food_assistance",
+    "description": "Chicago's food bank, providing food to over 700 partner agencies, shelters, and pantries across Cook County.",
+    "address": "4100 W Ann Lurie Pl, Chicago, IL 60632",
+    "city": "Chicago",
+    "state": "IL",
+    "zip_code": "60632",
+    "phone": "(773) 247-3663",
+    "hours": "Mon-Fri: 8:30 AM - 5:00 PM"
+  },
+  {
+    "id": "chi_mental_1",
+    "name": "NAMI Chicago Helpline",
+    "category": "mental_health",
+    "description": "Confidential support, resource navigation, and guidance for anyone struggling with mental health challenges.",
+    "address": "1801 W Warner Ave, Chicago, IL 60613",
+    "city": "Chicago",
+    "state": "IL",
+    "zip_code": "60613",
+    "phone": "(833) 626-4244",
+    "hours": "Mon-Fri: 9:00 AM - 8:00 PM, Sat-Sun: 9:00 AM - 5:00 PM"
+  }
+]
