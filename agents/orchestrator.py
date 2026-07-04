@@ -59,7 +59,7 @@ class OrchestratorAgent:
             return self._fallback_analyze(user_message)
 
         system_prompt = (
-            "You are the Triage Coordinator for a peer-support buddy platform called MATCH. "
+            "You are the Triage Coordinator for a peer-support buddy platform called MySupportBuddy. "
             "Your role is to gently and empathetically assess what kind of support the user needs. "
             "The platform connects users with accredited peer support buddies for general emotional support, "
             "and with a professional warmline when the user is feeling significantly distressed. "
@@ -128,7 +128,7 @@ class OrchestratorAgent:
                 "status": "general_inquiry",
                 "analysis": analysis.model_dump(),
                 "response": (
-                    "Hello! I'm MATCH, a peer-support platform. I'm here to connect you with "
+                    "Hello! I'm MySupportBuddy, a peer-support platform. I'm here to connect you with "
                     "accredited support buddies or a professional warmline whenever you need someone to talk to. "
                     "Feel free to share what's on your mind."
                 ),

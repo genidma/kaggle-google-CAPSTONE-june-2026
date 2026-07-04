@@ -10,7 +10,7 @@ from agents.orchestrator import OrchestratorAgent
 from agents.search_agent import ServiceSearchAgent
 
 app = FastAPI(
-    title="MATCH - Peer Support & Crisis Resource API",
+    title="MySupportBuddy - Peer Support & Crisis Resource API",
     description="Routes users to accredited peer support buddies or the general warmline, with privacy-protected buddy notifications.",
     version="2.0.0"
 )
@@ -92,7 +92,7 @@ if os.path.exists(static_dir):
 else:
     @app.get("/")
     async def root():
-        return {"message": "MATCH API running. Static frontend not found."}
+        return {"message": "MySupportBuddy API running. Static frontend not found."}
 
 
 if __name__ == "__main__":
