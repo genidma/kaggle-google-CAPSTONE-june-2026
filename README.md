@@ -1,14 +1,14 @@
-# MATCH — Peer Support & Crisis Resource Platform
+# MySupportBuddy — Peer Support & Crisis Resource Platform
 
 > **✅ Project Verified:** Setup and structure validated in Gemini CLI environment.
 
-**MATCH** is an AI-powered peer support platform that connects individuals with **accredited, vetted peer support buddies** for warm, judgment-free conversations — and provides a direct link to a **General Support Warmline** when professional support is needed.
+**MySupportBuddy** is an AI-powered peer support platform that connects individuals with **accredited, vetted peer support buddies** for warm, judgment-free conversations — and provides a direct link to a **General Support Warmline** when professional support is needed.
 
-Developed for the **Google & Kaggle AI Agents Capstone**, MATCH demonstrates a responsible, privacy-first multi-agent architecture built around human wellbeing.
+Developed for the **Google & Kaggle AI Agents Capstone**, MySupportBuddy demonstrates a responsible, privacy-first multi-agent architecture built around human wellbeing.
 
 ---
 
-## 💡 What MATCH Does
+## 💡 What MySupportBuddy Does
 
 1. **Talk to an Accredited Buddy**: Users can reach out to a certified, vetted peer support buddy at any time. Buddies are real people who have passed certification and vetting requirements before appearing on the platform.
 
@@ -73,7 +73,8 @@ graph TD
 ├── requirements.txt
 ├── Dockerfile
 ├── docker-compose.yml
-└── .env.example
+├── .env.example
+└── README.md
 ```
 
 ---
@@ -118,23 +119,22 @@ gcloud auth login
 gcloud config set project YOUR_GCP_PROJECT_ID
 
 # Deploy from source
-gcloud run deploy match-peer-support \
+gcloud run deploy mysupportbuddy \
     --source . \
     --platform managed \
     --region us-central1 \
     --allow-unauthenticated \
-    --set-env-vars="GEMINI_MODEL=gemini-2.5-flash"
-
-# Store your API key securely using Secret Manager
-gcloud secrets create gemini-api-key --data-file=".env"
+    --set-env-vars="GEMINI_MODEL=gemini-2.5-flash" \
+    --set-secrets="GEMINI_API_KEY=gemini-api-key:latest"
 ```
 
 ---
 
-## 🔒 Privacy Design Principles
+## 🔒 Privacy Design & Database Principles
 
+- **Cloud Firestore Native Integration**: Authentications are persistent and securely processed using PBKDF2 SHA-256 password hashing.
 - **Content is never stored**: Warmline call transcripts are discarded. Only metadata (time, duration) is retained in-session for the buddy notification.
-- **No hardcoded secrets**: All API keys are loaded from environment variables or user-provided settings.
+- **No hardcoded secrets**: All API keys are loaded from environment variables (e.g. Secret Manager) or user-provided settings.
 - **Buddy boundary**: The buddy view shows only the notification card — never the conversation.
 
 ---
