@@ -48,6 +48,7 @@ class UserChangePasswordRequest(BaseModel):
     email: str
     current_password: str
     new_password: str
+    confirm_new_password: str
 
 class UserProfile(BaseModel):
     id: str
@@ -147,6 +148,9 @@ async def change_password(payload: UserChangePasswordRequest):
 
     if not verify_password(user_data["password"], payload.current_password):
         raise HTTPException(status_code=401, detail="Invalid current password")
+
+    if payload.new_password != payload.confirm_new_password:
+        raise HTTPException(status_code=400, detail="New passwords do not match")
 
     new_hash = hash_password(payload.new_password)
     try:

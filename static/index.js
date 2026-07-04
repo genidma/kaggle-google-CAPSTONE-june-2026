@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const changePasswordForm       = document.getElementById("changePasswordForm");
   const changeCurrentPassword    = document.getElementById("changeCurrentPassword");
   const changeNewPassword        = document.getElementById("changeNewPassword");
+  const changeConfirmPassword    = document.getElementById("changeConfirmPassword");
   const btnChangePasswordSubmit  = document.getElementById("btnChangePasswordSubmit");
   const changePasswordError      = document.getElementById("changePasswordError");
   const changePasswordSuccess    = document.getElementById("changePasswordSuccess");
@@ -220,9 +221,17 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const currentPassword = changeCurrentPassword.value;
     const newPassword = changeNewPassword.value;
+    const confirmPassword = changeConfirmPassword.value;
 
     changePasswordError.classList.add("hidden");
     changePasswordSuccess.classList.add("hidden");
+
+    if (newPassword !== confirmPassword) {
+      changePasswordError.textContent = "New passwords do not match";
+      changePasswordError.classList.remove("hidden");
+      return;
+    }
+
     btnChangePasswordSubmit.disabled = true;
     btnChangePasswordSubmit.textContent = "Updating...";
 
@@ -233,7 +242,8 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({
           email: currentUser.email,
           current_password: currentPassword,
-          new_password: newPassword
+          new_password: newPassword,
+          confirm_new_password: confirmPassword
         })
       });
 
@@ -246,6 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
       changePasswordSuccess.classList.remove("hidden");
       changeCurrentPassword.value = "";
       changeNewPassword.value = "";
+      changeConfirmPassword.value = "";
     } catch (err) {
       changePasswordError.textContent = err.message;
       changePasswordError.classList.remove("hidden");
