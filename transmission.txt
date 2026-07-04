@@ -23,3 +23,5 @@
   However, you don't need to specify it manually: the prompt tells Antigravity to deploy to your active GCP project, which it
   will automatically detect using:
    gcloud config get-value project
+
+git ignore test (manual)
