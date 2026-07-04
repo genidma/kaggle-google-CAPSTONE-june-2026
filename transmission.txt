@@ -24,4 +24,3 @@
   will automatically detect using:
    gcloud config get-value project
 
-git ignore test (manual)
