@@ -44,6 +44,11 @@ class UserAuthRequest(BaseModel):
     email: str
     password: str
 
+class UserChangePasswordRequest(BaseModel):
+    email: str
+    current_password: str
+    new_password: str
+
 class UserProfile(BaseModel):
     id: str
     email: str
@@ -124,6 +129,32 @@ async def get_profile(user_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@app.post("/api/auth/change-password")
+async def change_password(payload: UserChangePasswordRequest):
+    email_normalized = payload.email.lower().strip()
+    user_ref = db.collection("users").document(email_normalized)
+    try:
+        user_doc = user_ref.get()
+        if not user_doc.exists:
+            raise HTTPException(status_code=404, detail="User not found")
+        user_data = user_doc.to_dict()
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+    if not verify_password(user_data["password"], payload.current_password):
+        raise HTTPException(status_code=401, detail="Invalid current password")
+
+    new_hash = hash_password(payload.new_password)
+    try:
+        user_ref.update({"password": new_hash})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+    return {"status": "success", "message": "Password changed successfully"}
 
 
 @app.post("/api/support")

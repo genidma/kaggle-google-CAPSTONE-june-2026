@@ -32,6 +32,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const profileEmail   = document.getElementById("profileEmail");
   const profileTier    = document.getElementById("profileTier");
 
+  // Profile Settings
+  const settingSounds            = document.getElementById("settingSounds");
+  const settingAlerts            = document.getElementById("settingAlerts");
+  const changePasswordForm       = document.getElementById("changePasswordForm");
+  const changeCurrentPassword    = document.getElementById("changeCurrentPassword");
+  const changeNewPassword        = document.getElementById("changeNewPassword");
+  const btnChangePasswordSubmit  = document.getElementById("btnChangePasswordSubmit");
+  const changePasswordError      = document.getElementById("changePasswordError");
+  const changePasswordSuccess    = document.getElementById("changePasswordSuccess");
+
   const responseText     = document.getElementById("responseText");
   const buddySection     = document.getElementById("buddySection");
   const buddyGrid        = document.getElementById("buddyGrid");
@@ -187,6 +197,62 @@ document.addEventListener("DOMContentLoaded", () => {
     updateAuthUI();
     toast("Logged out");
     show(welcomeView);
+  });
+
+  // Initialize general settings checkboxes
+  const soundsEnabled = localStorage.getItem("setting_sounds") === "true";
+  settingSounds.checked = soundsEnabled;
+  const alertsEnabled = localStorage.getItem("setting_alerts") === "true";
+  settingAlerts.checked = alertsEnabled;
+
+  settingSounds.addEventListener("change", () => {
+    localStorage.setItem("setting_sounds", settingSounds.checked);
+    toast(settingSounds.checked ? "Notification sounds enabled ✓" : "Notification sounds disabled");
+  });
+
+  settingAlerts.addEventListener("change", () => {
+    localStorage.setItem("setting_alerts", settingAlerts.checked);
+    toast(settingAlerts.checked ? "Background alerts enabled ✓" : "Background alerts disabled");
+  });
+
+  // Change Password submit handler
+  changePasswordForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const currentPassword = changeCurrentPassword.value;
+    const newPassword = changeNewPassword.value;
+
+    changePasswordError.classList.add("hidden");
+    changePasswordSuccess.classList.add("hidden");
+    btnChangePasswordSubmit.disabled = true;
+    btnChangePasswordSubmit.textContent = "Updating...";
+
+    try {
+      const res = await fetch("/api/auth/change-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: currentUser.email,
+          current_password: currentPassword,
+          new_password: newPassword
+        })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "Failed to update password");
+      }
+
+      changePasswordSuccess.textContent = "Password updated successfully ✓";
+      changePasswordSuccess.classList.remove("hidden");
+      changeCurrentPassword.value = "";
+      changeNewPassword.value = "";
+    } catch (err) {
+      changePasswordError.textContent = err.message;
+      changePasswordError.classList.remove("hidden");
+    } finally {
+      btnChangePasswordSubmit.disabled = false;
+      btnChangePasswordSubmit.textContent = "Change Password";
+    }
   });
 
   updateAuthUI();

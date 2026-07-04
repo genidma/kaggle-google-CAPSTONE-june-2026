@@ -205,15 +205,52 @@
         <div class="profile-tier" id="profileTier">Standard Member</div>
       </div>
     </div>
-    <div class="settings-list">
-      <div class="setting-item">
-        <div class="setting-label"><span class="setting-icon">🔔</span> Notifications</div>
-        <span style="color: var(--text-3); font-size: 0.8rem;">Coming Soon</span>
+    <div class="settings-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
+      
+      <!-- General Settings -->
+      <div class="glass-card" style="padding: 1.25rem;">
+        <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: var(--teal); display: flex; align-items: center; gap: 0.5rem;">
+          ⚙️ General Settings
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
+            <input type="checkbox" id="settingSounds" style="accent-color: var(--teal); width: 1.1rem; height: 1.1rem;">
+            Notification Sounds
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.9rem;">
+            <input type="checkbox" id="settingAlerts" style="accent-color: var(--teal); width: 1.1rem; height: 1.1rem;">
+            Background Alerts
+          </label>
+        </div>
       </div>
-      <div class="setting-item" id="btnLogout">
+
+      <!-- Account Settings (Change Password) -->
+      <div class="glass-card" style="padding: 1.25rem;">
+        <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: var(--teal); display: flex; align-items: center; gap: 0.5rem;">
+          🔑 Account Security
+        </h3>
+        <form id="changePasswordForm" style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div id="changePasswordError" class="hidden" style="color: var(--rose); background: var(--rose-bg); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;"></div>
+          <div id="changePasswordSuccess" class="hidden" style="color: var(--teal); background: rgba(45,212,191,0.1); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;"></div>
+          
+          <div>
+            <label for="changeCurrentPassword" style="display: block; font-size: 0.75rem; margin-bottom: 0.3rem; color: var(--text-2); font-weight: 700; text-transform: uppercase;">Current Password</label>
+            <input type="password" id="changeCurrentPassword" class="glass-input" placeholder="••••••••" required style="width: 100%; font-size: 0.85rem; padding: 0.5rem 0.75rem; margin-bottom: 0;">
+          </div>
+          <div>
+            <label for="changeNewPassword" style="display: block; font-size: 0.75rem; margin-bottom: 0.3rem; color: var(--text-2); font-weight: 700; text-transform: uppercase;">New Password</label>
+            <input type="password" id="changeNewPassword" class="glass-input" placeholder="••••••••" required style="width: 100%; font-size: 0.85rem; padding: 0.5rem 0.75rem; margin-bottom: 0;">
+          </div>
+          <button type="submit" id="btnChangePasswordSubmit" class="btn btn-primary" style="padding: 0.6rem 1rem; font-size: 0.85rem; align-self: flex-start; margin-top: 0.25rem;">Change Password</button>
+        </form>
+      </div>
+
+      <!-- Logout -->
+      <div class="setting-item" id="btnLogout" style="margin-top: 0.5rem;">
         <div class="setting-label"><span class="setting-icon">🚪</span> Logout</div>
         <span style="color: var(--text-3);">→</span>
       </div>
+
     </div>
     <div style="margin-top: 2rem; text-align: center;">
       <button id="btnProfileBack" class="btn btn-ghost">← Back to Dashboard</button>
@@ -275,6 +312,6 @@
   </div>
 </dialog>
 
-<script src="index.js?v=2.2.1"></script>
+<script src="index.js?v=2.3.0"></script>
 </body>
 </html>
