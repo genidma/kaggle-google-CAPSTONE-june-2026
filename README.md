@@ -106,7 +106,18 @@ Open **http://localhost:8080** in your browser.
 ### Option B: Docker
 
 ```bash
-docker-compose up --build
+# 1. Build and run containers in the background (detached mode)
+docker-compose up -d --build
+
+# 2. Check container status
+docker-compose ps
+# Or list all containers: docker ps -a
+
+# 3. Stream live application logs
+docker-compose logs -f
+
+# 4. Stop and remove containers
+docker-compose down
 ```
 
 ---
