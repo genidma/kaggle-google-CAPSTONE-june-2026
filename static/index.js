@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setAuthMode(signup) {
     isSignUpMode = signup;
-    authTitle.textContent = isSignUpMode ? "Create a MATCH Account" : "Login to MATCH";
+    authTitle.textContent = isSignUpMode ? "Create a MySupportBuddy Account" : "Login to MySupportBuddy";
     authSubmit.textContent = isSignUpMode ? "Begin Journey" : "Login";
     authToggleText.innerHTML = isSignUpMode 
       ? `Already have an account? <span id="authToggleLink" class="auth-link">Login</span>`
