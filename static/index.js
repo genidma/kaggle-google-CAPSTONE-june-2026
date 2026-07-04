@@ -407,28 +407,31 @@ document.addEventListener("DOMContentLoaded", () => {
   ============================================================ */
   function createBuddyCard(buddy) {
     const card = document.createElement("div");
-    card.className = "buddy-card";
+    card.className = "bg-card border border-border rounded-xl p-5 flex flex-col gap-4 shadow-sm hover:border-primary transition-all duration-200";
 
     const isOnline = buddy.availability?.toLowerCase() === "online";
-    const chipClass = isOnline ? "online" : "offline";
+    const chipClass = isOnline ? "bg-primary/15 text-primary border border-primary/20" : "bg-surface text-text-muted border border-border";
     const specialtyTags = (buddy.specialties || [])
-      .map(s => `<span class="specialty-tag">${s}</span>`)
+      .map(s => `<span class="bg-surface text-text-main px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide">${s}</span>`)
       .join("");
 
     card.innerHTML = `
-      <div class="buddy-card-top">
-        <div>
-          <div class="buddy-name">${buddy.name}</div>
-          <div class="buddy-cert">${buddy.certification}</div>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center text-xl">👤</div>
+          <div>
+            <div class="font-display font-bold text-sm text-text-main">${buddy.name}</div>
+            <div class="text-[10px] text-text-muted">${buddy.certification}</div>
+          </div>
         </div>
-        <span class="availability-chip ${chipClass}">${buddy.availability}</span>
+        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${chipClass}">${buddy.availability}</span>
       </div>
-      <p class="buddy-bio">${buddy.bio}</p>
-      <div class="buddy-specialties">${specialtyTags}</div>
-      <div class="buddy-footer">
-        <span class="buddy-lang">🌐 ${(buddy.languages || []).join(", ")}</span>
+      <p class="text-xs text-text-main/90 leading-relaxed">${buddy.bio}</p>
+      <div class="flex flex-wrap gap-1.5">${specialtyTags}</div>
+      <div class="flex items-center justify-between border-t border-border/40 pt-3 mt-1">
+        <span class="text-[10px] text-text-muted">🌐 ${(buddy.languages || []).join(", ")}</span>
         <button
-          class="btn btn-connect"
+          class="px-3 py-1.5 bg-primary text-white hover:brightness-110 font-bold rounded-lg text-xs transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed btn-connect"
           data-buddy-id="${buddy.id}"
           data-buddy-name="${buddy.name}"
           ${!isOnline ? "disabled title='Buddy is offline'" : ""}
