@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("MySupportBuddy UI loaded successfully!");
 
   /* ---- DOM References ---- */
   const welcomeView  = document.getElementById("welcomeView");
