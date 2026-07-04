@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnBack      = document.getElementById("btnBack");
 
   const btnAuth        = document.getElementById("btnAuth");
+  const btnSignUp      = document.getElementById("btnSignUp");
   const btnProfile     = document.getElementById("btnProfile");
   const btnProfileBack = document.getElementById("btnProfileBack");
   const btnLogout      = document.getElementById("btnLogout");
@@ -104,28 +105,43 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateAuthUI() {
     if (currentUser) {
       btnAuth.classList.add("hidden");
+      btnSignUp.classList.add("hidden");
       btnProfile.classList.remove("hidden");
       profileEmail.textContent = currentUser.email;
       profileTier.textContent = `${currentUser.tier} Member`;
     } else {
       btnAuth.classList.remove("hidden");
+      btnSignUp.classList.remove("hidden");
       btnProfile.classList.add("hidden");
     }
+  }
+
+  function setAuthMode(signup) {
+    isSignUpMode = signup;
+    authTitle.textContent = isSignUpMode ? "Create a MATCH Account" : "Login to MATCH";
+    authSubmit.textContent = isSignUpMode ? "Begin Journey" : "Login";
+    authToggleText.innerHTML = isSignUpMode 
+      ? `Already have an account? <span id="authToggleLink" class="auth-link">Login</span>`
+      : `First time here? <span id="authToggleLink" class="auth-link">Create Account</span>`;
   }
 
   // Use event delegation for auth toggle to handle dynamic content
   authView.addEventListener("click", (e) => {
     if (e.target.id === "authToggleLink") {
-      isSignUpMode = !isSignUpMode;
-      authTitle.textContent = isSignUpMode ? "Create a MATCH Account" : "Login to MATCH";
-      authSubmit.textContent = isSignUpMode ? "Begin Journey" : "Login";
-      authToggleText.innerHTML = isSignUpMode 
-        ? `Already have an account? <span id="authToggleLink" class="auth-link">Login</span>`
-        : `First time here? <span id="authToggleLink" class="auth-link">Create Account</span>`;
+      setAuthMode(!isSignUpMode);
     }
   });
 
-  btnAuth.addEventListener("click", () => show(authView));
+  btnAuth.addEventListener("click", () => {
+    setAuthMode(false);
+    show(authView);
+  });
+
+  btnSignUp.addEventListener("click", () => {
+    setAuthMode(true);
+    show(authView);
+  });
+
   btnProfile.addEventListener("click", () => show(profileView));
   btnProfileBack.addEventListener("click", () => show(welcomeView));
 
