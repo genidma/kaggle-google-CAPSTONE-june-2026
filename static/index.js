@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const profileView  = document.getElementById("profileView");
   const inputBar     = document.getElementById("inputBar");
   const loadingLabel = document.getElementById("loadingLabel");
+  const connectButton = document.getElementById("connectButton");
 
   const supportForm  = document.getElementById("supportForm");
   const msgInput     = document.getElementById("msgInput");
@@ -299,6 +300,11 @@ document.addEventListener("DOMContentLoaded", () => {
       msgInput.value = chip.dataset.msg;
       msgInput.focus();
     });
+  });
+
+  connectButton.addEventListener("click", () => {
+    msgInput.value = "I need to talk to someone.";
+    msgInput.focus();
   });
 
   /* ============================================================
