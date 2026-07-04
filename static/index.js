@@ -4,11 +4,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const welcomeView  = document.getElementById("welcomeView");
   const loadingView  = document.getElementById("loadingView");
   const resultsView  = document.getElementById("resultsView");
+  const authView     = document.getElementById("authView");
+  const profileView  = document.getElementById("profileView");
+  const inputBar     = document.getElementById("inputBar");
   const loadingLabel = document.getElementById("loadingLabel");
 
   const supportForm  = document.getElementById("supportForm");
   const msgInput     = document.getElementById("msgInput");
   const btnBack      = document.getElementById("btnBack");
+
+  const btnAuth        = document.getElementById("btnAuth");
+  const btnProfile     = document.getElementById("btnProfile");
+  const btnProfileBack = document.getElementById("btnProfileBack");
+  const btnLogout      = document.getElementById("btnLogout");
+  
+  const authForm       = document.getElementById("authForm");
+  const authEmail      = document.getElementById("authEmail");
+  const authPassword   = document.getElementById("authPassword");
+  const authTitle      = document.getElementById("authTitle");
+  const authSubmit     = document.getElementById("btnAuthSubmit");
+  const authToggleLink = document.getElementById("authToggleLink");
+  const authToggleText = document.getElementById("authToggleText");
+  const authError      = document.getElementById("authError");
+
+  const profileEmail   = document.getElementById("profileEmail");
+  const profileTier    = document.getElementById("profileTier");
 
   const responseText     = document.getElementById("responseText");
   const buddySection     = document.getElementById("buddySection");
@@ -51,6 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let geminiApiKey = localStorage.getItem("gemini_api_key") || "";
   apiKeyInput.value = geminiApiKey;
 
+  let currentUser = JSON.parse(localStorage.getItem("match_user") || "null");
+  let isSignUpMode = false;
+
   let callIntervalId = null;
   let callStartTime  = null;
   let selectedBuddyId = null;  // buddy ID to notify after call
@@ -75,6 +98,81 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   [settingsDialog, crisisCallDialog, buddyViewDialog].forEach(addLightDismiss);
+
+  /* ---- Auth & Profile logic ---- */
+  function updateAuthUI() {
+    if (currentUser) {
+      btnAuth.classList.add("hidden");
+      btnProfile.classList.remove("hidden");
+      profileEmail.textContent = currentUser.email;
+      profileTier.textContent = `${currentUser.tier} Member`;
+    } else {
+      btnAuth.classList.remove("hidden");
+      btnProfile.classList.add("hidden");
+    }
+  }
+
+  // Use event delegation for auth toggle to handle dynamic content
+  authView.addEventListener("click", (e) => {
+    if (e.target.id === "authToggleLink") {
+      isSignUpMode = !isSignUpMode;
+      authTitle.textContent = isSignUpMode ? "Create a MATCH Account" : "Login to MATCH";
+      authSubmit.textContent = isSignUpMode ? "Begin Journey" : "Login";
+      authToggleText.innerHTML = isSignUpMode 
+        ? `Already have an account? <span id="authToggleLink" class="auth-link">Login</span>`
+        : `First time here? <span id="authToggleLink" class="auth-link">Create Account</span>`;
+    }
+  });
+
+  btnAuth.addEventListener("click", () => show(authView));
+  btnProfile.addEventListener("click", () => show(profileView));
+  btnProfileBack.addEventListener("click", () => show(welcomeView));
+
+  authForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = authEmail.value.trim();
+    const password = authPassword.value;
+
+    authError.classList.add("hidden");
+    authSubmit.disabled = true;
+    authSubmit.textContent = "Processing...";
+
+    try {
+      const endpoint = isSignUpMode ? "/api/auth/signup" : "/api/auth/login";
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.detail || "Authentication failed");
+      }
+
+      currentUser = await res.json();
+      localStorage.setItem("match_user", JSON.stringify(currentUser));
+      updateAuthUI();
+      toast(isSignUpMode ? "Account created! Welcome." : "Logged in successfully.");
+      show(welcomeView);
+    } catch (err) {
+      authError.textContent = err.message;
+      authError.classList.remove("hidden");
+    } finally {
+      authSubmit.disabled = false;
+      authSubmit.textContent = isSignUpMode ? "Begin Journey" : "Login";
+    }
+  });
+
+  btnLogout.addEventListener("click", () => {
+    currentUser = null;
+    localStorage.removeItem("match_user");
+    updateAuthUI();
+    toast("Logged out");
+    show(welcomeView);
+  });
+
+  updateAuthUI();
 
   /* ---- Settings dialog ---- */
   btnSettings.addEventListener("click",       () => openDialog(settingsDialog));
@@ -367,13 +465,23 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ============================================================
      VIEW SWITCHER
   ============================================================ */
-  const views = [welcomeView, loadingView, resultsView];
+  const views = [welcomeView, loadingView, resultsView, authView, profileView];
 
   function show(view) {
     views.forEach(v => {
       if (v === view) { v.classList.remove("hidden"); }
       else            { v.classList.add("hidden"); }
     });
+
+    // Hide main layout and input bar if we're in Auth or Profile views
+    const isMainView = [welcomeView, loadingView, resultsView].includes(view);
+    if (isMainView) {
+      document.querySelector(".main-layout").classList.remove("hidden");
+      inputBar.classList.remove("hidden");
+    } else {
+      document.querySelector(".main-layout").classList.add("hidden");
+      inputBar.classList.add("hidden");
+    }
   }
 
   /* ============================================================

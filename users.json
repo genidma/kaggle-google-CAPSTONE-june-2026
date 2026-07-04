@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "email": "demo@example.com",
+      "password": "password123",
+      "tier": "Premium",
+      "id": "user_1"
+    },
+    {
+      "id": "8261ad8f-ce6d-43fc-b864-72c83bd0fb6d",
+      "email": "newuser@example.com",
+      "password": "securepassword",
+      "tier": "Standard"
+    }
+  ]
+}

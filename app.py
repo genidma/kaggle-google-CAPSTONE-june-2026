@@ -1,7 +1,10 @@
 import os
-from fastapi import FastAPI, HTTPException
+import json
+import uuid
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from typing import List, Optional
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,8 +15,30 @@ from agents.search_agent import ServiceSearchAgent
 app = FastAPI(
     title="MySupportBuddy - Peer Support & Crisis Resource API",
     description="Routes users to accredited peer support buddies or the general warmline, with privacy-protected buddy notifications.",
-    version="2.0.0"
+    version="2.1.0"
 )
+
+# User Database Persistence
+USERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.json")
+
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        return {"users": []}
+    with open(USERS_FILE, "r") as f:
+        return json.load(f)
+
+def save_users(data):
+    with open(USERS_FILE, "w") as f:
+        json.dump(data, f, indent=2)
+
+class UserAuthRequest(BaseModel):
+    email: str
+    password: str
+
+class UserProfile(BaseModel):
+    id: str
+    email: str
+    tier: str = "Standard"
 
 search_agent = ServiceSearchAgent()
 default_orchestrator = OrchestratorAgent(search_agent=search_agent)
@@ -28,6 +53,41 @@ class CrisisCallRequest(BaseModel):
     buddy_id: str
     duration_minutes: int
     timestamp: str
+
+
+@app.post("/api/auth/signup")
+async def signup(payload: UserAuthRequest):
+    data = load_users()
+    if any(u["email"] == payload.email for u in data["users"]):
+        raise HTTPException(status_code=400, detail="Email already in use")
+    
+    new_user = {
+        "id": str(uuid.uuid4()),
+        "email": payload.email,
+        "password": payload.password,
+        "tier": "Standard"
+    }
+    data["users"].append(new_user)
+    save_users(data)
+    return {"id": new_user["id"], "email": new_user["email"], "tier": new_user["tier"]}
+
+
+@app.post("/api/auth/login")
+async def login(payload: UserAuthRequest):
+    data = load_users()
+    user = next((u for u in data["users"] if u["email"] == payload.email and u["password"] == payload.password), None)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    return {"id": user["id"], "email": user["email"], "tier": user["tier"]}
+
+
+@app.get("/api/auth/profile/{user_id}")
+async def get_profile(user_id: str):
+    data = load_users()
+    user = next((u for u in data["users"] if u["id"] == user_id), None)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"id": user["id"], "email": user["email"], "tier": user["tier"]}
 
 
 @app.post("/api/support")

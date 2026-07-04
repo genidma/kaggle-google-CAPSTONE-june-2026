@@ -26,6 +26,8 @@
     <div class="header-controls">
       <button id="btnViewBuddy" class="btn btn-ghost">Buddy View</button>
       <button id="btnSettings" class="btn btn-outline">🔑 API Key</button>
+      <button id="btnProfile" class="btn btn-outline hidden">👤 Profile</button>
+      <button id="btnAuth" class="btn btn-primary">Login</button>
     </div>
   </header>
 
@@ -167,8 +169,58 @@
 
   </div>
 
+  <!-- CENTER PANEL VIEWS (AUTH/PROFILE) -->
+  <div id="authView" class="view auth-view hidden">
+    <div class="auth-header">
+      <span class="auth-logo">🤝</span>
+      <h1 class="brand-name">MATCH</h1>
+      <p class="brand-sub">Connect. Support. Anchor.</p>
+    </div>
+    <div class="glass-card auth-box">
+      <h2 id="authTitle">Login to MATCH</h2>
+      <div id="authError" class="hidden" style="color: var(--rose); background: var(--rose-bg); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-weight: 600; text-align: center;"></div>
+      <form id="authForm">
+        <div style="margin-bottom: 1rem;">
+          <label for="authEmail" style="display: block; font-size: 0.8rem; margin-bottom: 0.4rem; color: var(--text-2); font-weight: 700; text-transform: uppercase;">Email Address</label>
+          <input type="email" id="authEmail" class="glass-input" placeholder="you@example.com" required style="width: 100%; margin-bottom: 0;">
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label for="authPassword" style="display: block; font-size: 0.8rem; margin-bottom: 0.4rem; color: var(--text-2); font-weight: 700; text-transform: uppercase;">Password</label>
+          <input type="password" id="authPassword" class="glass-input" placeholder="••••••••" required style="width: 100%; margin-bottom: 0;">
+        </div>
+        <button type="submit" id="btnAuthSubmit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Login</button>
+      </form>
+    </div>
+    <div class="auth-footer">
+      <p id="authToggleText">First time here? <span id="authToggleLink" class="auth-link">Create Account</span></p>
+    </div>
+  </div>
+
+  <div id="profileView" class="view profile-view hidden">
+    <div class="profile-header-card">
+      <div class="profile-avatar">👤</div>
+      <div class="profile-info">
+        <h2 id="profileEmail">User Email</h2>
+        <div class="profile-tier" id="profileTier">Standard Member</div>
+      </div>
+    </div>
+    <div class="settings-list">
+      <div class="setting-item">
+        <div class="setting-label"><span class="setting-icon">🔔</span> Notifications</div>
+        <span style="color: var(--text-3); font-size: 0.8rem;">Coming Soon</span>
+      </div>
+      <div class="setting-item" id="btnLogout">
+        <div class="setting-label"><span class="setting-icon">🚪</span> Logout</div>
+        <span style="color: var(--text-3);">→</span>
+      </div>
+    </div>
+    <div style="margin-top: 2rem; text-align: center;">
+      <button id="btnProfileBack" class="btn btn-ghost">← Back to Dashboard</button>
+    </div>
+  </div>
+
   <!-- BOTTOM INPUT BAR -->
-  <div class="input-bar">
+  <div class="input-bar" id="inputBar">
     <form id="supportForm">
       <textarea id="msgInput" placeholder="Share what's on your mind..." rows="2"></textarea>
       <button type="submit" class="btn btn-primary" id="btnSend">Send</button>
