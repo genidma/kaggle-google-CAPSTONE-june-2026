@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.detail || "Authentication failed");
+        throw new Error(getErrorMessage(errData, "Authentication failed"));
       }
 
       currentUser = await res.json();
@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.detail || "Failed to update password");
+        throw new Error(getErrorMessage(errData, "Failed to update password"));
       }
 
       changePasswordSuccess.textContent = "Password updated successfully ✓";
@@ -604,6 +604,17 @@ document.addEventListener("DOMContentLoaded", () => {
     t.textContent = msg;
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 3500);
+  }
+
+  function getErrorMessage(errData, defaultMsg) {
+    if (!errData || !errData.detail) return defaultMsg;
+    if (typeof errData.detail === "string") {
+      return errData.detail;
+    }
+    if (Array.isArray(errData.detail)) {
+      return errData.detail.map(d => `${d.loc.slice(1).join(".")}: ${d.msg}`).join("; ");
+    }
+    return JSON.stringify(errData.detail);
   }
 
 });
