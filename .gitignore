@@ -2,3 +2,6 @@
 __pycache__/
 *.pyc
 venv/
+transmission.txt
+transmission_log.txt
+transmission_notes.txt
