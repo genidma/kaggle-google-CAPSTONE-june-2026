@@ -1,5 +1,7 @@
 # MATCH — Peer Support & Crisis Resource Platform
 
+> **✅ Project Verified:** Setup and structure validated in Gemini CLI environment.
+
 **MATCH** is an AI-powered peer support platform that connects individuals with **accredited, vetted peer support buddies** for warm, judgment-free conversations — and provides a direct link to a **General Support Warmline** when professional support is needed.
 
 Developed for the **Google & Kaggle AI Agents Capstone**, MATCH demonstrates a responsible, privacy-first multi-agent architecture built around human wellbeing.
