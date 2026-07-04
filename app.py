@@ -1,11 +1,14 @@
 import os
 import json
 import uuid
+import hashlib
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional
 from dotenv import load_dotenv
+from google.cloud import firestore
+from google.cloud.firestore import FieldFilter
 
 load_dotenv()
 
@@ -15,21 +18,27 @@ from agents.search_agent import ServiceSearchAgent
 app = FastAPI(
     title="MySupportBuddy - Peer Support & Crisis Resource API",
     description="Routes users to accredited peer support buddies or the general warmline, with privacy-protected buddy notifications.",
-    version="2.1.0"
+    version="2.2.0"
 )
 
-# User Database Persistence
-USERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.json")
+# Initialize GCP Firestore Client
+db = firestore.Client()
 
-def load_users():
-    if not os.path.exists(USERS_FILE):
-        return {"users": []}
-    with open(USERS_FILE, "r") as f:
-        return json.load(f)
+def hash_password(password: str, salt: bytes = None) -> str:
+    if salt is None:
+        salt = os.urandom(16)
+    key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+    return salt.hex() + ":" + key.hex()
 
-def save_users(data):
-    with open(USERS_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+def verify_password(stored_password: str, provided_password: str) -> bool:
+    try:
+        salt_hex, key_hex = stored_password.split(":")
+        salt = bytes.fromhex(salt_hex)
+        key = bytes.fromhex(key_hex)
+        new_key = hashlib.pbkdf2_hmac('sha256', provided_password.encode('utf-8'), salt, 100000)
+        return new_key == key
+    except Exception:
+        return False
 
 class UserAuthRequest(BaseModel):
     email: str
@@ -57,37 +66,64 @@ class CrisisCallRequest(BaseModel):
 
 @app.post("/api/auth/signup")
 async def signup(payload: UserAuthRequest):
-    data = load_users()
-    if any(u["email"] == payload.email for u in data["users"]):
-        raise HTTPException(status_code=400, detail="Email already in use")
-    
+    email_normalized = payload.email.lower().strip()
+    user_ref = db.collection("users").document(email_normalized)
+    try:
+        user_doc = user_ref.get()
+        if user_doc.exists:
+            raise HTTPException(status_code=400, detail="Email already in use")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
     new_user = {
         "id": str(uuid.uuid4()),
-        "email": payload.email,
-        "password": payload.password,
+        "email": email_normalized,
+        "password": hash_password(payload.password),
         "tier": "Standard"
     }
-    data["users"].append(new_user)
-    save_users(data)
+    try:
+        user_ref.set(new_user)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create user: {str(e)}")
     return {"id": new_user["id"], "email": new_user["email"], "tier": new_user["tier"]}
 
 
 @app.post("/api/auth/login")
 async def login(payload: UserAuthRequest):
-    data = load_users()
-    user = next((u for u in data["users"] if u["email"] == payload.email and u["password"] == payload.password), None)
-    if not user:
+    email_normalized = payload.email.lower().strip()
+    user_ref = db.collection("users").document(email_normalized)
+    try:
+        user_doc = user_ref.get()
+        if not user_doc.exists:
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        user_data = user_doc.to_dict()
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+    if not verify_password(user_data["password"], payload.password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
-    return {"id": user["id"], "email": user["email"], "tier": user["tier"]}
+
+    return {"id": user_data["id"], "email": user_data["email"], "tier": user_data["tier"]}
 
 
 @app.get("/api/auth/profile/{user_id}")
 async def get_profile(user_id: str):
-    data = load_users()
-    user = next((u for u in data["users"] if u["id"] == user_id), None)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return {"id": user["id"], "email": user["email"], "tier": user["tier"]}
+    try:
+        users_ref = db.collection("users")
+        query = users_ref.where(filter=FieldFilter("id", "==", user_id)).limit(1)
+        docs = list(query.stream())
+        if not docs:
+            raise HTTPException(status_code=404, detail="User not found")
+        user_data = docs[0].to_dict()
+        return {"id": user_data["id"], "email": user_data["email"], "tier": user_data["tier"]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
 @app.post("/api/support")
