@@ -260,6 +260,8 @@ async def get_profile(user: dict = Depends(get_current_user)):
 @app.post("/api/auth/change-password")
 async def change_password(payload: UserChangePasswordRequest, user: dict = Depends(get_current_user)):
     email_normalized = user["email"]
+    if email_normalized.endswith("@test.com"):
+        raise HTTPException(status_code=403, detail="Security policy: Password modification is disabled for pre-seeded evaluator demo accounts.")
     user_ref = db.collection("users").document(email_normalized)
     try:
         user_doc = user_ref.get()

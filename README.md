@@ -32,6 +32,19 @@ MySupportBuddy enforces strict role-based access boundaries to protect human wel
 | **🩺 Clinician** | Secure **Clinician Triage Portal**. Reviews high-priority escalated triage cases, symptom reports, and diagnostic risk levels. | Bound by HIPAA confidentiality and clinical authorization. Roadmap includes TBI neuro-imaging scan analysis (#2). |
 | **🌟 Caregiver** | **Caregiver Wellness Portal**. Monitors high-level mood summaries and check-in statuses for family members. | Strict consent policy: access is dynamically gated by patient consent settings. |
 
+### 🧪 Sandbox Demo Accounts (For Evaluators & Testing)
+
+> [!NOTE]  
+> **🔒 Sandbox Security & Privacy Notice**  
+> To assist judges and evaluators in reviewing role-specific dashboards without friction, the application automatically seeds synthetic demo accounts on startup. **To protect evaluator testing sessions, password modification is programmatically disabled for all pre-seeded `@test.com` accounts.** Do not enter real personal or medical information into demo accounts.
+
+| Role Portal | Demo Email | Demo Password | Key Features to Explore |
+|---|---|---|---|
+| **👤 Patient** | `patient@test.com` | `password123` | AI Peer Support chat, interactive demo cards, Support Buddies roster, 24/7 Warmline timer, 30-day trash bin |
+| **🛡️ Support Buddy** | `buddy@test.com` | `password123` | **Buddy Care Dashboard**, assigned peer queue, supportive note logging, call logs without transcripts (**Do No Harm**) |
+| **🩺 Clinician** | `clinician@test.com` | `password123` | **Clinician Triage Portal**, high-risk escalated triage cases, TBI Neuro-Imaging scan analysis roadmap (#2) |
+| **🌟 Caregiver** | `caregiver@test.com` | `password123` | **Caregiver Wellness Portal**, consented patient check-in status summaries |
+
 ---
 
 ## 🤖 Multi-Agent Architecture
