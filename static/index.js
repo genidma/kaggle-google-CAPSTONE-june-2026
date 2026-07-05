@@ -18,6 +18,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const supportRosterSearch = document.getElementById("supportRosterSearch");
   const supportRosterFilters = document.getElementById("supportRosterFilters");
   const supportRosterGrid = document.getElementById("supportRosterGrid");
+  const buddyDetailView = document.getElementById("buddyDetailView");
+  const btnBackToDirectory = document.getElementById("btnBackToDirectory");
+  const detailAvatar = document.getElementById("detailAvatar");
+  const detailName = document.getElementById("detailName");
+  const detailPronouns = document.getElementById("detailPronouns");
+  const detailReplyTime = document.getElementById("detailReplyTime");
+  const detailStatConv = document.getElementById("detailStatConv");
+  const detailStatHours = document.getElementById("detailStatHours");
+  const detailStatMonths = document.getElementById("detailStatMonths");
+  const detailBio = document.getElementById("detailBio");
+  const detailQuote = document.getElementById("detailQuote");
+  const detailApproach = document.getElementById("detailApproach");
+  const detailSpecialties = document.getElementById("detailSpecialties");
+  const detailGroundingList = document.getElementById("detailGroundingList");
+  const btnDetailConnect = document.getElementById("btnDetailConnect");
+  const detailConnectLabel = document.getElementById("detailConnectLabel");
   const inputBar     = document.getElementById("inputBar");
   const loadingLabel = document.getElementById("loadingLabel");
   const connectButton = document.getElementById("connectButton");
@@ -590,6 +606,12 @@ document.addEventListener("DOMContentLoaded", () => {
     resetPipeline();
   });
 
+  if (btnBackToDirectory) {
+    btnBackToDirectory.addEventListener("click", () => {
+      show(supportBuddiesView);
+    });
+  }
+
   /* ============================================================
      SUPPORT FORM SUBMIT
   ============================================================ */
@@ -779,10 +801,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function openBuddyProfileModal(buddy) {
-    const dialog = document.getElementById("buddyProfileDialog");
-    const content = document.getElementById("buddyProfileContent");
-    if (!dialog || !content) return;
-
     const AVATAR_MAP = {
       "buddy_sarah": "https://lh3.googleusercontent.com/aida-public/AB6AXuBf9rx7Z6l90E-dEQNOHkY2L9MBL-BEWZw9xYFqtDLhTUanPJXcYsq_SLLQp9-1L7agsP9D6pvCfsF25EIMB8sho5heSobTuGewdesyf6K_uzKDkPhp26x65Vknl8xE2u16XPc-zYwemNefLq8_8SyOBx69qPDIcj74AKiDEKVdQf2pNm3Ng8qCXEIzvG7Pcyw7MEQZBDTInukBK_Or35fUL5P0HxZ7U78vldyRd_lanroKUI8Mphi4Rk2D0BVj6ymZiRXv4Y7oQoo",
       "buddy_marcus": "https://lh3.googleusercontent.com/aida-public/AB6AXuBdvQdfniU1Vpcb_4ItQ4Q7iEmayLdpGu2QM2ac42aVVTUk4F5jurHsQicYccjbw-9I2wqKvl6bala2o-VdHyNserH7iNv31E2IEf5i9swrW6aXnLP7P_PHIM6PpCF7NF-1d9bNmZv3qchnsHakgcPLcoMY4w6R1S9U_-TA56d3T5TNAXIt6HCScTqkLrQqCfhJ7Qh40Lm8d9CIixVyvTIIRaW-sfBsurNb5hQ5s9-S1HKS5luQr_mPnZ0xCTHiRQKATsA1Ynq74II",
@@ -792,63 +810,61 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     const avatarUrl = buddy.avatar || AVATAR_MAP[buddy.id] || "https://lh3.googleusercontent.com/aida-public/AB6AXuBf9rx7Z6l90E-dEQNOHkY2L9MBL-BEWZw9xYFqtDLhTUanPJXcYsq_SLLQp9-1L7agsP9D6pvCfsF25EIMB8sho5heSobTuGewdesyf6K_uzKDkPhp26x65Vknl8xE2u16XPc-zYwemNefLq8_8SyOBx69qPDIcj74AKiDEKVdQf2pNm3Ng8qCXEIzvG7Pcyw7MEQZBDTInukBK_Or35fUL5P0HxZ7U78vldyRd_lanroKUI8Mphi4Rk2D0BVj6ymZiRXv4Y7oQoo";
 
-    const isOnline = buddy.availability?.toLowerCase() === "online";
-    const statusText = isOnline ? "Available Now" : (buddy.availability || "Offline");
-    const chipClass = isOnline ? "bg-primary/15 text-primary border border-primary/20" : "bg-surface text-text-muted border border-border";
-    const specialtyTags = (buddy.specialties || [])
-      .map(s => `<span class="bg-surface text-text-main px-2.5 py-1 rounded-md text-xs font-bold tracking-wide">${s}</span>`)
-      .join("");
+    if (detailAvatar) detailAvatar.src = avatarUrl;
+    if (detailName) detailName.textContent = buddy.name || "Peer Buddy";
+    if (detailPronouns) detailPronouns.textContent = buddy.pronouns || "they/them";
+    if (detailReplyTime) detailReplyTime.textContent = buddy.reply_time || "Usually replies in 5m";
 
-    content.innerHTML = `
-      <div class="flex items-center justify-between border-b border-border/40 pb-3">
-        <h3 class="font-display font-bold text-lg text-text-main flex items-center gap-2">
-          <span>👤</span> Buddy Profile Details
-        </h3>
-        <button id="btnCloseBuddyProfile" class="text-text-muted hover:text-text-main">
-          <span class="material-symbols-outlined text-[20px]">close</span>
-        </button>
-      </div>
-      <div class="flex items-center gap-4 py-2">
-        <img class="w-14 h-14 rounded-full object-cover bg-surface border-2 border-primary/40 shadow-sm shrink-0" alt="${buddy.name} headshot" src="${avatarUrl}" />
-        <div>
-          <div class="font-display font-bold text-base text-text-main">${buddy.name}</div>
-          <div class="text-xs text-primary font-semibold">${buddy.certification}</div>
-          <div class="mt-1"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${chipClass}">${statusText}</span></div>
-        </div>
-      </div>
-      <div class="flex flex-col gap-1.5 bg-surface/50 p-3 rounded-xl border border-border/40">
-        <span class="text-xs font-bold text-text-muted uppercase tracking-wider">About Me</span>
-        <p class="text-xs text-text-main leading-relaxed">${buddy.bio || "Dedicated peer support buddy ready to assist you."}</p>
-      </div>
-      <div class="flex flex-col gap-1.5">
-        <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Specialties</span>
-        <div class="flex flex-wrap gap-1.5">${specialtyTags || '<span class="text-xs text-text-muted">General Peer Support</span>'}</div>
-      </div>
-      <div class="flex flex-col gap-1.5">
-        <span class="text-xs font-bold text-text-muted uppercase tracking-wider">Languages & Schedule</span>
-        <div class="text-xs text-text-main">🌐 Languages: ${(buddy.languages || []).join(", ") || "English"}</div>
-        <div class="text-xs text-text-muted">📅 Standard Availability: Mon-Fri, 9:00 AM - 5:00 PM (Local)</div>
-      </div>
-      <div class="flex items-center justify-end gap-2 border-t border-border/40 pt-4 mt-2">
-        <button id="btnDismissBuddyProfile" class="px-4 py-2 border border-border rounded-xl text-xs font-bold text-text-main hover:bg-surface transition-all">Close</button>
-        <button id="btnConnectFromProfile" class="px-4 py-2 bg-primary text-white font-bold rounded-xl text-xs hover:brightness-110 transition-all shadow-sm disabled:opacity-50" ${!isOnline ? "disabled title='Buddy is offline'" : ""}>
-          ${isOnline ? "Connect with Buddy" : "Currently Offline"}
-        </button>
-      </div>
-    `;
+    const stats = buddy.stats || { conversations: "300+", hours: "1.0k", months: "12" };
+    if (detailStatConv) detailStatConv.textContent = stats.conversations || "300+";
+    if (detailStatHours) detailStatHours.textContent = stats.hours || "1.0k";
+    if (detailStatMonths) detailStatMonths.textContent = stats.months || "12";
 
-    content.querySelector("#btnCloseBuddyProfile")?.addEventListener("click", () => dialog.close());
-    content.querySelector("#btnDismissBuddyProfile")?.addEventListener("click", () => dialog.close());
-    const connectBtn = content.querySelector("#btnConnectFromProfile");
-    if (isOnline && connectBtn) {
-      connectBtn.addEventListener("click", () => {
-        dialog.close();
-        selectedBuddyId = buddy.id;
-        startCrisisCall();
-      });
+    if (detailBio) detailBio.textContent = buddy.bio || "Certified peer specialist dedicated to active listening and empathetic support.";
+    if (detailQuote) detailQuote.textContent = `"${buddy.quote || 'In medicine, as in life, the most important thing you can give anyone is hope. — Doogie Howser, M.D.'}"`;
+    if (detailApproach) detailApproach.textContent = buddy.approach || "I listen quietly with empathy and gentle clarifying questions, providing a safe container for whatever you are feeling.";
+
+    if (detailSpecialties) {
+      const specialtyTags = (buddy.specialties || ["General Peer Support"])
+        .map(s => `<span class="bg-surface border border-border/60 text-text-main px-3 py-1 rounded-full text-xs font-bold tracking-wide">${s}</span>`)
+        .join("");
+      detailSpecialties.innerHTML = specialtyTags;
     }
 
-    dialog.showModal();
+    if (detailGroundingList) {
+      const exercises = buddy.grounding_exercises || [
+        "5-4-3-2-1 Sensory grounding technique",
+        "Box breathing (4-4-4-4 pace)",
+        "Mindful posture & breath awareness"
+      ];
+      detailGroundingList.innerHTML = exercises.map(ex => `
+        <li class="flex items-center gap-3 text-sm text-text-main">
+          <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary/15 text-primary font-bold text-xs">✓</span>
+          <span>${ex}</span>
+        </li>
+      `).join("");
+    }
+
+    const isOnline = buddy.availability?.toLowerCase() === "online";
+    if (btnDetailConnect) {
+      if (isOnline) {
+        btnDetailConnect.disabled = false;
+        btnDetailConnect.classList.remove("opacity-50", "cursor-not-allowed");
+        if (detailConnectLabel) detailConnectLabel.textContent = `Connect with ${buddy.name.split(" ")[0]}`;
+        btnDetailConnect.onclick = () => {
+          selectedBuddyId = buddy.id;
+          startCrisisCall();
+        };
+      } else {
+        btnDetailConnect.disabled = true;
+        btnDetailConnect.classList.add("opacity-50", "cursor-not-allowed");
+        if (detailConnectLabel) detailConnectLabel.textContent = "Currently Offline";
+        btnDetailConnect.onclick = null;
+      }
+    }
+
+    show(buddyDetailView);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   /* ============================================================
@@ -1078,7 +1094,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.doogie-quote-author').forEach(el => el.textContent = `— ${quote.author}`);
   }
 
-  const views = [welcomeView, loadingView, resultsView, authView, profileView, chatView, dashboardView, supportBuddiesView, buddyDashboardView, clinicianPortalView, caregiverPortalView];
+  const views = [welcomeView, loadingView, resultsView, authView, profileView, chatView, dashboardView, supportBuddiesView, buddyDetailView, buddyDashboardView, clinicianPortalView, caregiverPortalView];
 
   function show(view) {
     views.forEach(v => {
@@ -1089,7 +1105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateDoogieQuotes();
 
-    const isMainView = [welcomeView, loadingView, resultsView, chatView, dashboardView, supportBuddiesView, buddyDashboardView, clinicianPortalView, caregiverPortalView].includes(view);
+    const isMainView = [welcomeView, loadingView, resultsView, chatView, dashboardView, supportBuddiesView, buddyDetailView, buddyDashboardView, clinicianPortalView, caregiverPortalView].includes(view);
     if (isMainView) {
       document.querySelector(".main-layout").classList.remove("hidden");
       inputBar.classList.remove("hidden");

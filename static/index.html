@@ -296,6 +296,106 @@
           </div>
         </section>
 
+        <!-- 1.6. BUDDY PROFILE DETAIL VIEW (Google Stitch Full-Page Layout #5) -->
+        <section id="buddyDetailView" class="flex-1 flex flex-col w-full max-w-[1080px] mx-auto py-4 gap-8 hidden fade-in">
+          <!-- Back Navigation Bar -->
+          <div class="flex items-center justify-between border-b border-border/40 pb-4">
+            <button id="btnBackToDirectory" class="flex items-center gap-2 text-text-main hover:text-primary transition-colors group font-medium text-sm">
+              <span class="material-symbols-outlined transform group-hover:-translate-x-1 transition-transform">arrow_back</span>
+              <span>Back to Directory</span>
+            </button>
+            <span class="text-xs text-text-muted font-semibold tracking-wider uppercase">Accredited Peer Profile</span>
+          </div>
+
+          <!-- Main 2-Column Content -->
+          <div class="flex flex-col lg:flex-row gap-10 lg:gap-16 relative">
+            <!-- Left Column (40%) -->
+            <div class="lg:w-2/5 flex flex-col gap-8 lg:sticky lg:top-4 h-fit">
+              <!-- Avatar and Basic Info -->
+              <div class="flex flex-col items-center lg:items-start text-center lg:text-left gap-5">
+                <div class="w-44 h-44 rounded-full overflow-hidden bg-surface relative shadow-sm border-2 border-primary/20">
+                  <img id="detailAvatar" class="w-full h-full object-cover" src="" alt="Buddy Avatar"/>
+                </div>
+                <div class="space-y-1">
+                  <h1 id="detailName" class="font-display text-[36px] font-bold text-text-main leading-none">Buddy Name</h1>
+                  <p id="detailPronouns" class="text-text-muted text-sm font-medium">they/them</p>
+                </div>
+                <div class="flex flex-wrap justify-center lg:justify-start gap-2">
+                  <div class="flex items-center gap-2 px-5 py-1.5 bg-surface rounded-full border border-border/50">
+                    <span class="material-symbols-outlined text-primary text-[18px]">schedule</span>
+                    <span id="detailReplyTime" class="text-text-main text-xs font-semibold">Usually replies in 5m</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Stats Pills -->
+              <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
+                <div class="flex flex-col items-center justify-center w-[105px] h-[85px] bg-surface rounded-2xl gap-0.5 border border-border/40 shadow-sm transition-colors hover:bg-card duration-300">
+                  <span id="detailStatConv" class="font-display text-xl font-bold text-text-main">342</span>
+                  <span class="text-text-muted text-xs">Conversations</span>
+                </div>
+                <div class="flex flex-col items-center justify-center w-[105px] h-[85px] bg-surface rounded-2xl gap-0.5 border border-border/40 shadow-sm transition-colors hover:bg-card duration-300">
+                  <span id="detailStatHours" class="font-display text-xl font-bold text-text-main">1.2k</span>
+                  <span class="text-text-muted text-xs">Hours Listened</span>
+                </div>
+                <div class="flex flex-col items-center justify-center w-[105px] h-[85px] bg-surface rounded-2xl gap-0.5 border border-border/40 shadow-sm transition-colors hover:bg-card duration-300">
+                  <span id="detailStatMonths" class="font-display text-xl font-bold text-text-main">18</span>
+                  <span class="text-text-muted text-xs">Months Here</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column (60%) -->
+            <div class="lg:w-3/5 flex flex-col gap-6 pb-12">
+              <!-- Bio Block -->
+              <div class="bg-surface rounded-2xl p-6 sm:p-8 border border-border/40 shadow-sm transition-colors hover:bg-card duration-300">
+                <h2 class="font-display text-xl font-bold text-text-main mb-3 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary">energy_savings_leaf</span>
+                  Soft Vibe Bio
+                </h2>
+                <p id="detailBio" class="text-text-main/90 text-sm md:text-base leading-relaxed font-body">
+                  Empathetic listener specializing in anxiety management and community support.
+                </p>
+              </div>
+
+              <!-- Quote Block -->
+              <div class="bg-surface rounded-2xl p-6 sm:p-8 border border-border/40 shadow-sm transition-colors hover:bg-card duration-300">
+                <h3 class="text-text-muted text-xs font-bold mb-2 uppercase tracking-wider">A Quote I Return To</h3>
+                <p id="detailQuote" class="font-display text-lg md:text-xl text-text-main italic leading-relaxed">
+                  "In medicine, as in life, the most important thing you can give anyone is hope."
+                </p>
+              </div>
+
+              <!-- Approach & Specialties -->
+              <div class="bg-surface rounded-2xl p-6 sm:p-8 border border-border/40 shadow-sm transition-colors hover:bg-card duration-300">
+                <h3 class="text-text-muted text-xs font-bold mb-3 uppercase tracking-wider">My Approach to Listening</h3>
+                <p id="detailApproach" class="text-text-main/90 text-sm md:text-base leading-relaxed font-body mb-5">
+                  I tend to listen quietly and ask gentle clarifying questions. I view our time as a shared safe container.
+                </p>
+                <div id="detailSpecialties" class="flex flex-wrap gap-2 pt-2 border-t border-border/30">
+                  <!-- Dynamically inserted tags -->
+                </div>
+              </div>
+
+              <!-- Grounding Exercises -->
+              <div class="bg-surface rounded-2xl p-6 sm:p-8 border border-border/40 shadow-sm transition-colors hover:bg-card duration-300">
+                <h3 class="text-text-muted text-xs font-bold mb-3 uppercase tracking-wider">Favorite Grounding Exercises</h3>
+                <ul id="detailGroundingList" class="space-y-3">
+                  <!-- Dynamically inserted checkmark list -->
+                </ul>
+              </div>
+
+              <!-- Connect Action Bar -->
+              <div class="pt-4 flex justify-end">
+                <button id="btnDetailConnect" class="flex items-center justify-center overflow-hidden rounded-full h-14 px-8 bg-primary text-white text-base font-semibold min-w-[220px] gap-3 shadow-md hover:scale-105 transition-all duration-300 ease-out group">
+                  <span class="material-symbols-outlined group-hover:-rotate-12 transition-transform duration-300">chat_bubble</span>
+                  <span id="detailConnectLabel">Connect with Buddy</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- 2. LOADING STATE VIEW -->
         <section id="loadingView" class="flex-1 flex flex-col justify-center items-center py-20 hidden">
           <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
