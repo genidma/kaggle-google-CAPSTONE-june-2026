@@ -82,15 +82,14 @@ async def seed_database():
         base_dir = os.path.dirname(os.path.abspath(__file__))
         resources_path = os.path.join(base_dir, "data", "resources.json")
 
-        if not docs:
-            print("Seeding buddies to Firestore database...")
-            if os.path.exists(resources_path):
-                with open(resources_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                buddies = data.get("accredited_buddies", [])
-                for buddy in buddies:
-                    buddies_ref.document(buddy["id"]).set(buddy)
-                print(f"Successfully seeded {len(buddies)} buddies.")
+        print("Syncing buddies to Firestore database...")
+        if os.path.exists(resources_path):
+            with open(resources_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            buddies = data.get("accredited_buddies", [])
+            for buddy in buddies:
+                buddies_ref.document(buddy["id"]).set(buddy, merge=True)
+            print(f"Successfully synced {len(buddies)} buddies.")
 
         crisis_ref = db.collection("settings").document("crisis_line")
         if not crisis_ref.get().exists:

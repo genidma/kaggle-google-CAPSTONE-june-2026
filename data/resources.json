@@ -7,31 +7,54 @@
   },
   "accredited_buddies": [
     {
-      "id": "buddy_sarah",
-      "name": "Sarah Jenkins",
+      "id": "buddy_alex",
+      "name": "Alex M.",
       "certification": "Certified Peer Support Specialist",
-      "specialties": ["Work stress", "Loneliness", "Life transitions"],
+      "specialties": ["Anxiety", "LGBTQ+"],
       "languages": ["English"],
       "availability": "Online",
-      "bio": "Certified in active listening. Here to provide a supportive ear for daily stress and anxiety."
+      "bio": "Empathetic listener specializing in anxiety management and LGBTQ+ community support. Safe, judgment-free space.",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuDyW8KwNUWY77IGGVscaDo9h7xmpsGh9H-DhyNKIs744YXgy2PV6p3ep4Xg3nkNCYIP2-dZ5sjgIAyuAiw6JSiHTvsspgt9RVa7_Wh073Jm8TeWGIJLk7J795tEPuTmJTGLf21aYkpJfp1cr1IFkjGp2p-_xwvssF-_ydLsGUy8md1lzRADDYbD7Hjg4J8PtcwENLw4WbUY62o4WQTqN2WstuHqruj5VIEjob8FYCmobHkHhSdDxGU0jfU9_RSUNCifgc1Oq_GO7xU"
+    },
+    {
+      "id": "buddy_sarah",
+      "name": "Sarah J.",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": ["Crisis", "Trauma", "Anxiety"],
+      "languages": ["English"],
+      "availability": "Online",
+      "bio": "Certified in active listening. Here to provide a supportive ear for crisis de-escalation, trauma recovery, and daily stress.",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBf9rx7Z6l90E-dEQNOHkY2L9MBL-BEWZw9xYFqtDLhTUanPJXcYsq_SLLQp9-1L7agsP9D6pvCfsF25EIMB8sho5heSobTuGewdesyf6K_uzKDkPhp26x65Vknl8xE2u16XPc-zYwemNefLq8_8SyOBx69qPDIcj74AKiDEKVdQf2pNm3Ng8qCXEIzvG7Pcyw7MEQZBDTInukBK_Or35fUL5P0HxZ7U78vldyRd_lanroKUI8Mphi4Rk2D0BVj6ymZiRXv4Y7oQoo"
     },
     {
       "id": "buddy_marcus",
-      "name": "Marcus Chen",
+      "name": "Marcus T.",
       "certification": "Vetted Mental Health Buddy",
-      "specialties": ["Academic burnout", "Relationships", "Anxiety"],
+      "specialties": ["Veterans", "PTSD", "Anxiety"],
       "languages": ["English", "Mandarin"],
       "availability": "Online",
-      "bio": "Vetted peer buddy focusing on mindfulness, stress reduction, and academic-work balance."
+      "bio": "Vetted peer buddy and veteran support specialist focusing on mindfulness, stress reduction, and PTSD coping strategies.",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBdvQdfniU1Vpcb_4ItQ4Q7iEmayLdpGu2QM2ac42aVVTUk4F5jurHsQicYccjbw-9I2wqKvl6bala2o-VdHyNserH7iNv31E2IEf5i9swrW6aXnLP7P_PHIM6PpCF7NF-1d9bNmZv3qchnsHakgcPLcoMY4w6R1S9U_-TA56d3T5TNAXIt6HCScTqkLrQqCfhJ7Qh40Lm8d9CIixVyvTIIRaW-sfBsurNb5hQ5s9-S1HKS5luQr_mPnZ0xCTHiRQKATsA1Ynq74II"
     },
     {
       "id": "buddy_elena",
-      "name": "Elena Rodriguez",
+      "name": "Elena R.",
       "certification": "Certified Peer Specialist",
-      "specialties": ["Grief", "Family stress", "Loneliness"],
+      "specialties": ["Anxiety", "Depression", "Grief"],
       "languages": ["English", "Spanish"],
-      "availability": "Offline",
-      "bio": "Certified support buddy with experience in compassionate listening and family dynamic stressors."
+      "availability": "Online",
+      "bio": "Certified support buddy with compassionate experience navigating depression, anxiety, grief, and family dynamic stressors.",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCY2AeYR7cTA2WE28LN5Qp-geWh6IiHmBTRvLggOexvVoo-R6gUi2s95Tdze9UJqWpzokGOhTk2nOLBTUd2LJnSn1EMoWa26Icv4GF71nPZIfYkmoQakzM1Hv1YF9dl0_DUJppDbNaYL-lUZrdc8KWl6kyQca9AdjLVittQX8GwBqQSM5fgTAqIaAchlec6Y3jUiwtaVo-r3cz5WDOIZ9tSXLqokn9oNq80hiL4w3tr1doN_044TVjegN_9LreLKrR4rPJi5I0RVSA"
+    },
+    {
+      "id": "buddy_david",
+      "name": "David K.",
+      "certification": "Peer Recovery Specialist",
+      "specialties": ["Addiction", "Crisis"],
+      "languages": ["English"],
+      "availability": "In a Session",
+      "bio": "Dedicated peer recovery specialist with lived experience in addiction recovery and crisis listening. Here when you're ready.",
+      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBCRuOp-Z1wi5pGKy6m8GCVUonw1KcfFDl2HO0ksn4duDsBgaUQhVz2hI-qHBJpzr9i62_zK6JxJSEqIUIJUHUe0dro5diQLD1qmQB0HXROVWfRDoDnnl9bxQij2uPT0UISAK56dtGF6VYeRywk0n9mSajSz8Oe53XSqjYApv18xvc6GgXjZUAYkao1Y2QG5vbD2bkhVuSD5U0Fh34DGOte7FMkjhQ-p_CBbm1Q5YswhclgmWq_8rZ9FbJ5v0xALULz1i-XoiBYAU4"
     }
   ]
 }

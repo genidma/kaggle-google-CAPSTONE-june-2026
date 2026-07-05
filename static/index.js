@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const authView     = document.getElementById("authView");
   const profileView  = document.getElementById("profileView");
   const dashboardView = document.getElementById("dashboardView");
+  const supportBuddiesView = document.getElementById("supportBuddiesView");
+  const supportRosterSearch = document.getElementById("supportRosterSearch");
+  const supportRosterFilters = document.getElementById("supportRosterFilters");
+  const supportRosterGrid = document.getElementById("supportRosterGrid");
   const inputBar     = document.getElementById("inputBar");
   const loadingLabel = document.getElementById("loadingLabel");
   const connectButton = document.getElementById("connectButton");
@@ -316,15 +320,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---- Available Buddies Sidebar ---- */
   btnToggleSidebar.addEventListener("click", () => {
-    const isClosed = buddySidebar.classList.contains("hidden");
-    buddySidebar.classList.toggle("hidden");
-    if (isClosed && currentUser) {
-      fetchSidebarBuddies();
-    }
+    if (buddySidebar) buddySidebar.classList.add("hidden");
+    show(supportBuddiesView);
+    fetchSupportRoster();
   });
-  btnCloseBuddySidebar.addEventListener("click", () => {
-    buddySidebar.classList.add("hidden");
-  });
+  if (btnCloseBuddySidebar) {
+    btnCloseBuddySidebar.addEventListener("click", () => {
+      buddySidebar.classList.add("hidden");
+    });
+  }
 
   /* ============================================================
      PROMPT CHIPS & DEMO CARDS (Phase 4.2)
@@ -369,17 +373,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   if (mobNavBuddies) {
-    mobNavBuddies.addEventListener("click", async () => {
-      buddySidebar.classList.remove("hidden");
-      try {
-        const res = await fetch("/api/buddies");
-        if (res.ok) {
-          const data = await res.json();
-          renderAvailableBuddies(data.buddies || []);
-        }
-      } catch (e) {
-        console.error("Failed to load buddies for mobile nav:", e);
-      }
+    mobNavBuddies.addEventListener("click", () => {
+      if (buddySidebar) buddySidebar.classList.add("hidden");
+      show(supportBuddiesView);
+      fetchSupportRoster();
     });
   }
   if (mobNavProfile) {
@@ -532,46 +529,56 @@ document.addEventListener("DOMContentLoaded", () => {
      BUDDY CARD FACTORY
   ============================================================ */
   function createBuddyCard(buddy) {
-    const card = document.createElement("div");
-    card.className = "bg-card border border-border rounded-xl p-5 flex flex-col gap-4 shadow-sm hover:border-primary transition-all duration-200";
+    const card = document.createElement("article");
+    card.className = "bg-card rounded-xl border border-border p-5 flex flex-col gap-5 hover:border-primary hover:-translate-y-0.5 transition-all duration-200 shadow-sm min-w-[280px]";
+
+    const AVATAR_MAP = {
+      "buddy_sarah": "https://lh3.googleusercontent.com/aida-public/AB6AXuBf9rx7Z6l90E-dEQNOHkY2L9MBL-BEWZw9xYFqtDLhTUanPJXcYsq_SLLQp9-1L7agsP9D6pvCfsF25EIMB8sho5heSobTuGewdesyf6K_uzKDkPhp26x65Vknl8xE2u16XPc-zYwemNefLq8_8SyOBx69qPDIcj74AKiDEKVdQf2pNm3Ng8qCXEIzvG7Pcyw7MEQZBDTInukBK_Or35fUL5P0HxZ7U78vldyRd_lanroKUI8Mphi4Rk2D0BVj6ymZiRXv4Y7oQoo",
+      "buddy_marcus": "https://lh3.googleusercontent.com/aida-public/AB6AXuBdvQdfniU1Vpcb_4ItQ4Q7iEmayLdpGu2QM2ac42aVVTUk4F5jurHsQicYccjbw-9I2wqKvl6bala2o-VdHyNserH7iNv31E2IEf5i9swrW6aXnLP7P_PHIM6PpCF7NF-1d9bNmZv3qchnsHakgcPLcoMY4w6R1S9U_-TA56d3T5TNAXIt6HCScTqkLrQqCfhJ7Qh40Lm8d9CIixVyvTIIRaW-sfBsurNb5hQ5s9-S1HKS5luQr_mPnZ0xCTHiRQKATsA1Ynq74II",
+      "buddy_elena": "https://lh3.googleusercontent.com/aida-public/AB6AXuCY2AeYR7cTA2WE28LN5Qp-geWh6IiHmBTRvLggOexvVoo-R6gUi2s95Tdze9UJqWpzokGOhTk2nOLBTUd2LJnSn1EMoWa26Icv4GF71nPZIfYkmoQakzM1Hv1YF9dl0_DUJppDbNaYL-lUZrdc8KWl6kyQca9AdjLVittQX8GwBqQSM5fgTAqIaAchlec6Y3jUiwtaVo-r3cz5WDOIZ9tSXLqokn9oNq80hiL4w3tr1doN_044TVjegN_9LreLKrR4rPJi5I0RVSA",
+      "buddy_alex": "https://lh3.googleusercontent.com/aida-public/AB6AXuDyW8KwNUWY77IGGVscaDo9h7xmpsGh9H-DhyNKIs744YXgy2PV6p3ep4Xg3nkNCYIP2-dZ5sjgIAyuAiw6JSiHTvsspgt9RVa7_Wh073Jm8TeWGIJLk7J795tEPuTmJTGLf21aYkpJfp1cr1IFkjGp2p-_xwvssF-_ydLsGUy8md1lzRADDYbD7Hjg4J8PtcwENLw4WbUY62o4WQTqN2WstuHqruj5VIEjob8FYCmobHkHhSdDxGU0jfU9_RSUNCifgc1Oq_GO7xU",
+      "buddy_david": "https://lh3.googleusercontent.com/aida-public/AB6AXuBCRuOp-Z1wi5pGKy6m8GCVUonw1KcfFDl2HO0ksn4duDsBgaUQhVz2hI-qHBJpzr9i62_zK6JxJSEqIUIJUHUe0dro5diQLD1qmQB0HXROVWfRDoDnnl9bxQij2uPT0UISAK56dtGF6VYeRywk0n9mSajSz8Oe53XSqjYApv18xvc6GgXjZUAYkao1Y2QG5vbD2bkhVuSD5U0Fh34DGOte7FMkjhQ-p_CBbm1Q5YswhclgmWq_8rZ9FbJ5v0xALULz1i-XoiBYAU4"
+    };
+    const avatarUrl = buddy.avatar || AVATAR_MAP[buddy.id] || "https://lh3.googleusercontent.com/aida-public/AB6AXuBf9rx7Z6l90E-dEQNOHkY2L9MBL-BEWZw9xYFqtDLhTUanPJXcYsq_SLLQp9-1L7agsP9D6pvCfsF25EIMB8sho5heSobTuGewdesyf6K_uzKDkPhp26x65Vknl8xE2u16XPc-zYwemNefLq8_8SyOBx69qPDIcj74AKiDEKVdQf2pNm3Ng8qCXEIzvG7Pcyw7MEQZBDTInukBK_Or35fUL5P0HxZ7U78vldyRd_lanroKUI8Mphi4Rk2D0BVj6ymZiRXv4Y7oQoo";
 
     const isOnline = buddy.availability?.toLowerCase() === "online";
-    const chipClass = isOnline ? "bg-primary/15 text-primary border border-primary/20" : "bg-surface text-text-muted border border-border";
-    const specialtyTags = (buddy.specialties || [])
-      .map(s => `<span class="bg-surface text-text-main px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide">${s}</span>`)
+    const statusText = isOnline ? "Available Now" : (buddy.availability || "Offline");
+    const dotClass = isOnline ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" : "bg-slate-500";
+    const buttonText = isOnline ? "Connect" : statusText;
+    
+    const specialtyBadges = (buddy.specialties || [])
+      .map(s => `<span class="px-2.5 py-1 rounded-md bg-surface text-text-main text-xs font-medium border border-border/50">${s}</span>`)
       .join("");
 
     card.innerHTML = `
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-surface border border-border flex items-center justify-center text-xl">👤</div>
-          <div>
-            <div class="font-display font-bold text-sm text-text-main">${buddy.name}</div>
-            <div class="text-[10px] text-text-muted">${buddy.certification}</div>
-          </div>
+      <div class="flex items-center gap-4">
+        <div class="relative shrink-0">
+          <img class="w-14 h-14 rounded-full object-cover bg-surface border border-border/50" alt="${buddy.name} headshot" src="${avatarUrl}" />
+          <div class="absolute bottom-0 right-0 w-3.5 h-3.5 ${dotClass} border-2 border-card rounded-full"></div>
         </div>
-        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${chipClass}">${buddy.availability}</span>
+        <div>
+          <h3 class="font-display font-bold text-lg text-text-main">${buddy.name}</h3>
+          <p class="text-text-muted text-sm">${statusText}</p>
+          <p class="text-[11px] text-text-muted/80 mt-0.5">${buddy.certification || ""}</p>
+        </div>
       </div>
-      <p class="text-xs text-text-main/90 leading-relaxed">${buddy.bio}</p>
-      <div class="flex flex-wrap gap-1.5">${specialtyTags}</div>
-      <div class="flex items-center justify-between border-t border-border/40 pt-3 mt-1">
-        <span class="text-[10px] text-text-muted">🌐 ${(buddy.languages || []).join(", ")}</span>
-        <div class="flex items-center gap-2">
-          <button class="px-2.5 py-1.5 border border-border bg-surface hover:bg-card text-text-main font-bold rounded-lg text-xs transition-all shadow-sm btn-info" title="View Full Profile">Info</button>
-          <button
-            class="px-3 py-1.5 bg-primary text-white hover:brightness-110 font-bold rounded-lg text-xs transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed btn-connect"
-            data-buddy-id="${buddy.id}"
-            data-buddy-name="${buddy.name}"
-            ${!isOnline ? "disabled title='Buddy is offline'" : ""}
-          >
-            ${isOnline ? "Connect" : "Offline"}
-          </button>
-        </div>
+      <p class="text-xs text-text-main/90 leading-relaxed line-clamp-2">${buddy.bio || ""}</p>
+      <div class="flex flex-wrap gap-2">
+        ${specialtyBadges}
+      </div>
+      <div class="mt-auto flex items-center gap-2 pt-2 border-t border-border/40">
+        <button class="flex-1 h-10 bg-surface hover:bg-card border border-border text-text-main rounded-lg font-display font-semibold hover:border-primary/50 transition-all duration-200 flex items-center justify-center gap-1.5 text-xs btn-info" title="View Full Profile">
+          <span class="material-symbols-outlined text-[18px]">info</span> Info
+        </button>
+        <button class="flex-1 h-10 ${isOnline ? "bg-primary hover:brightness-110 text-white" : "bg-surface/50 text-text-muted cursor-not-allowed border border-border/50"} rounded-lg font-display font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 text-xs btn-connect" data-buddy-id="${buddy.id}" ${!isOnline ? "disabled title='Buddy is offline'" : ""}>
+          <span class="material-symbols-outlined text-[18px]">${isOnline ? "chat" : "lock"}</span>
+          ${buttonText}
+        </button>
       </div>
     `;
 
     const connectBtn = card.querySelector(".btn-connect");
-    if (isOnline) {
+    if (isOnline && connectBtn) {
       connectBtn.addEventListener("click", () => {
         selectedBuddyId = buddy.id;
         startCrisisCall();
@@ -593,7 +600,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = document.getElementById("buddyProfileContent");
     if (!dialog || !content) return;
 
+    const AVATAR_MAP = {
+      "buddy_sarah": "https://lh3.googleusercontent.com/aida-public/AB6AXuBf9rx7Z6l90E-dEQNOHkY2L9MBL-BEWZw9xYFqtDLhTUanPJXcYsq_SLLQp9-1L7agsP9D6pvCfsF25EIMB8sho5heSobTuGewdesyf6K_uzKDkPhp26x65Vknl8xE2u16XPc-zYwemNefLq8_8SyOBx69qPDIcj74AKiDEKVdQf2pNm3Ng8qCXEIzvG7Pcyw7MEQZBDTInukBK_Or35fUL5P0HxZ7U78vldyRd_lanroKUI8Mphi4Rk2D0BVj6ymZiRXv4Y7oQoo",
+      "buddy_marcus": "https://lh3.googleusercontent.com/aida-public/AB6AXuBdvQdfniU1Vpcb_4ItQ4Q7iEmayLdpGu2QM2ac42aVVTUk4F5jurHsQicYccjbw-9I2wqKvl6bala2o-VdHyNserH7iNv31E2IEf5i9swrW6aXnLP7P_PHIM6PpCF7NF-1d9bNmZv3qchnsHakgcPLcoMY4w6R1S9U_-TA56d3T5TNAXIt6HCScTqkLrQqCfhJ7Qh40Lm8d9CIixVyvTIIRaW-sfBsurNb5hQ5s9-S1HKS5luQr_mPnZ0xCTHiRQKATsA1Ynq74II",
+      "buddy_elena": "https://lh3.googleusercontent.com/aida-public/AB6AXuCY2AeYR7cTA2WE28LN5Qp-geWh6IiHmBTRvLggOexvVoo-R6gUi2s95Tdze9UJqWpzokGOhTk2nOLBTUd2LJnSn1EMoWa26Icv4GF71nPZIfYkmoQakzM1Hv1YF9dl0_DUJppDbNaYL-lUZrdc8KWl6kyQca9AdjLVittQX8GwBqQSM5fgTAqIaAchlec6Y3jUiwtaVo-r3cz5WDOIZ9tSXLqokn9oNq80hiL4w3tr1doN_044TVjegN_9LreLKrR4rPJi5I0RVSA",
+      "buddy_alex": "https://lh3.googleusercontent.com/aida-public/AB6AXuDyW8KwNUWY77IGGVscaDo9h7xmpsGh9H-DhyNKIs744YXgy2PV6p3ep4Xg3nkNCYIP2-dZ5sjgIAyuAiw6JSiHTvsspgt9RVa7_Wh073Jm8TeWGIJLk7J795tEPuTmJTGLf21aYkpJfp1cr1IFkjGp2p-_xwvssF-_ydLsGUy8md1lzRADDYbD7Hjg4J8PtcwENLw4WbUY62o4WQTqN2WstuHqruj5VIEjob8FYCmobHkHhSdDxGU0jfU9_RSUNCifgc1Oq_GO7xU",
+      "buddy_david": "https://lh3.googleusercontent.com/aida-public/AB6AXuBCRuOp-Z1wi5pGKy6m8GCVUonw1KcfFDl2HO0ksn4duDsBgaUQhVz2hI-qHBJpzr9i62_zK6JxJSEqIUIJUHUe0dro5diQLD1qmQB0HXROVWfRDoDnnl9bxQij2uPT0UISAK56dtGF6VYeRywk0n9mSajSz8Oe53XSqjYApv18xvc6GgXjZUAYkao1Y2QG5vbD2bkhVuSD5U0Fh34DGOte7FMkjhQ-p_CBbm1Q5YswhclgmWq_8rZ9FbJ5v0xALULz1i-XoiBYAU4"
+    };
+    const avatarUrl = buddy.avatar || AVATAR_MAP[buddy.id] || "https://lh3.googleusercontent.com/aida-public/AB6AXuBf9rx7Z6l90E-dEQNOHkY2L9MBL-BEWZw9xYFqtDLhTUanPJXcYsq_SLLQp9-1L7agsP9D6pvCfsF25EIMB8sho5heSobTuGewdesyf6K_uzKDkPhp26x65Vknl8xE2u16XPc-zYwemNefLq8_8SyOBx69qPDIcj74AKiDEKVdQf2pNm3Ng8qCXEIzvG7Pcyw7MEQZBDTInukBK_Or35fUL5P0HxZ7U78vldyRd_lanroKUI8Mphi4Rk2D0BVj6ymZiRXv4Y7oQoo";
+
     const isOnline = buddy.availability?.toLowerCase() === "online";
+    const statusText = isOnline ? "Available Now" : (buddy.availability || "Offline");
     const chipClass = isOnline ? "bg-primary/15 text-primary border border-primary/20" : "bg-surface text-text-muted border border-border";
     const specialtyTags = (buddy.specialties || [])
       .map(s => `<span class="bg-surface text-text-main px-2.5 py-1 rounded-md text-xs font-bold tracking-wide">${s}</span>`)
@@ -609,11 +626,11 @@ document.addEventListener("DOMContentLoaded", () => {
         </button>
       </div>
       <div class="flex items-center gap-4 py-2">
-        <div class="w-14 h-14 rounded-full bg-surface border-2 border-primary/40 flex items-center justify-center text-3xl shadow-sm">👤</div>
+        <img class="w-14 h-14 rounded-full object-cover bg-surface border-2 border-primary/40 shadow-sm shrink-0" alt="${buddy.name} headshot" src="${avatarUrl}" />
         <div>
           <div class="font-display font-bold text-base text-text-main">${buddy.name}</div>
           <div class="text-xs text-primary font-semibold">${buddy.certification}</div>
-          <div class="mt-1"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${chipClass}">${buddy.availability}</span></div>
+          <div class="mt-1"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${chipClass}">${statusText}</span></div>
         </div>
       </div>
       <div class="flex flex-col gap-1.5 bg-surface/50 p-3 rounded-xl border border-border/40">
@@ -649,6 +666,74 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     dialog.showModal();
+  }
+
+  /* ============================================================
+     SUPPORT ROSTER (Support Buddies Section)
+  ============================================================ */
+  let allRosterBuddies = [];
+  let currentSpecialtyFilter = "All Specialties";
+
+  async function fetchSupportRoster() {
+    if (!supportRosterGrid) return;
+    supportRosterGrid.innerHTML = `<div class="col-span-full text-center py-12 text-text-muted text-sm">Loading support roster...</div>`;
+    try {
+      const res = await fetch("/api/buddies");
+      if (!res.ok) throw new Error("Failed to fetch buddies");
+      const data = await res.json();
+      allRosterBuddies = data.buddies || [];
+      renderSupportRoster();
+    } catch (err) {
+      console.error("Error loading roster:", err);
+      supportRosterGrid.innerHTML = `<div class="col-span-full text-center py-12 text-rose text-sm">Failed to load support roster. Please try again.</div>`;
+    }
+  }
+
+  function renderSupportRoster() {
+    if (!supportRosterGrid) return;
+    const query = (supportRosterSearch?.value || "").toLowerCase().trim();
+    
+    const filtered = allRosterBuddies.filter(b => {
+      const matchesSearch = !query || 
+        (b.name || "").toLowerCase().includes(query) ||
+        (b.bio || "").toLowerCase().includes(query) ||
+        (b.specialties || []).some(s => s.toLowerCase().includes(query));
+      
+      const matchesSpecialty = currentSpecialtyFilter === "All Specialties" ||
+        (b.specialties || []).some(s => s.toLowerCase() === currentSpecialtyFilter.toLowerCase());
+        
+      return matchesSearch && matchesSpecialty;
+    });
+
+    supportRosterGrid.innerHTML = "";
+    if (filtered.length === 0) {
+      supportRosterGrid.innerHTML = `<div class="col-span-full text-center py-12 text-text-muted text-sm italic">No support peers match your filter criteria.</div>`;
+      return;
+    }
+
+    filtered.forEach(buddy => {
+      supportRosterGrid.appendChild(createBuddyCard(buddy));
+    });
+  }
+
+  if (supportRosterSearch) {
+    supportRosterSearch.addEventListener("input", () => renderSupportRoster());
+  }
+
+  if (supportRosterFilters) {
+    supportRosterFilters.addEventListener("click", (e) => {
+      const btn = e.target.closest(".roster-filter-btn");
+      if (!btn) return;
+      currentSpecialtyFilter = btn.dataset.filter || "All Specialties";
+      supportRosterFilters.querySelectorAll(".roster-filter-btn").forEach(b => {
+        if (b === btn) {
+          b.className = "px-4 py-1.5 rounded-full bg-primary border border-primary text-sm font-medium text-white transition-colors roster-filter-btn";
+        } else {
+          b.className = "px-4 py-1.5 rounded-full bg-surface border border-border text-sm font-medium text-text-muted hover:border-primary/50 hover:text-text-main transition-colors roster-filter-btn";
+        }
+      });
+      renderSupportRoster();
+    });
   }
 
   /* ============================================================
@@ -796,7 +881,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ============================================================
      VIEW SWITCHER
   ============================================================ */
-  const views = [welcomeView, loadingView, resultsView, authView, profileView, chatView, dashboardView];
+  const views = [welcomeView, loadingView, resultsView, authView, profileView, chatView, dashboardView, supportBuddiesView];
 
   function show(view) {
     views.forEach(v => {
@@ -804,7 +889,7 @@ document.addEventListener("DOMContentLoaded", () => {
       else            { v.classList.add("hidden"); }
     });
 
-    const isMainView = [welcomeView, loadingView, resultsView, chatView, dashboardView].includes(view);
+    const isMainView = [welcomeView, loadingView, resultsView, chatView, dashboardView, supportBuddiesView].includes(view);
     if (isMainView) {
       document.querySelector(".main-layout").classList.remove("hidden");
       inputBar.classList.remove("hidden");
