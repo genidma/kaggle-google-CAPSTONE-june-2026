@@ -726,13 +726,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (msgInput) {
     msgInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
+      if (e.key === "Enter" || e.keyCode === 13 || e.which === 13) {
         if (isEnterToSendMode) {
           // Mode 1: Enter sends, Shift+Enter (or Alt/Ctrl+Enter) new line
           if (!e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
             e.preventDefault();
             if (msgInput.value.trim()) {
-              supportForm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+              const btn = document.getElementById("btnSend");
+              if (btn) btn.click();
+              else typeof supportForm.requestSubmit === "function" ? supportForm.requestSubmit() : supportForm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
             }
           }
         } else {
@@ -740,7 +742,9 @@ document.addEventListener("DOMContentLoaded", () => {
           if (e.ctrlKey || e.metaKey || e.shiftKey) {
             e.preventDefault();
             if (msgInput.value.trim()) {
-              supportForm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+              const btn = document.getElementById("btnSend");
+              if (btn) btn.click();
+              else typeof supportForm.requestSubmit === "function" ? supportForm.requestSubmit() : supportForm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
             }
           }
         }
@@ -1214,7 +1218,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
-     VIEW SWITCHER & INSPIRATIONAL QUOTES (#1, #3)
+     VIEW SWITCHER, WELCOME GREETINGS & QUOTES (#1, #3)
   ============================================================ */
   const INSPIRATIONAL_QUOTES = [
     { text: "In medicine, as in life, the most important thing you can give anyone is hope.", author: "Doogie Howser, M.D." },
@@ -1224,10 +1228,30 @@ document.addEventListener("DOMContentLoaded", () => {
     { text: "We don't heal in isolation, but in community.", author: "S. Kelley Harrell" }
   ];
 
+  const WELCOME_GREETINGS = [
+    "How can I be of assistance?",
+    "I'm here. Where should we start?",
+    "How are things feeling right now?",
+    "How can I support you today? Why don't you take a breath and tell me what's going on",
+    "What is on your mind right now?",
+    "How can I be of support to you today?",
+    "Let's take this one step at a time. What's going on?",
+    "I am here. Where should we begin?",
+    "How is your heart today?"
+  ];
+
   function updateDoogieQuotes() {
     const quote = INSPIRATIONAL_QUOTES[Math.floor(Math.random() * INSPIRATIONAL_QUOTES.length)];
     document.querySelectorAll('.doogie-quote-text').forEach(el => el.textContent = `"${quote.text}"`);
     document.querySelectorAll('.doogie-quote-author').forEach(el => el.textContent = `— ${quote.author}`);
+  }
+
+  function rotateWelcomeGreeting() {
+    const greetingEl = document.querySelector("#welcomeView h2");
+    if (greetingEl) {
+      const randomGreeting = WELCOME_GREETINGS[Math.floor(Math.random() * WELCOME_GREETINGS.length)];
+      greetingEl.textContent = randomGreeting;
+    }
   }
 
   const views = [welcomeView, loadingView, resultsView, authView, profileView, chatView, dashboardView, supportBuddiesView, buddyDetailView, buddyDashboardView, clinicianPortalView, caregiverPortalView];
@@ -1240,6 +1264,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     updateDoogieQuotes();
+    if (view === welcomeView) {
+      rotateWelcomeGreeting();
+    }
 
     const isMainView = [welcomeView, loadingView, resultsView, chatView, dashboardView, supportBuddiesView, buddyDetailView, buddyDashboardView, clinicianPortalView, caregiverPortalView].includes(view);
     if (isMainView) {
