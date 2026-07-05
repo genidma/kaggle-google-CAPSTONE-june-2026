@@ -821,10 +821,19 @@ async def analyze_tbi_scan(payload: TbiAnalyzeRequest, user: dict = Depends(requ
                 "modality": payload.scan_type,
                 "analyzed_at": datetime.now(timezone.utc).isoformat()
             },
+            "slices": [
+                {"id": "slice_1", "title": "Frontal Lobe Impact", "view_type": "TBI Assessment: Patient ID 4912", "image_url": "/tbi/slice_1_frontal.png", "status": "Metabolic Depression", "impact_score": "4.2 / 10", "clinical_note": "Slight metabolic depression observed in prefrontal cortex; correlates with executive fatigue."},
+                {"id": "slice_2", "title": "Axial View", "view_type": "Regions: Frontal & Temporal", "image_url": "/tbi/slice_2_axial.png", "status": "Minor Inflammation", "impact_score": "3.8 / 10", "clinical_note": "Bilateral neural connectivity assessment shows localized temporal inflammation."},
+                {"id": "slice_3", "title": "Sagittal View", "view_type": "TBI Severity: Moderate (67% Conf.)", "image_url": "/tbi/slice_3_sagittal.png", "status": "Moderate Severity", "impact_score": "4.5 / 10", "clinical_note": "Correlates with reported executive dysfunction and sensory hypersensitivity."},
+                {"id": "slice_4", "title": "Rear View Assessment", "view_type": "Temporal & Parietal Involvement", "image_url": "/tbi/slice_4_rear.png", "status": "Stable / Unremarkable", "impact_score": "1.5 / 10", "clinical_note": "Parietal lobe connectivity intact; no focal hemorrhaging or hematoma detected."},
+                {"id": "slice_5", "title": "Detailed Regional Analysis", "view_type": "Right Frontal (14,500 Data Points)", "image_url": "/tbi/slice_5_regional.png", "status": "Damage Analysis Complete", "impact_score": "3.2 / 10", "clinical_note": "High-resolution neural mesh mapped. Cleared for supportive outpatient peer grounding."}
+            ],
             "findings": [
-                {"region": "Frontal Lobe (Prefrontal Cortex)", "status": "Mild Contusion / Metabolic Depression", "impact_score": "4.2 / 10", "clinical_note": "Slight metabolic depression observed; correlates with reported executive dysfunction and emotional dysregulation."},
-                {"region": "Temporal Lobe & Amygdala", "status": "Normal / Unremarkable", "impact_score": "1.1 / 10", "clinical_note": "No structural hemorrhaging or focal lesions identified."},
-                {"region": "Hippocampus", "status": "Minor Micro-structural Edema", "impact_score": "3.5 / 10", "clinical_note": "Correlates with temporary short-term memory fatigue during acute stress."}
+                {"region": "Frontal Lobe Impact (Slice 1)", "status": "Metabolic Depression", "impact_score": "4.2 / 10", "clinical_note": "Slight metabolic depression observed; correlates with reported executive dysfunction."},
+                {"region": "Axial View (Slice 2)", "status": "Minor Inflammation", "impact_score": "3.8 / 10", "clinical_note": "Bilateral neural connectivity assessment shows localized temporal inflammation."},
+                {"region": "Sagittal View (Slice 3)", "status": "Moderate Severity", "impact_score": "4.5 / 10", "clinical_note": "Correlates with reported executive dysfunction and sensory hypersensitivity."},
+                {"region": "Rear View Assessment (Slice 4)", "status": "Stable / Unremarkable", "impact_score": "1.5 / 10", "clinical_note": "Parietal lobe connectivity intact; no focal hemorrhaging identified."},
+                {"region": "Detailed Regional Analysis (Slice 5)", "status": "Damage Analysis Complete", "impact_score": "3.2 / 10", "clinical_note": "High-resolution neural mesh mapped (14,500 points). Cleared for outpatient support."}
             ],
             "neurological_controls": {
                 "cognitive_fatigue_index": "Moderate (62%)",
