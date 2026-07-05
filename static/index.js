@@ -1,3 +1,48 @@
+/* ===========================================================================
+   MySupportBuddy Frontend Namespace & Styling Tokens (Phase 3)
+=========================================================================== */
+window.MSB = window.MSB || {};
+window.MSB.Tokens = {
+  Badges: {
+    buddy: "px-3 py-1 rounded-full text-xs font-semibold bg-primary/15 text-primary border border-primary/30 flex items-center gap-1.5 shadow-sm",
+    clinician: "px-3 py-1 rounded-full text-xs font-semibold bg-amber/15 text-amber border border-amber/30 flex items-center gap-1.5 shadow-sm",
+    caregiver: "px-3 py-1 rounded-full text-xs font-semibold bg-primary/15 text-primary border border-primary/30 flex items-center gap-1.5 shadow-sm",
+    patient: "px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 flex items-center gap-1.5 shadow-sm",
+    verified: "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/20"
+  },
+  Toasts: {
+    success: "#4A7C59",
+    error: "#B8860B",
+    info: "#2B5A7A"
+  },
+  Roles: {
+    buddy: { icon: "🛡️", label: "Support Buddy" },
+    clinician: { icon: "🩺", label: "Clinician" },
+    caregiver: { icon: "🌟", label: "Caregiver" },
+    patient: { icon: "👤", label: "Patient" }
+  }
+};
+
+window.MSB.UI = {
+  applyRoleBadge(badgeEl, iconEl, textEl, role = "patient") {
+    if (!badgeEl) return;
+    badgeEl.classList.remove("hidden");
+    const roleConfig = window.MSB.Tokens.Roles[role] || window.MSB.Tokens.Roles.patient;
+    const badgeClass = window.MSB.Tokens.Badges[role] || window.MSB.Tokens.Badges.patient;
+    if (iconEl) iconEl.textContent = roleConfig.icon;
+    if (textEl) textEl.textContent = roleConfig.label;
+    badgeEl.className = badgeClass;
+  }
+};
+
+window.MSB.Auth = {
+  getHeaders(token) {
+    const headers = { "Content-Type": "application/json" };
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    return headers;
+  }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("MySupportBuddy UI loaded successfully!");
 
@@ -77,6 +122,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnChangePasswordSubmit  = document.getElementById("btnChangePasswordSubmit");
   const changePasswordError      = document.getElementById("changePasswordError");
   const changePasswordSuccess    = document.getElementById("changePasswordSuccess");
+
+  const crisisPlanForm           = document.getElementById("crisisPlanForm");
+  const emergContactName         = document.getElementById("emergContactName");
+  const emergContactPhone        = document.getElementById("emergContactPhone");
+  const crisisLinePref           = document.getElementById("crisisLinePref");
+  const personalGrounding        = document.getElementById("personalGrounding");
+  const crisisPlanMessage        = document.getElementById("crisisPlanMessage");
+  const btnSaveCrisisPlan        = document.getElementById("btnSaveCrisisPlan");
 
   const responseText     = document.getElementById("responseText");
   const buddySection     = document.getElementById("buddySection");
@@ -183,25 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Role Badge logic (#1)
       if (userRoleBadge) {
-        userRoleBadge.classList.remove("hidden");
-        const role = currentUser.role || "patient";
-        if (role === "buddy") {
-          roleBadgeIcon.textContent = "🛡️";
-          roleBadgeText.textContent = "Support Buddy";
-          userRoleBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-primary/15 text-primary border border-primary/30 flex items-center gap-1.5 shadow-sm";
-        } else if (role === "clinician") {
-          roleBadgeIcon.textContent = "🩺";
-          roleBadgeText.textContent = "Clinician";
-          userRoleBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-amber/15 text-amber border border-amber/30 flex items-center gap-1.5 shadow-sm";
-        } else if (role === "caregiver") {
-          roleBadgeIcon.textContent = "🌟";
-          roleBadgeText.textContent = "Caregiver";
-          userRoleBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-primary/15 text-primary border border-primary/30 flex items-center gap-1.5 shadow-sm";
-        } else {
-          roleBadgeIcon.textContent = "👤";
-          roleBadgeText.textContent = "Patient";
-          userRoleBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 flex items-center gap-1.5 shadow-sm";
-        }
+        window.MSB.UI.applyRoleBadge(userRoleBadge, roleBadgeIcon, roleBadgeText, currentUser.role);
       }
 
       fetchSidebarBuddies();
@@ -242,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
     show(authView);
   });
 
-  btnProfile.addEventListener("click", () => show(profileView));
+  btnProfile.addEventListener("click", () => openProfileView());
   btnDashboard.addEventListener("click", () => navigateToRoleDashboard());
   btnProfileBack.addEventListener("click", () => show(welcomeView));
   if (headerLogo) headerLogo.addEventListener("click", () => show(welcomeView));
@@ -340,6 +375,38 @@ document.addEventListener("DOMContentLoaded", () => {
         `).join("");
       } else {
         triageList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic col-span-2">No active triage cases pending review.</div>`;
+      }
+
+      // Load Post-Session Handoffs (#7.3)
+      const handoffList = document.getElementById("clinicianHandoffList");
+      if (handoffList) {
+        try {
+          const hRes = await fetch("/api/clinician-handoffs", { headers: authHeaders() });
+          if (hRes.ok) {
+            const hData = await hRes.json();
+            if (hData.handoffs && hData.handoffs.length > 0) {
+              handoffList.innerHTML = hData.handoffs.map(h => `
+                <div class="p-4 rounded-xl bg-surface border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+                  <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                      <span class="font-bold text-sm text-text-main">Peer Patient: ${h.patient_name}</span>
+                      <span class="px-2 py-0.5 rounded bg-amber/15 text-amber text-[10px] font-bold">Buddy: ${h.buddy_email || "Care Team"}</span>
+                    </div>
+                    <p class="text-xs text-text-muted">
+                      <strong class="text-text-main">Session Summary:</strong> ${h.session_summary}
+                    </p>
+                    <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: Today • HIPAA ID: #${h.handoff_id} • Follow-up: ${h.recommended_followup}</span>
+                  </div>
+                  <button onclick="alert('Opening clinical chart and patient EHR for ${h.patient_name}...')" class="px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold text-xs transition-all shrink-0">
+                    Review Chart
+                  </button>
+                </div>
+              `).join("");
+            }
+          }
+        } catch (hErr) {
+          console.error("Error loading handoffs:", hErr);
+        }
       }
     } catch (err) {
       triageList.innerHTML = `<div class="text-center py-4 text-rose text-xs col-span-2">Error loading cases: ${err.message}</div>`;
@@ -447,7 +514,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (btnForwardToClinician) {
-    btnForwardToClinician.addEventListener("click", () => {
+    btnForwardToClinician.addEventListener("click", async () => {
+      const summaryText = coPilotDraftText?.value || "Guided patient through structured 4-4-4-4 Box Breathing de-escalation.";
+      try {
+        await fetch("/api/clinician-handoff", {
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({
+            patient_name: "Alex W. (Anxiety & Panic Attack)",
+            session_summary: summaryText,
+            risk_level: "Zero Lethality Risk",
+            recommended_followup: "Recommend clinical follow-up for chronic anxiety triggers."
+          })
+        });
+      } catch (e) {
+        console.error("Failed to post handoff:", e);
+      }
       const clinicianHandoffList = document.getElementById("clinicianHandoffList");
       if (clinicianHandoffList) {
         const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -460,7 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <span class="px-2 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-bold">New Handoff • Buddy: Care Team (#7)</span>
             </div>
             <p class="text-xs text-text-muted">
-              <strong class="text-text-main">Session Summary:</strong> ${coPilotDraftText?.value || "Guided patient through structured 4-4-4-4 Box Breathing de-escalation."} Verified zero self-harm risk. Recommend clinician follow-up for baseline anxiety assessment.
+              <strong class="text-text-main">Session Summary:</strong> ${summaryText} Verified zero self-harm risk. Recommend clinician follow-up for baseline anxiety assessment.
             </p>
             <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: ${timestamp} • HIPAA Handoff ID: #MSB-${Math.floor(1000 + Math.random() * 9000)}</span>
           </div>
@@ -472,6 +554,72 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       notify("📋 Clinical Care Handoff Report securely forwarded to Dr. Aris Vance (Clinician Portal #7)!", "success");
     });
+  }
+
+  // AI Co-Pilot Tooltip Explanation Click Handlers (#7.2)
+  document.querySelectorAll("#buddyDashboardView .cursor-help").forEach(el => {
+    el.addEventListener("click", () => {
+      const reason = el.getAttribute("title") || "AI Co-Pilot analysis generated using real-time Natural Language Processing.";
+      alert(`🤖 AI Co-Pilot Diagnostic Rationale:\n\n${reason}\n\nAll suggestions are clinically validated under GR38 peer support guidelines.`);
+    });
+  });
+
+  // Multimodal TBI Scan Analyzer (#2)
+  const btnSimulateTbiScan = document.getElementById("btnSimulateTbiScan");
+  const tbiDropzone = document.getElementById("tbiDropzone");
+  const tbiAnalysisResults = document.getElementById("tbiAnalysisResults");
+  const tbiFindingsList = document.getElementById("tbiFindingsList");
+  const tbiRecoveryProtocol = document.getElementById("tbiRecoveryProtocol");
+
+  async function runTbiAnalysis(filename = "Patient_8492_Axial_fMRI_Slice_04.dcm") {
+    if (!tbiAnalysisResults || !tbiFindingsList) return;
+    notify("🧠 Uploading neuro-imaging scan... Vertex AI Vision-Language model analyzing...", "info");
+    if (tbiDropzone) tbiDropzone.classList.add("opacity-50", "pointer-events-none");
+
+    try {
+      const res = await fetch("/api/tbi-analyze", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          scan_filename: filename,
+          patient_id: "Patient #8492",
+          scan_type: "Axial fMRI Slice (GR38 validated)"
+        })
+      });
+      const data = await res.json();
+      if (data.analysis && data.analysis.findings) {
+        tbiFindingsList.innerHTML = data.analysis.findings.map(f => `
+          <div class="p-3 rounded-xl bg-surface border border-border/80 flex flex-col gap-1 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-text-main">${f.region}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${f.status.includes('Normal') ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber/15 text-amber'}">${f.impact_score}</span>
+            </div>
+            <span class="text-[11px] font-semibold ${f.status.includes('Normal') ? 'text-emerald-600' : 'text-rose'} block">${f.status}</span>
+            <p class="text-[11px] text-text-muted mt-1 leading-snug">${f.clinical_note}</p>
+          </div>
+        `).join("");
+        if (tbiRecoveryProtocol && data.analysis.neurological_controls) {
+          tbiRecoveryProtocol.textContent = `${data.analysis.neurological_controls.recommended_rest_protocol} (Cognitive Fatigue Index: ${data.analysis.neurological_controls.cognitive_fatigue_index})`;
+        }
+        tbiAnalysisResults.classList.remove("hidden");
+        tbiAnalysisResults.classList.add("flex");
+        notify("✅ TBI Neuro-Imaging scan analysis complete! Biomarkers and recovery protocol mapped.", "success");
+      }
+    } catch (e) {
+      notify("Error analyzing TBI scan: " + e.message, "error");
+    } finally {
+      if (tbiDropzone) tbiDropzone.classList.remove("opacity-50", "pointer-events-none");
+    }
+  }
+
+  if (btnSimulateTbiScan) {
+    btnSimulateTbiScan.addEventListener("click", () => runTbiAnalysis());
+  }
+  if (tbiDropzone) {
+    tbiDropzone.addEventListener("click", () => runTbiAnalysis("Clinical_Upload_fMRI_Scan_772.nii"));
+    tbiDropzone.addEventListener("dragover", (e) => { e.preventDefault(); tbiDropzone.classList.add("border-primary", "bg-primary/10"); });
+    tbiDropzone.addEventListener("dragleave", () => { tbiDropzone.classList.remove("border-primary", "bg-primary/10"); });
+    tbiDropzone.addEventListener("drop", (e) => { e.preventDefault(); tbiDropzone.classList.remove("border-primary", "bg-primary/10"); runTbiAnalysis("Dropped_DICOM_Brain_Slice.dcm"); });
   }
 
   authForm.addEventListener("submit", async (e) => {
@@ -586,6 +734,85 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  function openProfileView() {
+    if (!currentUser) {
+      show(authView);
+      return;
+    }
+    show(profileView);
+    if (profileEmail) profileEmail.textContent = currentUser.email;
+    if (profileTier) profileTier.textContent = currentUser.tier || "Standard";
+    if (profileBadge) {
+      profileBadge.textContent = "VERIFIED";
+      profileBadge.className = window.MSB.Tokens.Badges.verified;
+    }
+    fetchConversations();
+    fetchCrisisPlan();
+  }
+
+  async function fetchCrisisPlan() {
+    if (!currentUser || !crisisPlanForm) return;
+    try {
+      const res = await fetch("/api/crisis-plan", { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.plan) {
+          if (emergContactName) emergContactName.value = data.plan.emergency_contact_name || "";
+          if (emergContactPhone) emergContactPhone.value = data.plan.emergency_contact_phone || "";
+          if (crisisLinePref) crisisLinePref.value = data.plan.crisis_line_preference || "988 - Suicide & Crisis Lifeline";
+          if (personalGrounding) personalGrounding.value = data.plan.personal_grounding_trigger || "";
+        }
+      }
+    } catch (e) {
+      console.warn("Could not load crisis plan:", e);
+    }
+  }
+
+  if (crisisPlanForm) {
+    crisisPlanForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentUser) return;
+      if (crisisPlanMessage) {
+        crisisPlanMessage.classList.add("hidden");
+        crisisPlanMessage.className = "hidden p-2.5 rounded-lg text-xs font-semibold";
+      }
+      if (btnSaveCrisisPlan) {
+        btnSaveCrisisPlan.disabled = true;
+        btnSaveCrisisPlan.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Saving...`;
+      }
+      try {
+        const res = await fetch("/api/crisis-plan", {
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify({
+            emergency_contact_name: emergContactName ? emergContactName.value : "",
+            emergency_contact_phone: emergContactPhone ? emergContactPhone.value : "",
+            crisis_line_preference: crisisLinePref ? crisisLinePref.value : "",
+            personal_grounding_trigger: personalGrounding ? personalGrounding.value : ""
+          })
+        });
+        if (!res.ok) throw new Error("Failed to save safety plan");
+        if (crisisPlanMessage) {
+          crisisPlanMessage.textContent = "Crisis Safety Plan updated securely ✓";
+          crisisPlanMessage.classList.remove("hidden");
+          crisisPlanMessage.classList.add("bg-primary/10", "text-primary");
+        }
+        notify("Crisis Safety Plan updated securely ✓");
+      } catch (err) {
+        if (crisisPlanMessage) {
+          crisisPlanMessage.textContent = "Error saving plan: " + err.message;
+          crisisPlanMessage.classList.remove("hidden");
+          crisisPlanMessage.classList.add("bg-rose-bg", "text-rose");
+        }
+      } finally {
+        if (btnSaveCrisisPlan) {
+          btnSaveCrisisPlan.disabled = false;
+          btnSaveCrisisPlan.innerHTML = `<span class="material-symbols-outlined text-[16px]">save</span> Save Safety Plan`;
+        }
+      }
+    });
+  }
+
   updateAuthUI();
 
   /* ---- Buddy View dialog ---- */
@@ -655,16 +882,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   if (mobNavProfile) {
     mobNavProfile.addEventListener("click", () => {
-      if (currentUser) {
-        show(profileView);
-        profileEmail.textContent = currentUser.email;
-        profileTier.textContent = currentUser.tier || "Standard";
-        profileBadge.textContent = "VERIFIED";
-        profileBadge.className = "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/15 text-primary border border-primary/20";
-        fetchConversations();
-      } else {
-        show(authView);
-      }
+      openProfileView();
     });
   }
 
@@ -1310,7 +1528,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /** Brief status notification — replaces "toast" with veteran-friendly colors. */
   function notify(msg, type = "success") {
     const el = document.createElement("div");
-    const bgColor = type === "error" ? "#B8860B" : "#4A7C59";
+    const bgColor = window.MSB.Tokens.Toasts[type] || window.MSB.Tokens.Toasts.success;
     el.style.cssText = `
       position:fixed; bottom:24px; right:24px; z-index:9999;
       padding:0.75rem 1.25rem; border-radius:10px;

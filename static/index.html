@@ -630,6 +630,48 @@
           </div>
         </div>
 
+        <!-- Crisis & Emergency Contact Plan (#6) -->
+        <div class="bg-card border border-border rounded-xl p-5 flex flex-col gap-4 shadow-sm">
+          <h3 class="text-text-main font-display text-sm font-semibold tracking-wide flex items-center gap-2 border-b border-border/40 pb-2">
+            🛡️ Crisis & Emergency Contact Plan
+          </h3>
+          <p class="text-xs text-text-muted">Save your trusted contact and grounding preferences. This information is confidential and shared only with accredited support personnel during acute crisis dispatches.</p>
+          <form id="crisisPlanForm" class="flex flex-col gap-3.5">
+            <div id="crisisPlanMessage" class="hidden p-2.5 rounded-lg text-xs font-semibold"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label for="emergContactName" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Emergency Contact Name</label>
+                <input type="text" id="emergContactName" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs" placeholder="e.g., Jane Doe (Sister)" required>
+              </div>
+              <div>
+                <label for="emergContactPhone" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Contact Phone Number</label>
+                <input type="tel" id="emergContactPhone" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs" placeholder="(555) 019-2831" required>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label for="crisisLinePref" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Preferred Crisis Line</label>
+                <select id="crisisLinePref" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs">
+                  <option value="988 - Suicide & Crisis Lifeline">988 - Suicide & Crisis Lifeline</option>
+                  <option value="741741 - Crisis Text Line">741741 - Crisis Text Line</option>
+                  <option value="1-800-273-TALK - Veterans Crisis Line">1-800-273-TALK - Veterans Crisis Line</option>
+                  <option value="The Trevor Project (LGBTQ+)">The Trevor Project (LGBTQ+)</option>
+                </select>
+              </div>
+              <div>
+                <label for="personalGrounding" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Personal Grounding Trigger</label>
+                <input type="text" id="personalGrounding" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs" placeholder="e.g., 4-4-4-4 Box breathing, playing pet sounds">
+              </div>
+            </div>
+
+            <button type="submit" id="btnSaveCrisisPlan" class="px-4 py-2 bg-primary hover:brightness-110 text-white font-bold rounded-lg text-xs transition-all self-start mt-1 shadow-sm flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">save</span> Save Safety Plan
+            </button>
+          </form>
+        </div>
+
         <!-- Account Security -->
         <div class="bg-card border border-border rounded-xl p-5 flex flex-col gap-4 shadow-sm">
           <h3 class="text-text-main font-display text-sm font-semibold tracking-wide flex items-center gap-2 border-b border-border/40 pb-2">
@@ -729,23 +771,26 @@
             </p>
           </div>
 
-          <!-- Real-Time AI Sentiment & Safety Analysis -->
+          <!-- Real-Time AI Sentiment & Safety Analysis with Visual Tooltips (#7.2) -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div class="p-3.5 rounded-xl bg-amber/10 border border-amber/30 flex flex-col gap-1">
-              <span class="text-[11px] font-bold text-amber uppercase tracking-wider flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">analytics</span> Sentiment Analysis
+            <div class="p-3.5 rounded-xl bg-amber/10 border border-amber/30 flex flex-col gap-1 cursor-help" title="Detected via NLP pattern matching for heightened physiological stress words ('pounding heart', 'overwhelmed').">
+              <span class="text-[11px] font-bold text-amber uppercase tracking-wider flex items-center justify-between">
+                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">analytics</span> Sentiment Analysis</span>
+                <span class="text-[10px] underline decoration-dotted">Why?</span>
               </span>
               <span id="coPilotSentiment" class="text-xs font-bold text-text-main">⚠️ Acute Anxiety / Hyperarousal</span>
             </div>
-            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col gap-1">
-              <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">verified_user</span> Do No Harm Safety
+            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col gap-1 cursor-help" title="Do No Harm safety check confirmed zero intent or plan for self-harm or lethality. Priority is immediate grounding.">
+              <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider flex items-center justify-between">
+                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">verified_user</span> Do No Harm Safety</span>
+                <span class="text-[10px] underline decoration-dotted">Why?</span>
               </span>
               <span id="coPilotSafety" class="text-xs font-bold text-text-main">✅ Zero Lethality Risk • De-escalation Needed</span>
             </div>
-            <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/30 flex flex-col gap-1">
-              <span class="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">psychology</span> Supervisor Recommendation
+            <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/30 flex flex-col gap-1 cursor-help" title="Recommended by clinical supervision protocol for acute panic: tactile rhythmic grounding restores autonomic nervous system balance.">
+              <span class="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center justify-between">
+                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">psychology</span> Supervisor Rec</span>
+                <span class="text-[10px] underline decoration-dotted">Why?</span>
               </span>
               <span id="coPilotRec" class="text-xs font-bold text-text-main">💡 Guided Tactile Breathing & Grounding</span>
             </div>
@@ -898,24 +943,56 @@
         </div>
       </div>
 
-      <!-- TBI Neuro-Imaging Scan Analysis Placeholder (#2) -->
-      <div class="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-br from-surface to-card">
-        <div class="flex-1 flex flex-col gap-2">
-          <div class="flex items-center gap-2">
-            <span class="text-xl">🧠</span>
-            <h3 class="font-display text-text-main font-bold text-base">TBI Neuro-Imaging Analysis & AI Diagnostics (#2)</h3>
+      <!-- Multimodal TBI Neuro-Imaging Scan Analyzer (#2) -->
+      <div class="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col gap-5 bg-gradient-to-br from-surface to-card">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-white text-xl shadow-sm">🧠</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-display text-text-main font-bold text-lg">Multimodal TBI Neuro-Imaging Analyzer (#2)</h3>
+                <span class="px-2 py-0.5 rounded-full bg-primary/15 text-primary font-bold text-[10px] uppercase tracking-wider">Vertex AI Vision-Language</span>
+              </div>
+              <p class="text-text-muted text-xs">Upload or simulate patient fMRI/CT brain scans for automated regional impact scoring & neurological controls.</p>
+            </div>
           </div>
-          <p class="text-text-muted text-xs leading-relaxed">
-            In future iterations, clinicians can upload Traumatic Brain Injury (TBI) neuro-imaging scans here. AI models (<code class="bg-background-dark px-1.5 py-0.5 rounded text-primary">NeuroScan-TBI-v1</code>) will pinpoint impacted brain regions and correlate neurological recovery controls.
-          </p>
-          <div class="flex items-center gap-2 mt-1">
-            <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold">Status: Architecture Ready</span>
-            <span class="px-2 py-0.5 rounded-full bg-amber/10 text-amber text-[10px] font-bold">Issue #2 Roadmap</span>
+          <div class="flex items-center gap-2.5 shrink-0">
+            <button id="btnSimulateTbiScan" class="px-5 py-2.5 rounded-xl border-2 border-primary bg-primary/15 text-primary hover:bg-primary hover:text-white transition-all text-xs font-bold shadow-sm flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px]">biotech</span> Simulate Scan Analysis
+            </button>
           </div>
         </div>
-        <button onclick="alert('TBI Scan Ingestion Module will connect to Google Cloud AI Vertex endpoints in Phase 7 (#2).')" class="px-5 py-2.5 rounded-xl border border-primary bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all text-xs font-semibold shrink-0 shadow-sm">
-          Simulate TBI Scan Upload
-        </button>
+
+        <!-- TBI Scan Dropzone Area -->
+        <div id="tbiDropzone" class="border-2 border-dashed border-primary/30 rounded-xl p-6 text-center bg-surface/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[36px] text-primary/70">upload_file</span>
+          <p class="text-xs text-text-main font-semibold">Drag & drop DICOM / NIfTI neuro-imaging slice here, or click to browse</p>
+          <span class="text-[11px] text-text-muted">Supported AI engines: NeuroScan-TBI-v1, AlphaBrain-Impact-7B (GR38 validated)</span>
+        </div>
+
+        <!-- TBI Analysis Results Container (Hidden initially) -->
+        <div id="tbiAnalysisResults" class="hidden flex-col gap-4 pt-2 animate-fade-in">
+          <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between text-xs font-bold text-text-main">
+            <span id="tbiModelUsed" class="flex items-center gap-1.5">🤖 Model: NeuroScan-TBI-v1</span>
+            <span id="tbiScanMeta" class="text-primary font-semibold">Patient #8492 • Axial fMRI Slice</span>
+          </div>
+
+          <div class="flex flex-col gap-2.5">
+            <h4 class="text-xs font-bold text-text-main uppercase tracking-wider">Regional Impact Findings & Biomarkers:</h4>
+            <div id="tbiFindingsList" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <!-- Dynamically populated findings -->
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface border border-border flex flex-col gap-2 shadow-inner">
+            <span class="text-xs font-bold text-text-main uppercase tracking-wider text-primary flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">verified</span> Neurological Recovery Protocol & Controls
+            </span>
+            <p id="tbiRecoveryProtocol" class="text-xs text-text-muted leading-relaxed font-medium">
+              Level 2 Cognitive Rest: Limit screen exposure to <2 hrs/day; integrate tactile grounding sessions prior to high-focus tasks.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
