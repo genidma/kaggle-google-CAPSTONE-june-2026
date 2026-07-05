@@ -36,26 +36,28 @@ class OrchestratorAgent:
 
     def __init__(self, search_agent: ServiceSearchAgent = None):
         self.search_agent = search_agent or ServiceSearchAgent()
-
-        self.api_key = os.environ.get("GEMINI_API_KEY")
         self.model_name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+        if not os.environ.get("GEMINI_API_KEY"):
+            print("Warning: GEMINI_API_KEY not found in environment. Running in sandbox/fallback mode.")
 
-        if self.api_key:
-            try:
-                self.client = genai.Client(api_key=self.api_key)
-            except Exception as e:
-                print(f"Error initializing Google GenAI Client: {e}")
-                self.client = None
-        else:
-            print("Warning: GEMINI_API_KEY not found. Running in sandbox/fallback mode.")
-            self.client = None
+    def _get_client(self):
+        """Returns a per-request GenAI client to prevent concurrency race conditions and support live key rotation (#1)."""
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            return None
+        try:
+            return genai.Client(api_key=api_key)
+        except Exception as e:
+            print(f"Error initializing Google GenAI Client: {e}")
+            return None
 
     def analyze_message(self, user_message: str) -> SupportAnalysis:
         """
         Uses Gemini Structured Outputs to classify the user's support need.
         Falls back to rule-based heuristics if API is unavailable.
         """
-        if not self.client:
+        client = self._get_client()
+        if not client:
             return self._fallback_analyze(user_message)
 
         system_prompt = (
@@ -67,7 +69,7 @@ class OrchestratorAgent:
         )
 
         try:
-            response = self.client.models.generate_content(
+            response = client.models.generate_content(
                 model=self.model_name,
                 contents=user_message,
                 config=types.GenerateContentConfig(

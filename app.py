@@ -137,15 +137,19 @@ app = FastAPI(
 # ---------------------------------------------------------------------------
 # CORS Middleware
 # ---------------------------------------------------------------------------
+allowed_origins = [
+    "https://mysupportbuddy-170198436835.us-central1.run.app",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+]
+if os.environ.get("ALLOWED_ORIGINS"):
+    allowed_origins.extend([o.strip() for o in os.environ["ALLOWED_ORIGINS"].split(",") if o.strip()])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://mysupportbuddy-170198436835.us-central1.run.app",
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
