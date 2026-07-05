@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultsView  = document.getElementById("resultsView");
   const authView     = document.getElementById("authView");
   const profileView  = document.getElementById("profileView");
+  const dashboardView = document.getElementById("dashboardView");
   const inputBar     = document.getElementById("inputBar");
   const loadingLabel = document.getElementById("loadingLabel");
   const connectButton = document.getElementById("connectButton");
@@ -18,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnAuth        = document.getElementById("btnAuth");
   const btnSignUp      = document.getElementById("btnSignUp");
   const btnProfile     = document.getElementById("btnProfile");
+  const btnDashboard   = document.getElementById("btnDashboard");
   const btnProfileBack = document.getElementById("btnProfileBack");
   const btnLogout      = document.getElementById("btnLogout");
   
@@ -189,6 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   btnProfile.addEventListener("click", () => show(profileView));
+  btnDashboard.addEventListener("click", () => show(dashboardView));
   btnProfileBack.addEventListener("click", () => show(welcomeView));
 
   authForm.addEventListener("submit", async (e) => {
@@ -791,7 +794,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ============================================================
      VIEW SWITCHER
   ============================================================ */
-  const views = [welcomeView, loadingView, resultsView, authView, profileView, chatView];
+  const views = [welcomeView, loadingView, resultsView, authView, profileView, chatView, dashboardView];
 
   function show(view) {
     views.forEach(v => {
