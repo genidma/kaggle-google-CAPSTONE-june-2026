@@ -399,6 +399,81 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Real-Time AI Co-Pilot & Supervision Sandbox (#7)
+  const btnSimulateCoPilot = document.getElementById("btnSimulateCoPilot");
+  const coPilotSandboxScreen = document.getElementById("coPilotSandboxScreen");
+  const btnUseEmpatheticPhrase = document.getElementById("btnUseEmpatheticPhrase");
+  const btnUseGroundingExercise = document.getElementById("btnUseGroundingExercise");
+  const coPilotDraftText = document.getElementById("coPilotDraftText");
+  const btnSendCoPilotResponse = document.getElementById("btnSendCoPilotResponse");
+  const btnForwardToClinician = document.getElementById("btnForwardToClinician");
+  const coPilotStatusToast = document.getElementById("coPilotStatusToast");
+
+  if (btnSimulateCoPilot && coPilotSandboxScreen) {
+    btnSimulateCoPilot.addEventListener("click", () => {
+      coPilotSandboxScreen.classList.remove("hidden");
+      coPilotSandboxScreen.classList.add("flex");
+      if (coPilotStatusToast) coPilotStatusToast.classList.add("hidden");
+      coPilotSandboxScreen.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      notify("🤖 AI Co-Pilot session initialized! Real-time sentiment & Do No Harm safety checks active.", "info");
+    });
+  }
+
+  if (btnUseEmpatheticPhrase && coPilotDraftText) {
+    btnUseEmpatheticPhrase.addEventListener("click", () => {
+      coPilotDraftText.value = "I hear how scary and overwhelming this feels right now. You are not alone—I am right here with you. Let's take a slow breath together.";
+      notify("Empathetic phrasing inserted into response draft.", "success");
+    });
+  }
+
+  if (btnUseGroundingExercise && coPilotDraftText) {
+    btnUseGroundingExercise.addEventListener("click", () => {
+      coPilotDraftText.value = "Let's try the 4-4-4-4 Box Breathing technique together: Inhale slowly for 4 seconds, hold for 4, exhale for 4, and pause for 4.";
+      notify("Grounding exercise inserted into response draft.", "success");
+    });
+  }
+
+  if (btnSendCoPilotResponse && coPilotDraftText) {
+    btnSendCoPilotResponse.addEventListener("click", () => {
+      if (!coPilotDraftText.value.trim()) {
+        notify("Please select an AI Co-Pilot suggestion or write a draft response first.", "error");
+        return;
+      }
+      if (coPilotStatusToast) {
+        coPilotStatusToast.classList.remove("hidden");
+      }
+      notify("Response dispatched to peer! You can now forward a Clinical Handoff Report.", "success");
+    });
+  }
+
+  if (btnForwardToClinician) {
+    btnForwardToClinician.addEventListener("click", () => {
+      const clinicianHandoffList = document.getElementById("clinicianHandoffList");
+      if (clinicianHandoffList) {
+        const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const newReport = document.createElement("div");
+        newReport.className = "p-4 rounded-xl bg-surface border-2 border-primary/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md animate-fade-in";
+        newReport.innerHTML = `
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm text-text-main">Peer Patient: Alex W. (Anxiety & Panic Attack)</span>
+              <span class="px-2 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-bold">New Handoff • Buddy: Care Team (#7)</span>
+            </div>
+            <p class="text-xs text-text-muted">
+              <strong class="text-text-main">Session Summary:</strong> ${coPilotDraftText?.value || "Guided patient through structured 4-4-4-4 Box Breathing de-escalation."} Verified zero self-harm risk. Recommend clinician follow-up for baseline anxiety assessment.
+            </p>
+            <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: ${timestamp} • HIPAA Handoff ID: #MSB-${Math.floor(1000 + Math.random() * 9000)}</span>
+          </div>
+          <button onclick="alert('Opening clinical chart and patient electronic health record for Alex W...')" class="px-4 py-2 rounded-xl bg-primary text-white hover:brightness-110 font-bold text-xs transition-all shrink-0 shadow-sm">
+            Review Chart
+          </button>
+        `;
+        clinicianHandoffList.prepend(newReport);
+      }
+      notify("📋 Clinical Care Handoff Report securely forwarded to Dr. Aris Vance (Clinician Portal #7)!", "success");
+    });
+  }
+
   authForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = authEmail.value.trim();
