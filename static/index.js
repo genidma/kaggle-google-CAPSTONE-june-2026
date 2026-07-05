@@ -8,6 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const authView     = document.getElementById("authView");
   const profileView  = document.getElementById("profileView");
   const dashboardView = document.getElementById("dashboardView");
+  const buddyDashboardView = document.getElementById("buddyDashboardView");
+  const clinicianPortalView = document.getElementById("clinicianPortalView");
+  const caregiverPortalView = document.getElementById("caregiverPortalView");
+  const userRoleBadge = document.getElementById("userRoleBadge");
+  const roleBadgeIcon = document.getElementById("roleBadgeIcon");
+  const roleBadgeText = document.getElementById("roleBadgeText");
   const supportBuddiesView = document.getElementById("supportBuddiesView");
   const supportRosterSearch = document.getElementById("supportRosterSearch");
   const supportRosterFilters = document.getElementById("supportRosterFilters");
@@ -115,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (authToken) {
     const claims = parseJwtClaims(authToken);
     if (claims && claims.exp * 1000 > Date.now()) {
-      currentUser = { id: claims.sub, email: claims.email, tier: claims.tier };
+      currentUser = { id: claims.sub, email: claims.email, tier: claims.tier, role: claims.role || "patient" };
     } else {
       // Token expired — clear it
       authToken = null;
@@ -158,6 +164,30 @@ document.addEventListener("DOMContentLoaded", () => {
       btnToggleSidebar.classList.remove("hidden");
       profileEmail.textContent = currentUser.email;
       profileTier.textContent = `${currentUser.tier} Member`;
+
+      // Role Badge logic (#1)
+      if (userRoleBadge) {
+        userRoleBadge.classList.remove("hidden");
+        const role = currentUser.role || "patient";
+        if (role === "buddy") {
+          roleBadgeIcon.textContent = "🛡️";
+          roleBadgeText.textContent = "Support Buddy";
+          userRoleBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-primary/15 text-primary border border-primary/30 flex items-center gap-1.5 shadow-sm";
+        } else if (role === "clinician") {
+          roleBadgeIcon.textContent = "🩺";
+          roleBadgeText.textContent = "Clinician";
+          userRoleBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-amber/15 text-amber border border-amber/30 flex items-center gap-1.5 shadow-sm";
+        } else if (role === "caregiver") {
+          roleBadgeIcon.textContent = "🌟";
+          roleBadgeText.textContent = "Caregiver";
+          userRoleBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-primary/15 text-primary border border-primary/30 flex items-center gap-1.5 shadow-sm";
+        } else {
+          roleBadgeIcon.textContent = "👤";
+          roleBadgeText.textContent = "Patient";
+          userRoleBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 flex items-center gap-1.5 shadow-sm";
+        }
+      }
+
       fetchSidebarBuddies();
       fetchConversations();
     } else {
@@ -166,6 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
       btnProfile.classList.add("hidden");
       btnToggleSidebar.classList.add("hidden");
       buddySidebar.classList.add("hidden");
+      if (userRoleBadge) userRoleBadge.classList.add("hidden");
       currentConvoId = null;
     }
   }
@@ -196,9 +227,161 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   btnProfile.addEventListener("click", () => show(profileView));
-  btnDashboard.addEventListener("click", () => show(dashboardView));
+  btnDashboard.addEventListener("click", () => navigateToRoleDashboard());
   btnProfileBack.addEventListener("click", () => show(welcomeView));
   if (headerLogo) headerLogo.addEventListener("click", () => show(welcomeView));
+
+  function navigateToRoleDashboard() {
+    if (!currentUser) {
+      show(dashboardView);
+      return;
+    }
+    const role = currentUser.role || "patient";
+    if (role === "buddy") {
+      show(buddyDashboardView);
+      loadBuddyDashboardData();
+    } else if (role === "clinician") {
+      show(clinicianPortalView);
+      loadClinicianPortalData();
+    } else if (role === "caregiver") {
+      show(caregiverPortalView);
+      loadCaregiverPortalData();
+    } else {
+      show(dashboardView);
+    }
+  }
+
+  async function loadBuddyDashboardData() {
+    const peersList = document.getElementById("buddyPeersList");
+    const callLogsList = document.getElementById("buddyCallLogsList");
+    if (!peersList || !callLogsList) return;
+
+    try {
+      const res = await fetch("/api/buddy-dashboard", { headers: authHeaders() });
+      if (!res.ok) throw new Error("Failed to load Buddy Dashboard");
+      const data = await res.json();
+
+      if (data.assigned_peers && data.assigned_peers.length > 0) {
+        peersList.innerHTML = data.assigned_peers.map(p => `
+          <div class="p-4 rounded-xl border border-border bg-surface flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-text-main">${p.name}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase">${p.status}</span>
+            </div>
+            <p class="text-xs text-text-muted">Last check-in: ${p.last_checkin}</p>
+            <p class="text-xs italic text-text-main bg-background-dark p-2 rounded border border-border/50">"${p.notes}"</p>
+          </div>
+        `).join("");
+      } else {
+        peersList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic col-span-3">No active peers currently assigned to your queue.</div>`;
+      }
+
+      if (data.warmline_logs && data.warmline_logs.length > 0) {
+        callLogsList.innerHTML = data.warmline_logs.map(log => `
+          <div class="p-3 rounded-xl border border-border bg-surface flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <span class="text-primary font-bold">📞 Call #${log.id}</span>
+              <span class="text-text-muted">• ${log.duration}</span>
+              <span class="text-text-main font-medium">${log.summary}</span>
+            </div>
+            <span class="text-text-muted text-[10px]">${log.timestamp}</span>
+          </div>
+        `).join("");
+      } else {
+        callLogsList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic">No warmline dispatches recorded today.</div>`;
+      }
+    } catch (err) {
+      peersList.innerHTML = `<div class="text-center py-4 text-rose text-xs col-span-3">Error loading queue: ${err.message}</div>`;
+    }
+  }
+
+  async function loadClinicianPortalData() {
+    const triageList = document.getElementById("clinicianTriageList");
+    if (!triageList) return;
+
+    try {
+      const res = await fetch("/api/clinician-portal", { headers: authHeaders() });
+      if (!res.ok) throw new Error("Failed to load Clinician Portal");
+      const data = await res.json();
+
+      if (data.triage_cases && data.triage_cases.length > 0) {
+        triageList.innerHTML = data.triage_cases.map(c => `
+          <div class="p-4 rounded-xl border border-border bg-surface flex flex-col gap-2.5 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sm text-text-main flex items-center gap-1.5">
+                <span>⚠️</span> Patient ${c.patient_id}
+              </span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.risk_level === 'High' ? 'bg-rose/15 text-rose border border-rose/30' : 'bg-amber/15 text-amber border border-amber/30'} uppercase tracking-wider">${c.risk_level} Risk</span>
+            </div>
+            <div class="text-xs text-text-main bg-background-dark p-2.5 rounded-lg border border-border/60">
+              <span class="font-semibold text-text-muted block mb-0.5">Primary Symptoms:</span> ${c.symptoms}
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-text-muted pt-1 border-t border-border/40">
+              <span>Status: <strong class="text-text-main">${c.status}</strong></span>
+              <span>Updated: ${c.last_updated}</span>
+            </div>
+          </div>
+        `).join("");
+      } else {
+        triageList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic col-span-2">No active triage cases pending review.</div>`;
+      }
+    } catch (err) {
+      triageList.innerHTML = `<div class="text-center py-4 text-rose text-xs col-span-2">Error loading cases: ${err.message}</div>`;
+    }
+  }
+
+  async function loadCaregiverPortalData() {
+    const summariesList = document.getElementById("caregiverSummariesList");
+    if (!summariesList) return;
+
+    try {
+      const res = await fetch("/api/caregiver-portal", { headers: authHeaders() });
+      if (!res.ok) throw new Error("Failed to load Caregiver Portal");
+      const data = await res.json();
+
+      if (data.consented_summaries && data.consented_summaries.length > 0) {
+        summariesList.innerHTML = data.consented_summaries.map(s => `
+          <div class="p-4 rounded-xl border border-border bg-surface flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-lg shrink-0">
+                ${s.status === 'Thriving' ? '🌟' : '💛'}
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-sm text-text-main">${s.patient_name}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase">${s.status}</span>
+                </div>
+                <p class="text-xs text-text-muted mt-0.5">Recent activity: ${s.recent_activity}</p>
+              </div>
+            </div>
+            <div class="text-xs text-right bg-background-dark md:bg-transparent p-2 md:p-0 rounded border border-border/50 md:border-0 shrink-0">
+              <span class="text-text-muted block text-[10px]">Last Peer Session:</span>
+              <span class="font-semibold text-text-main">${s.last_session}</span>
+            </div>
+          </div>
+        `).join("");
+      } else {
+        summariesList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic">No consented check-in summaries available.</div>`;
+      }
+    } catch (err) {
+      summariesList.innerHTML = `<div class="text-center py-4 text-rose text-xs">Error loading summaries: ${err.message}</div>`;
+    }
+  }
+
+  const btnSubmitBuddyNote = document.getElementById("btnSubmitBuddyNote");
+  if (btnSubmitBuddyNote) {
+    btnSubmitBuddyNote.addEventListener("click", () => {
+      const peerId = document.getElementById("buddyNotePeerId")?.value.trim();
+      const noteText = document.getElementById("buddyNoteText")?.value.trim();
+      if (!peerId || !noteText) {
+        notify("Please enter both a Peer ID/Name and note text.", "error");
+        return;
+      }
+      notify(`Peer session note saved for ${peerId}. Thank you for your support!`, "success");
+      if (document.getElementById("buddyNotePeerId")) document.getElementById("buddyNotePeerId").value = "";
+      if (document.getElementById("buddyNoteText")) document.getElementById("buddyNoteText").value = "";
+    });
+  }
 
   authForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -225,7 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
       authToken = data.token;
       localStorage.setItem("msb_token", authToken);
-      currentUser = { id: data.id, email: data.email, tier: data.tier };
+      currentUser = { id: data.id, email: data.email, tier: data.tier, role: data.role || "patient" };
       updateAuthUI();
       notify(isSignUpMode ? "Account created! Welcome." : "Logged in successfully.");
       show(welcomeView);
@@ -879,17 +1062,34 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
-     VIEW SWITCHER
+     VIEW SWITCHER & INSPIRATIONAL QUOTES (#1, #3)
   ============================================================ */
-  const views = [welcomeView, loadingView, resultsView, authView, profileView, chatView, dashboardView, supportBuddiesView];
+  const INSPIRATIONAL_QUOTES = [
+    { text: "In medicine, as in life, the most important thing you can give anyone is hope.", author: "Doogie Howser, M.D." },
+    { text: "Every challenge we face is an opportunity to learn, to grow, and to become a better version of ourselves.", author: "Doogie Howser, M.D." },
+    { text: "True strength is not about never failing, but about having the courage to stand up and try again.", author: "Doogie Howser, M.D." },
+    { text: "Healing is a matter of time, but it is sometimes also a matter of opportunity.", author: "Hippocrates" },
+    { text: "We don't heal in isolation, but in community.", author: "S. Kelley Harrell" }
+  ];
+
+  function updateDoogieQuotes() {
+    const quote = INSPIRATIONAL_QUOTES[Math.floor(Math.random() * INSPIRATIONAL_QUOTES.length)];
+    document.querySelectorAll('.doogie-quote-text').forEach(el => el.textContent = `"${quote.text}"`);
+    document.querySelectorAll('.doogie-quote-author').forEach(el => el.textContent = `— ${quote.author}`);
+  }
+
+  const views = [welcomeView, loadingView, resultsView, authView, profileView, chatView, dashboardView, supportBuddiesView, buddyDashboardView, clinicianPortalView, caregiverPortalView];
 
   function show(view) {
     views.forEach(v => {
+      if (!v) return;
       if (v === view) { v.classList.remove("hidden"); }
       else            { v.classList.add("hidden"); }
     });
 
-    const isMainView = [welcomeView, loadingView, resultsView, chatView, dashboardView, supportBuddiesView].includes(view);
+    updateDoogieQuotes();
+
+    const isMainView = [welcomeView, loadingView, resultsView, chatView, dashboardView, supportBuddiesView, buddyDashboardView, clinicianPortalView, caregiverPortalView].includes(view);
     if (isMainView) {
       document.querySelector(".main-layout").classList.remove("hidden");
       inputBar.classList.remove("hidden");

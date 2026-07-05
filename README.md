@@ -21,6 +21,19 @@ Developed for the **Google & Kaggle AI Agents Capstone**, MySupportBuddy demonst
 
 ---
 
+## 🛡️ Role-Based Access Control (RBAC) & Responsibilities (#1, #4, #5)
+
+MySupportBuddy enforces strict role-based access boundaries to protect human wellbeing, maintain confidentiality, and uphold **Do No Harm** ethical principles:
+
+| Role | Access Level & Key Responsibilities | Ethics & Governance |
+|---|---|---|
+| **👤 Patient** | Standard user portal. Can interact with AI peer support, browse the accredited buddy roster, call the 24/7 warmline, and manage chat history/trash bin. | Complete control over personal data and caregiver consent toggles. |
+| **🛡️ Support Buddy** | Dedicated **Buddy Care Dashboard**. Accesses assigned peer support queue, views warmline call metadata (duration only), and logs non-clinical supportive notes. | Operates under accredited peer guidelines (#5). Absolutely no access to call transcripts or clinical records. |
+| **🩺 Clinician** | Secure **Clinician Triage Portal**. Reviews high-priority escalated triage cases, symptom reports, and diagnostic risk levels. | Bound by HIPAA confidentiality and clinical authorization. Roadmap includes TBI neuro-imaging scan analysis (#2). |
+| **🌟 Caregiver** | **Caregiver Wellness Portal**. Monitors high-level mood summaries and check-in statuses for family members. | Strict consent policy: access is dynamically gated by patient consent settings. |
+
+---
+
 ## 🤖 Multi-Agent Architecture
 
 ```mermaid
