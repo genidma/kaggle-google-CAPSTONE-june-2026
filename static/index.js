@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnDashboard   = document.getElementById("btnDashboard");
   const btnProfileBack = document.getElementById("btnProfileBack");
   const btnLogout      = document.getElementById("btnLogout");
+  const headerLogo     = document.getElementById("headerLogo");
   
   const btnToggleSidebar     = document.getElementById("btnToggleSidebar");
   const buddySidebar         = document.getElementById("buddySidebar");
@@ -193,6 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
   btnProfile.addEventListener("click", () => show(profileView));
   btnDashboard.addEventListener("click", () => show(dashboardView));
   btnProfileBack.addEventListener("click", () => show(welcomeView));
+  if (headerLogo) headerLogo.addEventListener("click", () => show(welcomeView));
 
   authForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -802,7 +804,7 @@ document.addEventListener("DOMContentLoaded", () => {
       else            { v.classList.add("hidden"); }
     });
 
-    const isMainView = [welcomeView, loadingView, resultsView, chatView].includes(view);
+    const isMainView = [welcomeView, loadingView, resultsView, chatView, dashboardView].includes(view);
     if (isMainView) {
       document.querySelector(".main-layout").classList.remove("hidden");
       inputBar.classList.remove("hidden");
