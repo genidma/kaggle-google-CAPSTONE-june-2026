@@ -576,6 +576,11 @@ document.addEventListener("DOMContentLoaded", () => {
     notify("🧠 Uploading neuro-imaging scan... Vertex AI Vision-Language model analyzing...", "info");
     if (tbiDropzone) tbiDropzone.classList.add("opacity-50", "pointer-events-none");
 
+    const tbiDiagSection = document.getElementById("tbiDiagSection");
+    const tbiDiagFindingsList = document.getElementById("tbiDiagFindingsList");
+    const tbiDiagProgress = document.getElementById("tbiDiagProgress");
+    const progressEl = document.getElementById("tbiScanProgress");
+
     try {
       const res = await fetch("/api/tbi-analyze", {
         method: "POST",
@@ -593,54 +598,102 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const slicesData = data.analysis.slices || [
-          { title: "Frontal Lobe Impact", view_type: "TBI Assessment: ID 4912", image_url: "/tbi/slice_1_frontal.png", status: "Metabolic Depression", impact_score: "4.2 / 10", clinical_note: "Slight metabolic depression observed in prefrontal cortex." },
-          { title: "Axial View", view_type: "Regions: Frontal & Temporal", image_url: "/tbi/slice_2_axial.png", status: "Minor Inflammation", impact_score: "3.8 / 10", clinical_note: "Bilateral neural connectivity assessment shows localized temporal inflammation." },
-          { title: "Sagittal View", view_type: "TBI Severity: Moderate (67%)", image_url: "/tbi/slice_3_sagittal.png", status: "Moderate Severity", impact_score: "4.5 / 10", clinical_note: "Correlates with reported executive dysfunction and sensory hypersensitivity." },
-          { title: "Rear View Assessment", view_type: "Temporal & Parietal Involvement", image_url: "/tbi/slice_4_rear.png", status: "Stable / Unremarkable", impact_score: "1.5 / 10", clinical_note: "Parietal lobe connectivity intact; no focal hemorrhaging detected." },
-          { title: "Detailed Regional Analysis", view_type: "Right Frontal (14,500 Points)", image_url: "/tbi/slice_5_regional.png", status: "Analysis Complete", impact_score: "3.2 / 10", clinical_note: "High-resolution neural mesh mapped. Cleared for supportive outpatient peer grounding." }
+          { title: "Frontal Lobe Impact (Raw Sectional View)", view_type: "Slice 01 - Frontal Scan", image_url: "/img/tbi/slice_1_frontal.png", status: "Metabolic Depression", impact_score: "4.2 / 10", clinical_note: "Initial frontal lobe scan prior to diagnostic neural network overlay; slight metabolic depression observed in prefrontal cortex." },
+          { title: "Axial View (Raw Sectional View)", view_type: "Slice 02 - Axial Scan", image_url: "/img/tbi/slice_2_axial.png", status: "Minor Inflammation", impact_score: "3.8 / 10", clinical_note: "Initial axial cross-section showing bilateral temporal symmetry and localized inflammation." },
+          { title: "Sagittal View (Raw Sectional View)", view_type: "Slice 03 - Sagittal Scan", image_url: "/img/tbi/slice_3_sagittal.png", status: "Moderate Severity", impact_score: "4.5 / 10", clinical_note: "Mid-sagittal section displaying corpus callosum and brainstem anatomy; correlates with executive fatigue." },
+          { title: "Rear View Assessment (Raw Sectional View)", view_type: "Slice 04 - Occipital/Parietal", image_url: "/img/tbi/slice_4_rear.png", status: "Stable / Unremarkable", impact_score: "1.5 / 10", clinical_note: "Posterior view showing occipital and parietal lobe structure intact; no focal hemorrhaging detected." },
+          { title: "Detailed Regional View (Raw Sectional View)", view_type: "Slice 05 - Temporal/Regional", image_url: "/img/tbi/slice_5_regional.png", status: "Damage Analysis Complete", impact_score: "3.2 / 10", clinical_note: "High-resolution regional cross-section mapped prior to automated biomarker assessment." }
         ];
 
-        const progressEl = document.getElementById("tbiScanProgress");
-        if (progressEl) progressEl.textContent = "Initializing multimodal Vision-Language pipeline...";
+        const diagSlicesData = data.analysis.diag_slices || [
+          { title: "Frontal Lobe Impact — Neural Network Diagnostic Overlay", view_type: "Diag 01 - Frontal Impact", image_url: "/img/tbi/diag_1_frontal.png", status: "Metabolic Depression", impact_score: "4.2 / 10", clinical_note: "Clinical Observations (Frontal Region): Impulsivity, Impaired judgment, Difficulty planning/executing tasks, Emotional regulation dysfunction." },
+          { title: "Multimodal Mood & Behavioral Profile — Temporal Focus", view_type: "Diag 02 - Mood Assessment", image_url: "/img/tbi/diag_2_axial.png", status: "Minor Inflammation", impact_score: "3.8 / 10", clinical_note: "Multi-Site Mood Assessment: Frontal Lobe -> Impulsivity; Apathy. Temporal Lobe -> Depressive symptoms; Anxiety. Combined Effect -> Increased risk of chronic irritability." },
+          { title: "Sagittal Severity & Behavioral Diagnostics", view_type: "Diag 03 - Sagittal Severity", image_url: "/img/tbi/diag_3_sagittal.png", status: "Moderate Severity (67% Conf.)", impact_score: "4.5 / 10", clinical_note: "Specific Behavioral Observations (Temporal Focus): Challenges with memory consolidation, Difficulty reading social cues, Altered perception of threat." },
+          { title: "Rear View Cognitive & Sensory Assessment", view_type: "Diag 04 - Parietal / Temporal", image_url: "/img/tbi/diag_4_rear.png", status: "Stable / Unremarkable", impact_score: "1.5 / 10", clinical_note: "Cognitive & Sensory Impact: Spatial neglect errors, Sensory processing difficulties, Reduced attention span." },
+          { title: "Detailed Regional Analysis & Quantitative Mood Metrics", view_type: "Diag 05 - Right Frontal Mesh", image_url: "/img/tbi/diag_5_regional.png", status: "14,500 Data Points Mapped", impact_score: "3.2 / 10", clinical_note: "Quantitative Mood Metrics (Detailed R Frontal): Affective Lability Score: High. Response Inhibition Score: Impaired. Decision Making Deficit: Moderate." }
+        ];
 
-        // 1. Initial Skeleton Loading State
-        tbiFindingsList.innerHTML = slicesData.map((slice, idx) => `
-          <div id="tbi-slice-card-${idx}" class="p-4 rounded-2xl bg-surface border-2 border-dashed border-primary/30 flex flex-col items-center justify-center gap-3 min-h-[220px] shadow-sm animate-pulse text-center">
-            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary animate-spin">
-              <span class="material-symbols-outlined text-[20px]">sync</span>
+        if (progressEl) progressEl.textContent = "Initializing multimodal Vision-Language pipeline...";
+        if (tbiDiagSection) tbiDiagSection.classList.add("hidden");
+
+        // Helper function to render blown-up widescreen cards without text embossing
+        const renderCardHtml = (slice) => `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-3.5">
+            <div>
+              <span class="inline-block px-2.5 py-0.5 rounded bg-primary/10 text-primary font-mono text-xs font-bold mb-1">${slice.view_type}</span>
+              <h4 class="text-base sm:text-lg font-display font-bold text-text-main">${slice.title}</h4>
             </div>
-            <span class="text-xs font-bold text-text-main">Neural Engine Processing Slice ${idx + 1}/5...</span>
-            <span class="text-[10px] font-mono text-primary font-semibold">${slice.title}</span>
+            <div class="flex items-center gap-2 self-start sm:self-center shrink-0">
+              <span class="px-3 py-1 rounded-lg text-xs font-bold ${slice.status.includes('Stable') || slice.status.includes('Normal') || slice.status.includes('Complete') ? 'bg-emerald-500/15 text-emerald-600' : 'bg-amber/15 text-amber'}">${slice.status}</span>
+              <span class="px-3 py-1 rounded-lg text-xs font-bold bg-card border border-border text-text-main font-mono">Impact: ${slice.impact_score}</span>
+            </div>
+          </div>
+          <div class="w-full bg-black/5 rounded-2xl border border-border/80 overflow-hidden flex items-center justify-center p-2 sm:p-4 shadow-inner">
+            <img src="${slice.image_url}" alt="${slice.title}" class="w-full h-auto max-h-[760px] object-contain rounded-xl shadow-md transition-transform duration-500 hover:scale-[1.01]" />
+          </div>
+          <div class="bg-card p-4 rounded-xl border border-border/60 text-xs sm:text-sm text-text-muted leading-relaxed shadow-sm">
+            <strong class="text-text-main block mb-1">Clinical Observations & Biomarker Note:</strong>
+            ${slice.clinical_note}
+          </div>
+        `;
+
+        // 1. Initial Skeleton Loading State for Initial Sectional Views
+        tbiFindingsList.innerHTML = slicesData.map((slice, idx) => `
+          <div id="tbi-slice-card-${idx}" class="p-8 rounded-2xl bg-surface border-2 border-dashed border-primary/30 flex flex-col items-center justify-center gap-3 min-h-[300px] shadow-sm animate-pulse text-center w-full">
+            <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary animate-spin">
+              <span class="material-symbols-outlined text-[24px]">sync</span>
+            </div>
+            <span class="text-sm font-bold text-text-main">Neural Engine Processing Initial Slice ${idx + 1}/5...</span>
+            <span class="text-xs font-mono text-primary font-semibold">${slice.title}</span>
           </div>
         `).join("");
 
         tbiAnalysisResults.classList.remove("hidden");
         tbiAnalysisResults.classList.add("flex");
 
-        // 2. Sequential Fake Loading Reveal (450ms interval per slice)
+        // 2. Sequential Fake Loading Reveal for Initial Slices (350ms interval per slice)
         for (let i = 0; i < slicesData.length; i++) {
-          await new Promise(r => setTimeout(r, 450));
+          await new Promise(r => setTimeout(r, 350));
           const slice = slicesData[i];
           const cardEl = document.getElementById(`tbi-slice-card-${i}`);
-          if (progressEl) progressEl.textContent = `Processing Slice ${i + 1} of 5: ${slice.title}...`;
+          if (progressEl) progressEl.textContent = `Processing Initial View ${i + 1} of 5: ${slice.view_type}...`;
           if (cardEl) {
-            cardEl.className = "p-3 rounded-2xl bg-surface border border-border/80 flex flex-col gap-2.5 shadow-md hover:border-primary/50 transition-all animate-fade-in group overflow-hidden";
-            cardEl.innerHTML = `
-              <div class="relative rounded-xl overflow-hidden bg-black/10 border border-border/40 aspect-[16/9] flex items-center justify-center">
-                <img src="${slice.image_url}" alt="${slice.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md text-white font-mono text-[9px] font-bold shadow-sm">${slice.view_type}</span>
-              </div>
-              <div class="flex items-center justify-between gap-1 mt-0.5">
-                <span class="text-xs font-bold text-text-main truncate" title="${slice.title}">${slice.title}</span>
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${slice.status.includes('Stable') || slice.status.includes('Normal') ? 'bg-emerald-500/15 text-emerald-600' : 'bg-amber/15 text-amber'}">${slice.impact_score}</span>
-              </div>
-              <span class="text-[11px] font-semibold ${slice.status.includes('Stable') || slice.status.includes('Normal') ? 'text-emerald-600' : 'text-primary'} block">${slice.status}</span>
-              <p class="text-[11px] text-text-muted leading-snug line-clamp-2">${slice.clinical_note}</p>
-            `;
+            cardEl.className = "p-5 rounded-2xl bg-surface border border-border/80 flex flex-col gap-4 shadow-md hover:border-primary/50 transition-all animate-fade-in group w-full";
+            cardEl.innerHTML = renderCardHtml(slice);
           }
         }
-        if (progressEl) progressEl.textContent = "✅ All 5 Sectional Views Synchronized";
-        notify("✅ 5-Slice TBI Neuro-Imaging analysis complete! All neural data points and recovery protocols mapped (#2).", "success");
+        if (progressEl) progressEl.textContent = "✅ All 5 Initial Sectional Views Synchronized";
+
+        // 3. Reveal and Process Diagnostic Overlay Slices (3.d & 2)
+        if (tbiDiagSection && tbiDiagFindingsList) {
+          tbiDiagSection.classList.remove("hidden");
+          tbiDiagSection.classList.add("flex");
+          if (tbiDiagProgress) tbiDiagProgress.textContent = "Initializing Diagnostic Overlay Mapping...";
+
+          tbiDiagFindingsList.innerHTML = diagSlicesData.map((slice, idx) => `
+            <div id="tbi-diag-card-${idx}" class="p-8 rounded-2xl bg-surface border-2 border-dashed border-primary/30 flex flex-col items-center justify-center gap-3 min-h-[300px] shadow-sm animate-pulse text-center w-full">
+              <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary animate-spin">
+                <span class="material-symbols-outlined text-[24px]">biotech</span>
+              </div>
+              <span class="text-sm font-bold text-text-main">Mapping Neural Network Diagnostic Overlay ${idx + 1}/5...</span>
+              <span class="text-xs font-mono text-primary font-semibold">${slice.title}</span>
+            </div>
+          `).join("");
+
+          for (let i = 0; i < diagSlicesData.length; i++) {
+            await new Promise(r => setTimeout(r, 350));
+            const slice = diagSlicesData[i];
+            const cardEl = document.getElementById(`tbi-diag-card-${i}`);
+            if (tbiDiagProgress) tbiDiagProgress.textContent = `Mapping Diagnostic Overlay ${i + 1} of 5: ${slice.view_type}...`;
+            if (cardEl) {
+              cardEl.className = "p-5 rounded-2xl bg-surface border border-border/80 flex flex-col gap-4 shadow-md hover:border-primary/50 transition-all animate-fade-in group w-full";
+              cardEl.innerHTML = renderCardHtml(slice);
+            }
+          }
+          if (tbiDiagProgress) tbiDiagProgress.textContent = "✅ All 5 Diagnostic Overlays Synchronized";
+        }
+
+        notify("✅ 10-Slice TBI Neuro-Imaging analysis complete! Initial sectional views & diagnostic neural overlays synchronized (#2).", "success");
       }
     } catch (e) {
       notify("Error analyzing TBI scan: " + e.message, "error");
