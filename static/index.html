@@ -189,8 +189,8 @@
     </aside>
 
     <!-- MAIN SCROLLABLE CONTENT -->
-    <main class="flex-1 overflow-y-auto p-6 md:p-10 flex justify-center">
-      <div class="w-full max-w-[960px] flex flex-col gap-6">
+    <main class="flex-1 overflow-y-auto p-6 md:p-10 flex flex-col items-center w-full">
+      <div class="w-full max-w-[1140px] flex flex-col gap-6">
 
         <!-- 1. WELCOME/LANDING VIEW -->
         <section id="welcomeView" class="flex-1 flex flex-col justify-center items-center py-12 max-w-xl mx-auto gap-8">
@@ -945,18 +945,18 @@
 
       <!-- Multimodal TBI Neuro-Imaging Scan Analyzer (#2) -->
       <div class="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col gap-5 bg-gradient-to-br from-surface to-card">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
-          <div class="flex items-center gap-3">
-            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-white text-xl shadow-sm">🧠</span>
-            <div>
-              <div class="flex items-center gap-2">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4 flex-wrap">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-white text-xl shadow-sm shrink-0">🧠</span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
                 <h3 class="font-display text-text-main font-bold text-lg">Multimodal TBI Neuro-Imaging Analyzer (#2)</h3>
                 <span class="px-2 py-0.5 rounded-full bg-primary/15 text-primary font-bold text-[10px] uppercase tracking-wider">Vertex AI Vision-Language</span>
               </div>
-              <p class="text-text-muted text-xs">Upload or simulate patient fMRI/CT brain scans for automated regional impact scoring & neurological controls.</p>
+              <p class="text-text-muted text-xs mt-0.5">Upload or simulate patient fMRI/CT brain scans for automated regional impact scoring & neurological controls.</p>
             </div>
           </div>
-          <div class="flex items-center gap-2.5 shrink-0">
+          <div class="flex items-center gap-2.5 shrink-0 self-start md:self-center">
             <button id="btnSimulateTbiScan" class="px-5 py-2.5 rounded-xl border-2 border-primary bg-primary/15 text-primary hover:bg-primary hover:text-white transition-all text-xs font-bold shadow-sm flex items-center gap-1.5">
               <span class="material-symbols-outlined text-[18px]">biotech</span> Simulate Scan Analysis
             </button>
@@ -964,32 +964,48 @@
         </div>
 
         <!-- TBI Scan Dropzone Area -->
-        <div id="tbiDropzone" class="border-2 border-dashed border-primary/30 rounded-xl p-6 text-center bg-surface/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2">
+        <div id="tbiDropzone" class="border-2 border-dashed border-primary/30 rounded-xl p-6 text-center bg-surface/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer">
           <span class="material-symbols-outlined text-[36px] text-primary/70">upload_file</span>
           <p class="text-xs text-text-main font-semibold">Drag & drop DICOM / NIfTI neuro-imaging slice here, or click to browse</p>
           <span class="text-[11px] text-text-muted">Supported AI engines: NeuroScan-TBI-v1, AlphaBrain-Impact-7B (GR38 validated)</span>
         </div>
 
         <!-- TBI Analysis Results Container (Hidden initially) -->
-        <div id="tbiAnalysisResults" class="hidden flex-col gap-4 pt-2 animate-fade-in">
-          <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between text-xs font-bold text-text-main">
-            <span id="tbiModelUsed" class="flex items-center gap-1.5">🤖 Model: NeuroScan-TBI-v1</span>
-            <span id="tbiScanMeta" class="text-primary font-semibold">Patient #8492 • Axial fMRI Slice</span>
+        <div id="tbiAnalysisResults" class="hidden flex-col gap-6 pt-2 animate-fade-in">
+          <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between text-xs font-bold text-text-main flex-wrap gap-2">
+            <span id="tbiModelUsed" class="flex items-center gap-1.5">🤖 Model: NeuroScan-TBI-v1 (Multimodal Vision-Language)</span>
+            <span id="tbiScanMeta" class="text-primary font-semibold">Patient #8492 • 5-Slice Multimodal Scan Series</span>
           </div>
 
-          <div class="flex flex-col gap-2.5">
-            <div class="flex items-center justify-between">
-              <h4 class="text-xs font-bold text-text-main uppercase tracking-wider">Multimodal 5-Slice Neuro-Imaging Findings (#2):</h4>
-              <span id="tbiScanProgress" class="text-primary font-mono text-[11px] font-bold">Processing...</span>
+          <!-- Section 1: Initial Sectional Brain Views -->
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-border/40 pb-2.5 flex-wrap gap-2">
+              <h4 class="text-sm font-bold text-text-main uppercase tracking-wider flex items-center gap-2">
+                <span>🖥️</span> Initial Sectional Brain Views (Raw fMRI / CT Slices 01 to 05):
+              </h4>
+              <span id="tbiScanProgress" class="text-primary font-mono text-xs font-bold">Processing Slices...</span>
             </div>
-            <div id="tbiFindingsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-              <!-- Dynamically populated findings -->
+            <div id="tbiFindingsList" class="flex flex-col gap-8 w-full">
+              <!-- Dynamically populated widescreen initial sectional views -->
             </div>
           </div>
 
-          <div class="p-4 rounded-xl bg-surface border border-border flex flex-col gap-2 shadow-inner">
+          <!-- Section 2: Neural Network Diagnostic Overlays -->
+          <div id="tbiDiagSection" class="hidden flex-col gap-4 pt-6 border-t-2 border-border/80 animate-fade-in">
+            <div class="flex items-center justify-between border-b border-border/40 pb-2.5 flex-wrap gap-2">
+              <h4 class="text-sm font-bold text-primary uppercase tracking-wider flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">biotech</span> Neural Network Diagnostic Overlays & Biomarker Analysis (01 to 05):
+              </h4>
+              <span id="tbiDiagProgress" class="text-primary font-mono text-xs font-bold">Processing Overlays...</span>
+            </div>
+            <div id="tbiDiagFindingsList" class="flex flex-col gap-8 w-full">
+              <!-- Dynamically populated widescreen diagnostic overlay views -->
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface border border-border flex flex-col gap-2 shadow-inner mt-2">
             <span class="text-xs font-bold text-text-main uppercase tracking-wider text-primary flex items-center gap-1">
-              <span class="material-symbols-outlined text-[16px]">verified</span> Neurological Recovery Protocol & Controls
+              <span class="material-symbols-outlined text-[16px]">verified</span> Neurological Recovery Protocol & Controls (#2)
             </span>
             <p id="tbiRecoveryProtocol" class="text-xs text-text-muted leading-relaxed font-medium">
               Level 2 Cognitive Rest: Limit screen exposure to <2 hrs/day; integrate tactile grounding sessions prior to high-focus tasks.
