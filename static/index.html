@@ -70,6 +70,9 @@
       direction: ltr;
       -webkit-font-feature-settings: 'liga';
       -webkit-font-smoothing: antialiased;
+      /* Added to hide text fallback if icon fails to render */
+      text-indent: -9999px;
+      overflow: hidden;
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -105,14 +108,14 @@
     
     <div class="flex items-center gap-3">
       <button id="btnViewBuddy" class="px-3.5 py-1.5 rounded-lg border border-border bg-surface text-text-muted text-sm hover:text-text-main hover:bg-card transition-all flex items-center gap-1.5 font-medium">
-        <span class="material-symbols-outlined text-[18px]">dashboard</span> Buddy View
+        Buddy View
       </button>
 
       <button id="btnProfile" class="px-3.5 py-1.5 rounded-lg border border-border bg-surface text-text-muted text-sm hover:text-text-main hover:bg-card transition-all font-medium hidden">
         Profile
       </button>
       <button id="btnToggleSidebar" class="px-3.5 py-1.5 rounded-lg border border-border bg-surface text-text-muted text-sm hover:text-text-main hover:bg-card transition-all flex items-center gap-1.5 font-medium hidden">
-        <span class="material-symbols-outlined text-[18px]">support_agent</span> Support Buddies
+        Support Buddies
       </button>
       <button id="btnAuth" class="px-3.5 py-1.5 rounded-lg text-text-muted text-sm hover:text-text-main hover:bg-card transition-all font-medium">
         Login
@@ -204,7 +207,7 @@
               <button class="demo-card group p-4 rounded-xl border border-border bg-card/80 hover:bg-card hover:border-primary/60 text-left transition-all shadow-sm flex flex-col justify-between gap-2" data-msg="I'm a military veteran feeling overwhelmed after transitioning to civilian life. Can I talk to someone who understands?">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1.5">🪖 Veteran Support</span>
-                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors">arrow_forward</span>
+                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors"></span>
                 </div>
                 <p class="text-xs text-text-main/90 font-medium line-clamp-2">"Overwhelmed after transitioning to civilian life..."</p>
                 <div class="text-[10px] text-text-muted">Matches with military veteran peer buddies</div>
@@ -213,7 +216,7 @@
               <button class="demo-card group p-4 rounded-xl border border-border bg-card/80 hover:bg-card hover:border-primary/60 text-left transition-all shadow-sm flex flex-col justify-between gap-2" data-msg="I'd like to connect with a peer buddy who understands chronic anxiety and panic attacks.">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1.5">🤝 Peer Buddy Match</span>
-                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors">arrow_forward</span>
+                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors"></span>
                 </div>
                 <p class="text-xs text-text-main/90 font-medium line-clamp-2">"Connect with a peer buddy who understands anxiety..."</p>
                 <div class="text-[10px] text-text-muted">AI-powered personalized peer specialist matching</div>
@@ -222,7 +225,7 @@
               <button class="demo-card group p-4 rounded-xl border border-border bg-card/80 hover:bg-card hover:border-primary/60 text-left transition-all shadow-sm flex flex-col justify-between gap-2" data-msg="How does the confidential 24/7 Support Warmline work? What are my privacy guarantees?">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1.5">📞 24/7 Warmline & Privacy</span>
-                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors">arrow_forward</span>
+                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors"></span>
                 </div>
                 <p class="text-xs text-text-main/90 font-medium line-clamp-2">"How does the confidential 24/7 Warmline work?"</p>
                 <div class="text-[10px] text-text-muted">Zero recording, metadata-only Do No Harm logs</div>
@@ -231,7 +234,7 @@
               <button class="demo-card group p-4 rounded-xl border border-border bg-card/80 hover:bg-card hover:border-primary/60 text-left transition-all shadow-sm flex flex-col justify-between gap-2" data-msg="What peer support resources and counseling are available for family caregivers?">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1.5">🌟 Caregiver Support</span>
-                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors">arrow_forward</span>
+                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors"></span>
                 </div>
                 <p class="text-xs text-text-main/90 font-medium line-clamp-2">"What peer support resources exist for family caregivers?"</p>
                 <div class="text-[10px] text-text-muted">Dedicated support for family & caregivers</div>
@@ -448,7 +451,7 @@
               💬 Conversation History
             </h3>
             <button id="btnOpenTrash" class="px-3 py-1 rounded-lg border border-border bg-surface text-text-muted text-xs font-semibold hover:text-text-main hover:bg-card flex items-center gap-1 transition-all">
-              <span class="material-symbols-outlined text-[14px]">delete</span> Trash Bin
+              Trash Bin
             </button>
           </div>
           <div id="profileConvoList" class="flex flex-col gap-2 max-h-[200px] overflow-y-auto no-scrollbar">
