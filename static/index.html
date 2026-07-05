@@ -676,6 +676,115 @@
         </div>
       </div>
 
+      <!-- Real-Time AI Co-Pilot Sandbox & Human-in-the-Loop Teaming (#7) -->
+      <div class="bg-gradient-to-br from-primary/10 via-surface to-card border-2 border-primary/30 rounded-2xl p-6 shadow-md flex flex-col gap-5 relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-white text-xl shadow-sm">🤖</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-display text-text-main text-lg font-bold">Real-Time AI Co-Pilot & Supervision (#7)</h3>
+                <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold text-[10px] uppercase tracking-wider">Human-AI Teaming</span>
+              </div>
+              <p class="text-text-muted text-xs">Simulate live patient sentiment analysis, self-harm risk checks, and 1-click clinical handoffs.</p>
+            </div>
+          </div>
+          <button id="btnSimulateCoPilot" class="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white font-bold text-xs rounded-xl hover:brightness-110 shadow-sm transition-all transform active:scale-95 shrink-0">
+            <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+            <span>Simulate Live Patient Session</span>
+          </button>
+        </div>
+
+        <!-- Co-Pilot Simulation Screen (Hidden initially) -->
+        <div id="coPilotSandboxScreen" class="hidden flex-col gap-5 pt-2 fade-in">
+          <!-- Live Incoming Patient Message -->
+          <div class="flex flex-col gap-2 p-4 rounded-xl bg-surface border border-border/80 shadow-inner">
+            <div class="flex items-center justify-between text-xs text-text-muted font-semibold">
+              <span class="flex items-center gap-1.5 text-text-main font-bold">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                Incoming Patient Message (Demo Peer: "Alex W.")
+              </span>
+              <span>Just Now • High Distress</span>
+            </div>
+            <p id="coPilotPatientMsg" class="text-sm md:text-base text-text-main font-body italic bg-card p-3 rounded-lg border border-border/40">
+              "I'm having a severe panic attack right now. My heart is pounding out of my chest and I feel completely overwhelmed. I don't know what to do..."
+            </p>
+          </div>
+
+          <!-- Real-Time AI Sentiment & Safety Analysis -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-xl bg-amber/10 border border-amber/30 flex flex-col gap-1">
+              <span class="text-[11px] font-bold text-amber uppercase tracking-wider flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">analytics</span> Sentiment Analysis
+              </span>
+              <span id="coPilotSentiment" class="text-xs font-bold text-text-main">⚠️ Acute Anxiety / Hyperarousal</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col gap-1">
+              <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">verified_user</span> Do No Harm Safety
+              </span>
+              <span id="coPilotSafety" class="text-xs font-bold text-text-main">✅ Zero Lethality Risk • De-escalation Needed</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/30 flex flex-col gap-1">
+              <span class="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">psychology</span> Supervisor Recommendation
+              </span>
+              <span id="coPilotRec" class="text-xs font-bold text-text-main">💡 Guided Tactile Breathing & Grounding</span>
+            </div>
+          </div>
+
+          <!-- 1-Click Co-Pilot Suggestions -->
+          <div class="flex flex-col gap-3 p-4 rounded-xl bg-surface/80 border border-border">
+            <span class="text-xs font-bold text-text-main uppercase tracking-wider flex items-center gap-1.5">
+              <span>⚡</span> 1-Click AI Co-Pilot Phrasing & Grounding Assist
+            </span>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button id="btnUseEmpatheticPhrase" class="flex-1 text-left p-3 rounded-xl bg-card hover:bg-primary/10 border border-border hover:border-primary/50 transition-all group flex flex-col gap-1 shadow-sm">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-primary flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">auto_awesome</span> Insert Empathetic Response
+                  </span>
+                  <span class="text-[10px] bg-surface px-2 py-0.5 rounded text-text-muted group-hover:text-primary font-bold">Click to Use</span>
+                </div>
+                <p class="text-xs text-text-main line-clamp-2">"I hear how scary and overwhelming this feels right now. You are not alone—I am right here with you. Let's take a slow breath together."</p>
+              </button>
+
+              <button id="btnUseGroundingExercise" class="flex-1 text-left p-3 rounded-xl bg-card hover:bg-primary/10 border border-border hover:border-primary/50 transition-all group flex flex-col gap-1 shadow-sm">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-primary flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">self_improvement</span> Send Grounding Exercise
+                  </span>
+                  <span class="text-[10px] bg-surface px-2 py-0.5 rounded text-text-muted group-hover:text-primary font-bold">Click to Send</span>
+                </div>
+                <p class="text-xs text-text-main line-clamp-2">"Let's try the 4-4-4-4 Box Breathing technique together: Inhale slowly for 4 seconds, hold for 4, exhale for 4, and pause for 4."</p>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Draft Response Area -->
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-bold text-text-main flex items-center justify-between">
+              <span>Buddy Response Draft (Assisted by AI Co-Pilot):</span>
+              <span class="text-[11px] text-text-muted font-normal">Review before sending to peer</span>
+            </label>
+            <textarea id="coPilotDraftText" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-primary/40 bg-surface text-sm text-text-main focus:ring-2 focus:ring-primary focus:outline-none shadow-inner resize-none" placeholder="Select an AI Co-Pilot suggestion above or type your response..."></textarea>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+              <span id="coPilotStatusToast" class="text-xs font-bold text-emerald-600 hidden flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">check_circle</span> Sent to peer! Generating Clinical Handoff Report...
+              </span>
+              <div class="flex items-center gap-2 sm:ml-auto">
+                <button id="btnSendCoPilotResponse" class="px-5 py-2 bg-primary hover:brightness-110 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">send</span> Send to Peer
+                </button>
+                <button id="btnForwardToClinician" class="px-5 py-2 bg-amber hover:brightness-110 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">medical_services</span> Forward Clinical Handoff (#7)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Active Assigned Peers Queue -->
       <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
         <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
@@ -740,6 +849,34 @@
         </h3>
         <div id="clinicianTriageList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="text-center py-4 text-text-muted text-xs italic col-span-2">Loading clinical cases...</div>
+        </div>
+      </div>
+
+      <!-- Post-Session Clinical Care Handoff Reports (#7) -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+            <span>📋</span> Post-Session Peer Handoff Reports (#7)
+          </h3>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-[10px] uppercase tracking-wider">Live AI Handoff Pipeline</span>
+        </div>
+        <div id="clinicianHandoffList" class="flex flex-col gap-3">
+          <!-- Populated dynamically or default demo report -->
+          <div class="p-4 rounded-xl bg-surface border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-text-main">Peer Patient: Alex W. (Anxiety & Panic Attack)</span>
+                <span class="px-2 py-0.5 rounded bg-amber/15 text-amber text-[10px] font-bold">Forwarded by Buddy: Sarah J.</span>
+              </div>
+              <p class="text-xs text-text-muted">
+                <strong class="text-text-main">Session Summary:</strong> Patient experienced acute physiological panic symptoms. De-escalated via guided 4-4-4-4 Box Breathing. Zero self-harm risk detected. Recommend clinical follow-up for chronic anxiety triggers.
+              </p>
+              <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: Today • HIPAA Handoff ID: #MSB-7842</span>
+            </div>
+            <button onclick="alert('Opening clinical chart and patient electronic health record for Alex W...')" class="px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold text-xs transition-all shrink-0">
+              Review Chart
+            </button>
+          </div>
         </div>
       </div>
 
