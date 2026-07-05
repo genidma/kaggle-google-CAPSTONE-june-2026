@@ -1236,8 +1236,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "What is on your mind right now?",
     "How can I be of support to you today?",
     "Let's take this one step at a time. What's going on?",
-    "I am here. Where should we begin?",
-    "How is your heart today?"
+    "I am here. Where should we begin?"
   ];
 
   function updateDoogieQuotes() {
