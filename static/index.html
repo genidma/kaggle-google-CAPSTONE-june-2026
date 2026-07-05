@@ -190,7 +190,7 @@
 
     <!-- MAIN SCROLLABLE CONTENT -->
     <main class="flex-1 overflow-y-auto p-6 md:p-10 flex flex-col items-center w-full">
-      <div class="w-full max-w-[1140px] flex flex-col gap-6">
+      <div class="w-full max-w-[1600px] flex flex-col gap-6">
 
         <!-- 1. WELCOME/LANDING VIEW -->
         <section id="welcomeView" class="flex-1 flex flex-col justify-center items-center py-12 max-w-xl mx-auto gap-8">
@@ -256,7 +256,7 @@
         </section>
 
         <!-- 1.5. SUPPORT ROSTER VIEW (Support Buddies) -->
-        <section id="supportBuddiesView" class="flex-1 flex flex-col w-full max-w-[1080px] mx-auto py-6 gap-6 hidden">
+        <section id="supportBuddiesView" class="flex-1 flex flex-col w-full py-6 gap-6 hidden">
           <!-- Doogie Howser Quote Banner (#3) -->
           <div class="bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-4 flex items-start gap-3.5 shadow-sm doogie-quote-container">
             <span class="text-2xl mt-0.5">💡</span>
@@ -297,7 +297,7 @@
         </section>
 
         <!-- 1.6. BUDDY PROFILE DETAIL VIEW (Google Stitch Full-Page Layout #5) -->
-        <section id="buddyDetailView" class="flex-1 flex flex-col w-full max-w-[1080px] mx-auto py-4 gap-8 hidden fade-in">
+        <section id="buddyDetailView" class="flex-1 flex flex-col w-full py-4 gap-8 hidden fade-in">
           <!-- Back Navigation Bar -->
           <div class="flex items-center justify-between border-b border-border/40 pb-4">
             <button id="btnBackToDirectory" class="flex items-center gap-2 text-text-main hover:text-primary transition-colors group font-medium text-sm">
@@ -528,6 +528,340 @@
           </div>
         </section>
 
+
+    <!-- 6. BUDDY DASHBOARD VIEW (Accredited Coaches #1, #5) -->
+    <section id="buddyDashboardView" class="view flex-1 flex flex-col w-full gap-6 hidden">
+      <!-- Doogie Howser Quote Banner (#3) -->
+      <div class="bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-4 flex items-start gap-3.5 shadow-sm doogie-quote-container">
+        <span class="text-2xl mt-0.5">💡</span>
+        <div class="flex-1">
+          <p class="font-display italic text-sm md:text-base text-text-main font-semibold doogie-quote-text">"In medicine, as in life, the most important thing you can give anyone is hope."</p>
+          <span class="text-xs text-primary font-bold uppercase tracking-wider mt-1 block doogie-quote-author">— Doogie Howser, M.D.</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
+        <div>
+          <span class="inline-block px-2.5 py-0.5 rounded bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-1">Role: Accredited Buddy (#5)</span>
+          <h2 class="font-display text-text-main text-[28px] md:text-[32px] font-bold leading-tight">Buddy Care Dashboard</h2>
+          <p class="text-text-muted text-sm font-normal">Manage your peer queue, review warmline logs, and enter supportive peer notes.</p>
+        </div>
+        <div class="bg-surface px-4 py-2 rounded-xl border border-border text-xs text-text-muted">
+          <span class="font-bold text-text-main">Ethics Policy:</span> Do No Harm. You are viewing peer data under accredited guidelines. Access is restricted to assigned peers.
+        </div>
+      </div>
+
+      <!-- Real-Time AI Co-Pilot Sandbox & Human-in-the-Loop Teaming (#7) -->
+      <div class="bg-gradient-to-br from-primary/10 via-surface to-card border-2 border-primary/30 rounded-2xl p-6 shadow-md flex flex-col gap-5 relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
+          <div class="flex items-center gap-3">
+            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-white text-xl shadow-sm">🤖</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-display text-text-main text-lg font-bold">Real-Time AI Co-Pilot & Supervision (#7)</h3>
+                <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold text-[10px] uppercase tracking-wider">Human-AI Teaming</span>
+              </div>
+              <p class="text-text-muted text-xs">Simulate live patient sentiment analysis, self-harm risk checks, and 1-click clinical handoffs.</p>
+            </div>
+          </div>
+          <button id="btnSimulateCoPilot" class="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white font-bold text-xs rounded-xl hover:brightness-110 shadow-sm transition-all transform active:scale-95 shrink-0">
+            <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+            <span>Simulate Live Patient Session</span>
+          </button>
+        </div>
+
+        <!-- Co-Pilot Simulation Screen (Hidden initially) -->
+        <div id="coPilotSandboxScreen" class="hidden flex-col gap-5 pt-2 fade-in">
+          <!-- Live Incoming Patient Message -->
+          <div class="flex flex-col gap-2 p-4 rounded-xl bg-surface border border-border/80 shadow-inner">
+            <div class="flex items-center justify-between text-xs text-text-muted font-semibold">
+              <span class="flex items-center gap-1.5 text-text-main font-bold">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                Incoming Patient Message (Demo Peer: "Alex W.")
+              </span>
+              <span>Just Now • High Distress</span>
+            </div>
+            <p id="coPilotPatientMsg" class="text-sm md:text-base text-text-main font-body italic bg-card p-3 rounded-lg border border-border/40">
+              "I'm having a severe panic attack right now. My heart is pounding out of my chest and I feel completely overwhelmed. I don't know what to do..."
+            </p>
+          </div>
+
+          <!-- Real-Time AI Sentiment & Safety Analysis with Visual Tooltips (#7.2) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-xl bg-amber/10 border border-amber/30 flex flex-col gap-1 cursor-help" title="Detected via NLP pattern matching for heightened physiological stress words ('pounding heart', 'overwhelmed').">
+              <span class="text-[11px] font-bold text-amber uppercase tracking-wider flex items-center justify-between">
+                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">analytics</span> Sentiment Analysis</span>
+                <span class="text-[10px] underline decoration-dotted">Why?</span>
+              </span>
+              <span id="coPilotSentiment" class="text-xs font-bold text-text-main">⚠️ Acute Anxiety / Hyperarousal</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col gap-1 cursor-help" title="Do No Harm safety check confirmed supportive / low acute crisis risk. Priority is immediate grounding.">
+              <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider flex items-center justify-between">
+                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">verified_user</span> Do No Harm Safety</span>
+                <span class="text-[10px] underline decoration-dotted">Why?</span>
+              </span>
+              <span id="coPilotSafety" class="text-xs font-bold text-text-main">✅ Low Acute Crisis Risk • Supportive De-escalation</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/30 flex flex-col gap-1 cursor-help" title="Recommended by clinical supervision protocol for acute panic: tactile rhythmic grounding restores autonomic nervous system balance.">
+              <span class="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center justify-between">
+                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">psychology</span> Supervisor Rec</span>
+                <span class="text-[10px] underline decoration-dotted">Why?</span>
+              </span>
+              <span id="coPilotRec" class="text-xs font-bold text-text-main">💡 Guided Tactile Breathing & Grounding</span>
+            </div>
+          </div>
+
+          <!-- 1-Click Co-Pilot Suggestions -->
+          <div class="flex flex-col gap-3 p-4 rounded-xl bg-surface/80 border border-border">
+            <span class="text-xs font-bold text-text-main uppercase tracking-wider flex items-center gap-1.5">
+              <span>⚡</span> 1-Click AI Co-Pilot Phrasing & Grounding Assist
+            </span>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button id="btnUseEmpatheticPhrase" class="flex-1 text-left p-3 rounded-xl bg-card hover:bg-primary/10 border border-border hover:border-primary/50 transition-all group flex flex-col gap-1 shadow-sm">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-primary flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">auto_awesome</span> Insert Empathetic Response
+                  </span>
+                  <span class="text-[10px] bg-surface px-2 py-0.5 rounded text-text-muted group-hover:text-primary font-bold">Click to Use</span>
+                </div>
+                <p class="text-xs text-text-main line-clamp-2">"I hear how scary and overwhelming this feels right now. You are not alone—I am right here with you. Let's take a slow breath together."</p>
+              </button>
+
+              <button id="btnUseGroundingExercise" class="flex-1 text-left p-3 rounded-xl bg-card hover:bg-primary/10 border border-border hover:border-primary/50 transition-all group flex flex-col gap-1 shadow-sm">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-primary flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">self_improvement</span> Send Grounding Exercise
+                  </span>
+                  <span class="text-[10px] bg-surface px-2 py-0.5 rounded text-text-muted group-hover:text-primary font-bold">Click to Send</span>
+                </div>
+                <p class="text-xs text-text-main line-clamp-2">"Let's try the 4-4-4-4 Box Breathing technique together: Inhale slowly for 4 seconds, hold for 4, exhale for 4, and pause for 4."</p>
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Draft Response Area -->
+          <div class="flex flex-col gap-2">
+            <label class="text-xs font-bold text-text-main flex items-center justify-between">
+              <span>Buddy Response Draft (Assisted by AI Co-Pilot):</span>
+              <span class="text-[11px] text-text-muted font-normal">Review before sending to peer</span>
+            </label>
+            <textarea id="coPilotDraftText" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-primary/40 bg-surface text-sm text-text-main focus:ring-2 focus:ring-primary focus:outline-none shadow-inner resize-none" placeholder="Select an AI Co-Pilot suggestion above or type your response..."></textarea>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+              <span id="coPilotStatusToast" class="text-xs font-bold text-emerald-600 hidden flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">check_circle</span> Sent to peer! Generating Clinical Handoff Report...
+              </span>
+              <div class="flex items-center gap-2 sm:ml-auto">
+                <button id="btnSendCoPilotResponse" class="px-5 py-2 bg-primary hover:brightness-110 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">send</span> Send to Peer
+                </button>
+                <button id="btnForwardToClinician" class="px-5 py-2 bg-amber hover:brightness-110 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">medical_services</span> Forward Clinical Handoff (#7)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Assigned Peers Queue -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+          <span>👥</span> Assigned Peer Support Queue
+        </h3>
+        <div id="buddyPeersList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="text-center py-4 text-text-muted text-xs italic col-span-3">Loading assigned peers...</div>
+        </div>
+      </div>
+
+      <!-- Recent Warmline Dispatch Logs -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+          <span>📞</span> Recent Warmline Call Logs
+        </h3>
+        <div id="buddyCallLogsList" class="flex flex-col gap-2 max-h-[220px] overflow-y-auto no-scrollbar">
+          <div class="text-center py-4 text-text-muted text-xs italic">Loading warmline dispatches...</div>
+        </div>
+      </div>
+
+      <!-- Peer Session Note Entry -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+          <span>📝</span> Post Peer Support Note
+        </h3>
+        <div class="flex flex-col gap-3">
+          <input id="buddyNotePeerId" placeholder="Peer ID / Name (e.g., John D.)" class="w-full px-3.5 py-2 rounded-xl border border-border bg-surface text-sm text-text-main focus:ring-1 focus:ring-primary focus:outline-none" />
+          <textarea id="buddyNoteText" placeholder="Write positive, non-clinical encouragement or session observations..." rows="3" class="w-full px-3.5 py-2 rounded-xl border border-border bg-surface text-sm text-text-main focus:ring-1 focus:ring-primary focus:outline-none resize-none"></textarea>
+          <button id="btnSubmitBuddyNote" class="px-5 py-2 bg-primary hover:brightness-110 text-white font-semibold rounded-xl text-xs transition-all self-end shadow-sm">
+            Save Peer Note
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CLINICIAN TRIAGE PORTAL VIEW (#1, #2) -->
+    <section id="clinicianPortalView" class="view flex-1 flex flex-col w-full gap-6 hidden">
+      <!-- Doogie Howser Quote Banner (#3) -->
+      <div class="bg-gradient-to-r from-amber/15 via-amber/5 to-transparent border border-amber/20 rounded-2xl p-4 flex items-start gap-3.5 shadow-sm doogie-quote-container">
+        <span class="text-2xl mt-0.5">🌱</span>
+        <div class="flex-1">
+          <p class="font-display italic text-sm md:text-base text-text-main font-semibold doogie-quote-text">"Every challenge we face is an opportunity to learn, to grow, and to become a better version of ourselves."</p>
+          <span class="text-xs text-amber font-bold uppercase tracking-wider mt-1 block doogie-quote-author">— Doogie Howser, M.D.</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
+        <div>
+          <span class="inline-block px-2.5 py-0.5 rounded bg-amber/10 text-amber text-xs font-bold uppercase tracking-wider mb-1">Role: Clinical Care (#1)</span>
+          <h2 class="font-display text-text-main text-[28px] md:text-[32px] font-bold leading-tight">Clinician Triage Portal</h2>
+          <p class="text-text-muted text-sm font-normal">Review escalated patient triage cases and diagnostic analytics.</p>
+        </div>
+        <div class="bg-surface px-4 py-2 rounded-xl border border-border text-xs text-text-muted">
+          <span class="font-bold text-text-main">HIPAA Policy:</span> Strict clinical confidentiality & case authorization required.
+        </div>
+      </div>
+
+      <!-- Triage Cases Grid -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+          <span>🩺</span> High-Priority Triage Cases
+        </h3>
+        <div id="clinicianTriageList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="text-center py-4 text-text-muted text-xs italic col-span-2">Loading clinical cases...</div>
+        </div>
+      </div>
+
+      <!-- Post-Session Clinical Care Handoff Reports (#7) -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+            <span>📋</span> Post-Session Peer Handoff Reports (#7)
+          </h3>
+          <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-[10px] uppercase tracking-wider">Live AI Handoff Pipeline</span>
+        </div>
+        <div id="clinicianHandoffList" class="flex flex-col gap-3">
+          <!-- Populated dynamically or default demo report -->
+          <div class="p-4 rounded-xl bg-surface border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-text-main">Peer Patient: Alex W. (Anxiety & Panic Attack)</span>
+                <span class="px-2 py-0.5 rounded bg-amber/15 text-amber text-[10px] font-bold">Forwarded by Buddy: Sarah J.</span>
+              </div>
+              <p class="text-xs text-text-muted">
+                <strong class="text-text-main">Session Summary:</strong> Patient experienced acute physiological panic symptoms. De-escalated via guided 4-4-4-4 Box Breathing. Zero self-harm risk detected. Recommend clinical follow-up for chronic anxiety triggers.
+              </p>
+              <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: Today • HIPAA Handoff ID: #MSB-7842</span>
+            </div>
+            <button onclick="alert('Opening clinical chart and patient electronic health record for Alex W...')" class="px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold text-xs transition-all shrink-0">
+              Review Chart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multimodal TBI Neuro-Imaging Scan Analyzer (#2) -->
+      <div class="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col gap-5 bg-gradient-to-br from-surface to-card">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4 flex-wrap">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-white text-xl shadow-sm shrink-0">🧠</span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-display text-text-main font-bold text-lg">Multimodal TBI Neuro-Imaging Analyzer (#2)</h3>
+                <span class="px-2 py-0.5 rounded-full bg-primary/15 text-primary font-bold text-[10px] uppercase tracking-wider">Vertex AI Vision-Language</span>
+              </div>
+              <p class="text-text-muted text-xs mt-0.5">Upload or simulate patient fMRI/CT brain scans for automated regional impact scoring & neurological controls.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2.5 shrink-0 self-start md:self-center">
+            <button id="btnSimulateTbiScan" class="px-5 py-2.5 rounded-xl border-2 border-primary bg-primary/15 text-primary hover:bg-primary hover:text-white transition-all text-xs font-bold shadow-sm flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[18px]">biotech</span> Simulate Scan Analysis
+            </button>
+          </div>
+        </div>
+
+        <!-- TBI Scan Dropzone Area -->
+        <div id="tbiDropzone" class="border-2 border-dashed border-primary/30 rounded-xl p-6 text-center bg-surface/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer">
+          <span class="material-symbols-outlined text-[36px] text-primary/70">upload_file</span>
+          <p class="text-xs text-text-main font-semibold">Drag & drop DICOM / NIfTI neuro-imaging slice here, or click to browse</p>
+          <span class="text-[11px] text-text-muted">Supported AI engines: NeuroScan-TBI-v1, AlphaBrain-Impact-7B (GR38 validated)</span>
+        </div>
+
+        <!-- TBI Analysis Results Container (Hidden initially) -->
+        <div id="tbiAnalysisResults" class="hidden flex-col gap-6 pt-2 animate-fade-in">
+          <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between text-xs font-bold text-text-main flex-wrap gap-2">
+            <span id="tbiModelUsed" class="flex items-center gap-1.5">🤖 Model: NeuroScan-TBI-v1 (Multimodal Vision-Language)</span>
+            <span id="tbiScanMeta" class="text-primary font-semibold">Patient #8492 • 5-Slice Multimodal Scan Series</span>
+          </div>
+
+          <!-- Section 1: Initial Sectional Brain Views -->
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-border/40 pb-2.5 flex-wrap gap-2">
+              <h4 class="text-sm font-bold text-text-main uppercase tracking-wider flex items-center gap-2">
+                <span>🖥️</span> Initial Sectional Brain Views (Raw fMRI / CT Slices 01 to 05):
+              </h4>
+              <span id="tbiScanProgress" class="text-primary font-mono text-xs font-bold">Processing Slices...</span>
+            </div>
+            <div id="tbiFindingsList" class="flex flex-col gap-8 w-full">
+              <!-- Dynamically populated widescreen initial sectional views -->
+            </div>
+          </div>
+
+          <!-- Section 2: Neural Network Diagnostic Overlays -->
+          <div id="tbiDiagSection" class="hidden flex-col gap-4 pt-6 border-t-2 border-border/80 animate-fade-in">
+            <div class="flex items-center justify-between border-b border-border/40 pb-2.5 flex-wrap gap-2">
+              <h4 class="text-sm font-bold text-primary uppercase tracking-wider flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">biotech</span> Neural Network Diagnostic Overlays & Biomarker Analysis (01 to 05):
+              </h4>
+              <span id="tbiDiagProgress" class="text-primary font-mono text-xs font-bold">Processing Overlays...</span>
+            </div>
+            <div id="tbiDiagFindingsList" class="flex flex-col gap-8 w-full">
+              <!-- Dynamically populated widescreen diagnostic overlay views -->
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-surface border border-border flex flex-col gap-2 shadow-inner mt-2">
+            <span class="text-xs font-bold text-text-main uppercase tracking-wider text-primary flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">verified</span> Neurological Recovery Protocol & Controls (#2)
+            </span>
+            <p id="tbiRecoveryProtocol" class="text-xs text-text-muted leading-relaxed font-medium">
+              Level 2 Cognitive Rest: Limit screen exposure to <2 hrs/day; integrate tactile grounding sessions prior to high-focus tasks.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. CAREGIVER WELLNESS PORTAL VIEW (#1) -->
+    <section id="caregiverPortalView" class="view flex-1 flex flex-col w-full gap-6 hidden">
+      <!-- Doogie Howser Quote Banner (#3) -->
+      <div class="bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-4 flex items-start gap-3.5 shadow-sm doogie-quote-container">
+        <span class="text-2xl mt-0.5">🌟</span>
+        <div class="flex-1">
+          <p class="font-display italic text-sm md:text-base text-text-main font-semibold doogie-quote-text">"True strength is not about never failing, but about having the courage to stand up and try again."</p>
+          <span class="text-xs text-primary font-bold uppercase tracking-wider mt-1 block doogie-quote-author">— Doogie Howser, M.D.</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
+        <div>
+          <span class="inline-block px-2.5 py-0.5 rounded bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-1">Role: Family Caregiver (#1)</span>
+          <h2 class="font-display text-text-main text-[28px] md:text-[32px] font-bold leading-tight">Caregiver Wellness Portal</h2>
+          <p class="text-text-muted text-sm font-normal">Monitor consented check-in statuses and peer support summaries.</p>
+        </div>
+        <div class="bg-surface px-4 py-2 rounded-xl border border-border text-xs text-text-muted">
+          <span class="font-bold text-text-main">Consent Policy:</span> Access is governed strictly by patient consent toggles.
+        </div>
+      </div>
+
+      <!-- Consented Summaries List -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+          <span>📋</span> Consented Care & Mood Summaries
+        </h3>
+        <div id="caregiverSummariesList" class="flex flex-col gap-3">
+          <div class="text-center py-4 text-text-muted text-xs italic">Loading consented check-in summaries...</div>
+        </div>
+      </div>
+    </section>
       </div>
     </main>
 
@@ -714,339 +1048,7 @@
       </div>
     </div>
 
-    <!-- 6. BUDDY DASHBOARD VIEW (Accredited Coaches #1, #5) -->
-    <section id="buddyDashboardView" class="view flex-1 flex flex-col w-full max-w-[1080px] mx-auto py-6 gap-6 hidden overflow-y-auto no-scrollbar pr-2">
-      <!-- Doogie Howser Quote Banner (#3) -->
-      <div class="bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-4 flex items-start gap-3.5 shadow-sm doogie-quote-container">
-        <span class="text-2xl mt-0.5">💡</span>
-        <div class="flex-1">
-          <p class="font-display italic text-sm md:text-base text-text-main font-semibold doogie-quote-text">"In medicine, as in life, the most important thing you can give anyone is hope."</p>
-          <span class="text-xs text-primary font-bold uppercase tracking-wider mt-1 block doogie-quote-author">— Doogie Howser, M.D.</span>
-        </div>
-      </div>
 
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
-        <div>
-          <span class="inline-block px-2.5 py-0.5 rounded bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-1">Role: Accredited Buddy (#5)</span>
-          <h2 class="font-display text-text-main text-[28px] md:text-[32px] font-bold leading-tight">Buddy Care Dashboard</h2>
-          <p class="text-text-muted text-sm font-normal">Manage your peer queue, review warmline logs, and enter supportive peer notes.</p>
-        </div>
-        <div class="bg-surface px-4 py-2 rounded-xl border border-border text-xs text-text-muted">
-          <span class="font-bold text-text-main">Ethics Policy:</span> Do No Harm. You are viewing peer data under accredited guidelines. Access is restricted to assigned peers.
-        </div>
-      </div>
-
-      <!-- Real-Time AI Co-Pilot Sandbox & Human-in-the-Loop Teaming (#7) -->
-      <div class="bg-gradient-to-br from-primary/10 via-surface to-card border-2 border-primary/30 rounded-2xl p-6 shadow-md flex flex-col gap-5 relative overflow-hidden">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-4">
-          <div class="flex items-center gap-3">
-            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-white text-xl shadow-sm">🤖</span>
-            <div>
-              <div class="flex items-center gap-2">
-                <h3 class="font-display text-text-main text-lg font-bold">Real-Time AI Co-Pilot & Supervision (#7)</h3>
-                <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold text-[10px] uppercase tracking-wider">Human-AI Teaming</span>
-              </div>
-              <p class="text-text-muted text-xs">Simulate live patient sentiment analysis, self-harm risk checks, and 1-click clinical handoffs.</p>
-            </div>
-          </div>
-          <button id="btnSimulateCoPilot" class="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-white font-bold text-xs rounded-xl hover:brightness-110 shadow-sm transition-all transform active:scale-95 shrink-0">
-            <span class="material-symbols-outlined text-[18px]">play_arrow</span>
-            <span>Simulate Live Patient Session</span>
-          </button>
-        </div>
-
-        <!-- Co-Pilot Simulation Screen (Hidden initially) -->
-        <div id="coPilotSandboxScreen" class="hidden flex-col gap-5 pt-2 fade-in">
-          <!-- Live Incoming Patient Message -->
-          <div class="flex flex-col gap-2 p-4 rounded-xl bg-surface border border-border/80 shadow-inner">
-            <div class="flex items-center justify-between text-xs text-text-muted font-semibold">
-              <span class="flex items-center gap-1.5 text-text-main font-bold">
-                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                Incoming Patient Message (Demo Peer: "Alex W.")
-              </span>
-              <span>Just Now • High Distress</span>
-            </div>
-            <p id="coPilotPatientMsg" class="text-sm md:text-base text-text-main font-body italic bg-card p-3 rounded-lg border border-border/40">
-              "I'm having a severe panic attack right now. My heart is pounding out of my chest and I feel completely overwhelmed. I don't know what to do..."
-            </p>
-          </div>
-
-          <!-- Real-Time AI Sentiment & Safety Analysis with Visual Tooltips (#7.2) -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div class="p-3.5 rounded-xl bg-amber/10 border border-amber/30 flex flex-col gap-1 cursor-help" title="Detected via NLP pattern matching for heightened physiological stress words ('pounding heart', 'overwhelmed').">
-              <span class="text-[11px] font-bold text-amber uppercase tracking-wider flex items-center justify-between">
-                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">analytics</span> Sentiment Analysis</span>
-                <span class="text-[10px] underline decoration-dotted">Why?</span>
-              </span>
-              <span id="coPilotSentiment" class="text-xs font-bold text-text-main">⚠️ Acute Anxiety / Hyperarousal</span>
-            </div>
-            <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col gap-1 cursor-help" title="Do No Harm safety check confirmed supportive / low acute crisis risk. Priority is immediate grounding.">
-              <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider flex items-center justify-between">
-                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">verified_user</span> Do No Harm Safety</span>
-                <span class="text-[10px] underline decoration-dotted">Why?</span>
-              </span>
-              <span id="coPilotSafety" class="text-xs font-bold text-text-main">✅ Low Acute Crisis Risk • Supportive De-escalation</span>
-            </div>
-            <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/30 flex flex-col gap-1 cursor-help" title="Recommended by clinical supervision protocol for acute panic: tactile rhythmic grounding restores autonomic nervous system balance.">
-              <span class="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center justify-between">
-                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">psychology</span> Supervisor Rec</span>
-                <span class="text-[10px] underline decoration-dotted">Why?</span>
-              </span>
-              <span id="coPilotRec" class="text-xs font-bold text-text-main">💡 Guided Tactile Breathing & Grounding</span>
-            </div>
-          </div>
-
-          <!-- 1-Click Co-Pilot Suggestions -->
-          <div class="flex flex-col gap-3 p-4 rounded-xl bg-surface/80 border border-border">
-            <span class="text-xs font-bold text-text-main uppercase tracking-wider flex items-center gap-1.5">
-              <span>⚡</span> 1-Click AI Co-Pilot Phrasing & Grounding Assist
-            </span>
-            <div class="flex flex-col sm:flex-row gap-3">
-              <button id="btnUseEmpatheticPhrase" class="flex-1 text-left p-3 rounded-xl bg-card hover:bg-primary/10 border border-border hover:border-primary/50 transition-all group flex flex-col gap-1 shadow-sm">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-primary flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">auto_awesome</span> Insert Empathetic Response
-                  </span>
-                  <span class="text-[10px] bg-surface px-2 py-0.5 rounded text-text-muted group-hover:text-primary font-bold">Click to Use</span>
-                </div>
-                <p class="text-xs text-text-main line-clamp-2">"I hear how scary and overwhelming this feels right now. You are not alone—I am right here with you. Let's take a slow breath together."</p>
-              </button>
-
-              <button id="btnUseGroundingExercise" class="flex-1 text-left p-3 rounded-xl bg-card hover:bg-primary/10 border border-border hover:border-primary/50 transition-all group flex flex-col gap-1 shadow-sm">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-primary flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">self_improvement</span> Send Grounding Exercise
-                  </span>
-                  <span class="text-[10px] bg-surface px-2 py-0.5 rounded text-text-muted group-hover:text-primary font-bold">Click to Send</span>
-                </div>
-                <p class="text-xs text-text-main line-clamp-2">"Let's try the 4-4-4-4 Box Breathing technique together: Inhale slowly for 4 seconds, hold for 4, exhale for 4, and pause for 4."</p>
-              </button>
-            </div>
-          </div>
-
-          <!-- Active Draft Response Area -->
-          <div class="flex flex-col gap-2">
-            <label class="text-xs font-bold text-text-main flex items-center justify-between">
-              <span>Buddy Response Draft (Assisted by AI Co-Pilot):</span>
-              <span class="text-[11px] text-text-muted font-normal">Review before sending to peer</span>
-            </label>
-            <textarea id="coPilotDraftText" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-primary/40 bg-surface text-sm text-text-main focus:ring-2 focus:ring-primary focus:outline-none shadow-inner resize-none" placeholder="Select an AI Co-Pilot suggestion above or type your response..."></textarea>
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
-              <span id="coPilotStatusToast" class="text-xs font-bold text-emerald-600 hidden flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">check_circle</span> Sent to peer! Generating Clinical Handoff Report...
-              </span>
-              <div class="flex items-center gap-2 sm:ml-auto">
-                <button id="btnSendCoPilotResponse" class="px-5 py-2 bg-primary hover:brightness-110 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-[16px]">send</span> Send to Peer
-                </button>
-                <button id="btnForwardToClinician" class="px-5 py-2 bg-amber hover:brightness-110 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-[16px]">medical_services</span> Forward Clinical Handoff (#7)
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Active Assigned Peers Queue -->
-      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
-        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
-          <span>👥</span> Assigned Peer Support Queue
-        </h3>
-        <div id="buddyPeersList" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="text-center py-4 text-text-muted text-xs italic col-span-3">Loading assigned peers...</div>
-        </div>
-      </div>
-
-      <!-- Recent Warmline Dispatch Logs -->
-      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
-        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
-          <span>📞</span> Recent Warmline Call Logs
-        </h3>
-        <div id="buddyCallLogsList" class="flex flex-col gap-2 max-h-[220px] overflow-y-auto no-scrollbar">
-          <div class="text-center py-4 text-text-muted text-xs italic">Loading warmline dispatches...</div>
-        </div>
-      </div>
-
-      <!-- Peer Session Note Entry -->
-      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
-        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
-          <span>📝</span> Post Peer Support Note
-        </h3>
-        <div class="flex flex-col gap-3">
-          <input id="buddyNotePeerId" placeholder="Peer ID / Name (e.g., John D.)" class="w-full px-3.5 py-2 rounded-xl border border-border bg-surface text-sm text-text-main focus:ring-1 focus:ring-primary focus:outline-none" />
-          <textarea id="buddyNoteText" placeholder="Write positive, non-clinical encouragement or session observations..." rows="3" class="w-full px-3.5 py-2 rounded-xl border border-border bg-surface text-sm text-text-main focus:ring-1 focus:ring-primary focus:outline-none resize-none"></textarea>
-          <button id="btnSubmitBuddyNote" class="px-5 py-2 bg-primary hover:brightness-110 text-white font-semibold rounded-xl text-xs transition-all self-end shadow-sm">
-            Save Peer Note
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 7. CLINICIAN TRIAGE PORTAL VIEW (#1, #2) -->
-    <section id="clinicianPortalView" class="view flex-1 flex flex-col w-full max-w-[1080px] mx-auto py-6 gap-6 hidden overflow-y-auto no-scrollbar pr-2">
-      <!-- Doogie Howser Quote Banner (#3) -->
-      <div class="bg-gradient-to-r from-amber/15 via-amber/5 to-transparent border border-amber/20 rounded-2xl p-4 flex items-start gap-3.5 shadow-sm doogie-quote-container">
-        <span class="text-2xl mt-0.5">🌱</span>
-        <div class="flex-1">
-          <p class="font-display italic text-sm md:text-base text-text-main font-semibold doogie-quote-text">"Every challenge we face is an opportunity to learn, to grow, and to become a better version of ourselves."</p>
-          <span class="text-xs text-amber font-bold uppercase tracking-wider mt-1 block doogie-quote-author">— Doogie Howser, M.D.</span>
-        </div>
-      </div>
-
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
-        <div>
-          <span class="inline-block px-2.5 py-0.5 rounded bg-amber/10 text-amber text-xs font-bold uppercase tracking-wider mb-1">Role: Clinical Care (#1)</span>
-          <h2 class="font-display text-text-main text-[28px] md:text-[32px] font-bold leading-tight">Clinician Triage Portal</h2>
-          <p class="text-text-muted text-sm font-normal">Review escalated patient triage cases and diagnostic analytics.</p>
-        </div>
-        <div class="bg-surface px-4 py-2 rounded-xl border border-border text-xs text-text-muted">
-          <span class="font-bold text-text-main">HIPAA Policy:</span> Strict clinical confidentiality & case authorization required.
-        </div>
-      </div>
-
-      <!-- Triage Cases Grid -->
-      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
-        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
-          <span>🩺</span> High-Priority Triage Cases
-        </h3>
-        <div id="clinicianTriageList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="text-center py-4 text-text-muted text-xs italic col-span-2">Loading clinical cases...</div>
-        </div>
-      </div>
-
-      <!-- Post-Session Clinical Care Handoff Reports (#7) -->
-      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
-            <span>📋</span> Post-Session Peer Handoff Reports (#7)
-          </h3>
-          <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-bold text-[10px] uppercase tracking-wider">Live AI Handoff Pipeline</span>
-        </div>
-        <div id="clinicianHandoffList" class="flex flex-col gap-3">
-          <!-- Populated dynamically or default demo report -->
-          <div class="p-4 rounded-xl bg-surface border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
-            <div class="flex flex-col gap-1">
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-sm text-text-main">Peer Patient: Alex W. (Anxiety & Panic Attack)</span>
-                <span class="px-2 py-0.5 rounded bg-amber/15 text-amber text-[10px] font-bold">Forwarded by Buddy: Sarah J.</span>
-              </div>
-              <p class="text-xs text-text-muted">
-                <strong class="text-text-main">Session Summary:</strong> Patient experienced acute physiological panic symptoms. De-escalated via guided 4-4-4-4 Box Breathing. Zero self-harm risk detected. Recommend clinical follow-up for chronic anxiety triggers.
-              </p>
-              <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: Today • HIPAA Handoff ID: #MSB-7842</span>
-            </div>
-            <button onclick="alert('Opening clinical chart and patient electronic health record for Alex W...')" class="px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold text-xs transition-all shrink-0">
-              Review Chart
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Multimodal TBI Neuro-Imaging Scan Analyzer (#2) -->
-      <div class="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col gap-5 bg-gradient-to-br from-surface to-card">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4 flex-wrap">
-          <div class="flex items-center gap-3 min-w-0 flex-1">
-            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary text-white text-xl shadow-sm shrink-0">🧠</span>
-            <div class="min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-display text-text-main font-bold text-lg">Multimodal TBI Neuro-Imaging Analyzer (#2)</h3>
-                <span class="px-2 py-0.5 rounded-full bg-primary/15 text-primary font-bold text-[10px] uppercase tracking-wider">Vertex AI Vision-Language</span>
-              </div>
-              <p class="text-text-muted text-xs mt-0.5">Upload or simulate patient fMRI/CT brain scans for automated regional impact scoring & neurological controls.</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2.5 shrink-0 self-start md:self-center">
-            <button id="btnSimulateTbiScan" class="px-5 py-2.5 rounded-xl border-2 border-primary bg-primary/15 text-primary hover:bg-primary hover:text-white transition-all text-xs font-bold shadow-sm flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[18px]">biotech</span> Simulate Scan Analysis
-            </button>
-          </div>
-        </div>
-
-        <!-- TBI Scan Dropzone Area -->
-        <div id="tbiDropzone" class="border-2 border-dashed border-primary/30 rounded-xl p-6 text-center bg-surface/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer">
-          <span class="material-symbols-outlined text-[36px] text-primary/70">upload_file</span>
-          <p class="text-xs text-text-main font-semibold">Drag & drop DICOM / NIfTI neuro-imaging slice here, or click to browse</p>
-          <span class="text-[11px] text-text-muted">Supported AI engines: NeuroScan-TBI-v1, AlphaBrain-Impact-7B (GR38 validated)</span>
-        </div>
-
-        <!-- TBI Analysis Results Container (Hidden initially) -->
-        <div id="tbiAnalysisResults" class="hidden flex-col gap-6 pt-2 animate-fade-in">
-          <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between text-xs font-bold text-text-main flex-wrap gap-2">
-            <span id="tbiModelUsed" class="flex items-center gap-1.5">🤖 Model: NeuroScan-TBI-v1 (Multimodal Vision-Language)</span>
-            <span id="tbiScanMeta" class="text-primary font-semibold">Patient #8492 • 5-Slice Multimodal Scan Series</span>
-          </div>
-
-          <!-- Section 1: Initial Sectional Brain Views -->
-          <div class="flex flex-col gap-4">
-            <div class="flex items-center justify-between border-b border-border/40 pb-2.5 flex-wrap gap-2">
-              <h4 class="text-sm font-bold text-text-main uppercase tracking-wider flex items-center gap-2">
-                <span>🖥️</span> Initial Sectional Brain Views (Raw fMRI / CT Slices 01 to 05):
-              </h4>
-              <span id="tbiScanProgress" class="text-primary font-mono text-xs font-bold">Processing Slices...</span>
-            </div>
-            <div id="tbiFindingsList" class="flex flex-col gap-8 w-full">
-              <!-- Dynamically populated widescreen initial sectional views -->
-            </div>
-          </div>
-
-          <!-- Section 2: Neural Network Diagnostic Overlays -->
-          <div id="tbiDiagSection" class="hidden flex-col gap-4 pt-6 border-t-2 border-border/80 animate-fade-in">
-            <div class="flex items-center justify-between border-b border-border/40 pb-2.5 flex-wrap gap-2">
-              <h4 class="text-sm font-bold text-primary uppercase tracking-wider flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">biotech</span> Neural Network Diagnostic Overlays & Biomarker Analysis (01 to 05):
-              </h4>
-              <span id="tbiDiagProgress" class="text-primary font-mono text-xs font-bold">Processing Overlays...</span>
-            </div>
-            <div id="tbiDiagFindingsList" class="flex flex-col gap-8 w-full">
-              <!-- Dynamically populated widescreen diagnostic overlay views -->
-            </div>
-          </div>
-
-          <div class="p-4 rounded-xl bg-surface border border-border flex flex-col gap-2 shadow-inner mt-2">
-            <span class="text-xs font-bold text-text-main uppercase tracking-wider text-primary flex items-center gap-1">
-              <span class="material-symbols-outlined text-[16px]">verified</span> Neurological Recovery Protocol & Controls (#2)
-            </span>
-            <p id="tbiRecoveryProtocol" class="text-xs text-text-muted leading-relaxed font-medium">
-              Level 2 Cognitive Rest: Limit screen exposure to <2 hrs/day; integrate tactile grounding sessions prior to high-focus tasks.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 8. CAREGIVER WELLNESS PORTAL VIEW (#1) -->
-    <section id="caregiverPortalView" class="view flex-1 flex flex-col w-full max-w-[1080px] mx-auto py-6 gap-6 hidden overflow-y-auto no-scrollbar pr-2">
-      <!-- Doogie Howser Quote Banner (#3) -->
-      <div class="bg-gradient-to-r from-primary/15 via-primary/5 to-transparent border border-primary/20 rounded-2xl p-4 flex items-start gap-3.5 shadow-sm doogie-quote-container">
-        <span class="text-2xl mt-0.5">🌟</span>
-        <div class="flex-1">
-          <p class="font-display italic text-sm md:text-base text-text-main font-semibold doogie-quote-text">"True strength is not about never failing, but about having the courage to stand up and try again."</p>
-          <span class="text-xs text-primary font-bold uppercase tracking-wider mt-1 block doogie-quote-author">— Doogie Howser, M.D.</span>
-        </div>
-      </div>
-
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/60 pb-4">
-        <div>
-          <span class="inline-block px-2.5 py-0.5 rounded bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-1">Role: Family Caregiver (#1)</span>
-          <h2 class="font-display text-text-main text-[28px] md:text-[32px] font-bold leading-tight">Caregiver Wellness Portal</h2>
-          <p class="text-text-muted text-sm font-normal">Monitor consented check-in statuses and peer support summaries.</p>
-        </div>
-        <div class="bg-surface px-4 py-2 rounded-xl border border-border text-xs text-text-muted">
-          <span class="font-bold text-text-main">Consent Policy:</span> Access is governed strictly by patient consent toggles.
-        </div>
-      </div>
-
-      <!-- Consented Summaries List -->
-      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
-        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
-          <span>📋</span> Consented Care & Mood Summaries
-        </h3>
-        <div id="caregiverSummariesList" class="flex flex-col gap-3">
-          <div class="text-center py-4 text-text-muted text-xs italic">Loading consented check-in summaries...</div>
-        </div>
-      </div>
-    </section>
 
   </div>
 
