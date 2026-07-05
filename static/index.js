@@ -810,13 +810,15 @@ document.addEventListener("DOMContentLoaded", () => {
           appendChatMessage("assistant", data.response || "");
           
           if (data.resources?.all_buddies?.length > 0) {
-            const buddyBox = document.createElement("div");
-            buddyBox.className = "self-start w-full max-w-[90%] bg-card/60 border border-border rounded-xl p-4 my-2 flex flex-col gap-3 shadow-sm";
-            buddyBox.innerHTML = `<div class="font-display font-bold text-xs text-primary flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">account_circle</span> Recommended Peer Buddies</div><div class="grid grid-cols-1 md:grid-cols-2 gap-3 buddy-rec-grid"></div>`;
-            const grid = buddyBox.querySelector(".buddy-rec-grid");
-            data.resources.all_buddies.slice(0, 2).forEach(b => grid.appendChild(createBuddyCard(b)));
-            chatMessages.appendChild(buddyBox);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            const sidebar = document.getElementById("chatBuddySidebar");
+            const grid = document.getElementById("chatBuddyGrid");
+            const container = document.getElementById("chatMessagesContainer");
+            if (sidebar && grid && container) {
+              grid.innerHTML = "";
+              data.resources.all_buddies.forEach(b => grid.appendChild(createBuddyCard(b)));
+              sidebar.classList.remove("hidden");
+              container.className = "md:col-span-7 flex flex-col gap-4 overflow-y-auto no-scrollbar pr-2 h-full transition-all duration-300";
+            }
           }
 
           show(chatView);
@@ -892,30 +894,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const buttonText = isOnline ? "Connect" : statusText;
     
     const specialtyBadges = (buddy.specialties || [])
-      .map(s => `<span class="px-2.5 py-1 rounded-md bg-surface text-text-main text-xs font-medium border border-border/50">${s}</span>`)
+      .map(s => `<span class="px-3 py-1 rounded-md bg-surface text-text-main text-xs font-semibold border border-border/50">${s}</span>`)
       .join("");
 
     card.innerHTML = `
       <div class="flex items-center gap-4">
         <div class="relative shrink-0">
-          <img class="w-14 h-14 rounded-full object-cover bg-surface border border-border/50" alt="${buddy.name} headshot" src="${avatarUrl}" />
+          <img class="w-16 h-16 rounded-full object-cover bg-surface border border-border/50" alt="${buddy.name} headshot" src="${avatarUrl}" />
           <div class="absolute bottom-0 right-0 w-3.5 h-3.5 ${dotClass} border-2 border-card rounded-full"></div>
         </div>
         <div>
-          <h3 class="font-display font-bold text-lg text-text-main">${buddy.name}</h3>
-          <p class="text-text-muted text-sm">${statusText}</p>
-          <p class="text-[11px] text-text-muted/80 mt-0.5">${buddy.certification || ""}</p>
+          <h3 class="font-display font-bold text-xl text-text-main">${buddy.name}</h3>
+          <p class="text-text-muted text-sm font-semibold">${statusText}</p>
+          <p class="text-xs font-medium text-text-muted/80 mt-0.5">${buddy.certification || ""}</p>
         </div>
       </div>
-      <p class="text-xs text-text-main/90 leading-relaxed line-clamp-2">${buddy.bio || ""}</p>
+      <p class="text-sm text-text-main leading-relaxed line-clamp-3">${buddy.bio || ""}</p>
       <div class="flex flex-wrap gap-2">
         ${specialtyBadges}
       </div>
-      <div class="mt-auto flex items-center gap-2 pt-2 border-t border-border/40">
-        <button class="flex-1 h-10 bg-surface hover:bg-card border border-border text-text-main rounded-lg font-display font-semibold hover:border-primary/50 transition-all duration-200 flex items-center justify-center gap-1.5 text-xs btn-info" title="View Full Profile">
+      <div class="mt-auto flex items-center gap-2 pt-3 border-t border-border/40">
+        <button class="flex-1 h-11 bg-surface hover:bg-card border border-border text-text-main rounded-lg font-display font-bold hover:border-primary/50 transition-all duration-200 flex items-center justify-center gap-1.5 text-sm btn-info" title="View Full Profile">
           <span class="material-symbols-outlined text-[18px]">info</span> Info
         </button>
-        <button class="flex-1 h-10 ${isOnline ? "bg-primary hover:brightness-110 text-white" : "bg-surface/50 text-text-muted cursor-not-allowed border border-border/50"} rounded-lg font-display font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 text-xs btn-connect" data-buddy-id="${buddy.id}" ${!isOnline ? "disabled title='Buddy is offline'" : ""}>
+        <button class="flex-1 h-11 ${isOnline ? "bg-primary hover:brightness-110 text-white" : "bg-surface/50 text-text-muted cursor-not-allowed border border-border/50"} rounded-lg font-display font-bold transition-all duration-200 flex items-center justify-center gap-1.5 text-sm btn-connect" data-buddy-id="${buddy.id}" ${!isOnline ? "disabled title='Buddy is offline'" : ""}>
           <span class="material-symbols-outlined text-[18px]">${isOnline ? "chat" : "lock"}</span>
           ${buttonText}
         </button>
@@ -1262,6 +1264,15 @@ document.addEventListener("DOMContentLoaded", () => {
       else            { v.classList.add("hidden"); }
     });
 
+    if (view !== chatView) {
+      const sidebar = document.getElementById("chatBuddySidebar");
+      const container = document.getElementById("chatMessagesContainer");
+      if (sidebar && container) {
+        sidebar.classList.add("hidden");
+        container.className = "md:col-span-12 flex flex-col gap-4 overflow-y-auto no-scrollbar pr-2 h-full transition-all duration-300";
+      }
+    }
+
     updateDoogieQuotes();
     if (view === welcomeView) {
       rotateWelcomeGreeting();
@@ -1368,6 +1379,12 @@ document.addEventListener("DOMContentLoaded", () => {
       currentConvoId = null;
       if (chatMessages) chatMessages.innerHTML = "";
       if (msgInput) msgInput.value = "";
+      const sidebar = document.getElementById("chatBuddySidebar");
+      const container = document.getElementById("chatMessagesContainer");
+      if (sidebar && container) {
+        sidebar.classList.add("hidden");
+        container.className = "md:col-span-12 flex flex-col gap-4 overflow-y-auto no-scrollbar pr-2 h-full transition-all duration-300";
+      }
       show(welcomeView);
     });
   }
@@ -1474,6 +1491,12 @@ document.addEventListener("DOMContentLoaded", () => {
       if (chatTitle) chatTitle.textContent = data.title || "Conversation";
       
       chatMessages.innerHTML = "";
+      const sidebar = document.getElementById("chatBuddySidebar");
+      const container = document.getElementById("chatMessagesContainer");
+      if (sidebar && container) {
+        sidebar.classList.add("hidden");
+        container.className = "md:col-span-12 flex flex-col gap-4 overflow-y-auto no-scrollbar pr-2 h-full transition-all duration-300";
+      }
       (data.messages || []).forEach(m => {
         appendChatMessage(m.role, m.content, false);
       });
@@ -1492,8 +1515,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const bubble = document.createElement("div");
     bubble.className = `flex flex-col gap-1 max-w-[80%] ${isUser ? "self-end items-end" : "self-start items-start"}`;
     bubble.innerHTML = `
-      <div class="text-[10px] font-bold uppercase tracking-wider text-text-muted px-1">${isUser ? "You" : "AI Support Buddy"}</div>
-      <div class="p-3.5 rounded-2xl text-xs leading-relaxed ${isUser ? "bg-primary text-white rounded-br-none" : "bg-card border border-border text-text-main rounded-bl-none shadow-sm"}">
+      <div class="text-[11px] font-bold uppercase tracking-wider text-text-muted px-1">${isUser ? "You" : "AI Support Buddy"}</div>
+      <div class="p-4 rounded-2xl text-sm md:text-base leading-relaxed ${isUser ? "bg-primary text-white rounded-br-none" : "bg-card border border-border text-text-main rounded-bl-none shadow-sm"}">
         ${isUser ? content : mdToHtml(content)}
       </div>
     `;

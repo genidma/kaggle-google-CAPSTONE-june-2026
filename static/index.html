@@ -403,23 +403,41 @@
         </section>
 
         <!-- 2.5 CHAT VIEW (Phase 2 Scrollable Conversation) -->
-        <section id="chatView" class="flex-1 flex flex-col gap-4 hidden max-h-[70vh] overflow-y-auto no-scrollbar pr-2">
-          <div class="flex items-center justify-between border-b border-border/40 pb-2 mb-2">
+        <section id="chatView" class="flex-1 flex flex-col gap-4 hidden max-h-[75vh]">
+          <!-- Chat Header -->
+          <div class="flex items-center justify-between border-b border-border/40 pb-3 shrink-0">
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary">chat</span>
-              <h3 id="chatTitle" class="font-display font-bold text-base text-text-main">Conversation</h3>
+              <span class="material-symbols-outlined text-primary text-[24px]">chat</span>
+              <h3 id="chatTitle" class="font-display font-bold text-lg text-text-main">Conversation</h3>
             </div>
             <div class="flex items-center gap-2">
-              <button id="btnNewChat" class="px-3 py-1 rounded-lg border border-border bg-surface text-text-muted text-xs font-semibold hover:text-text-main hover:bg-card flex items-center gap-1 transition-all">
-                <span class="material-symbols-outlined text-[14px]">add</span> New Chat
+              <button id="btnNewChat" class="px-3.5 py-1.5 rounded-lg border border-border bg-surface text-text-muted text-xs font-semibold hover:text-text-main hover:bg-card flex items-center gap-1.5 transition-all">
+                <span class="material-symbols-outlined text-[16px]">add</span> New Chat
               </button>
-              <button id="btnDeleteChat" class="px-3 py-1 rounded-lg border border-border bg-surface text-text-muted text-xs font-semibold hover:text-rose hover:border-rose/30 flex items-center gap-1 transition-all" title="Move conversation to trash">
-                <span class="material-symbols-outlined text-[14px]">delete</span> Trash
+              <button id="btnDeleteChat" class="px-3.5 py-1.5 rounded-lg border border-border bg-surface text-text-muted text-xs font-semibold hover:text-rose hover:border-rose/30 flex items-center gap-1.5 transition-all" title="Move conversation to trash">
+                <span class="material-symbols-outlined text-[16px]">delete</span> Trash
               </button>
             </div>
           </div>
-          <div id="chatMessages" class="flex flex-col gap-4">
-            <!-- Populated dynamically with user & AI message bubbles -->
+
+          <!-- Main Chat & Right-Hand Sidebar Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 flex-1 min-h-0 overflow-hidden">
+            <!-- Left Side: Chat Conversation Bubbles -->
+            <div id="chatMessagesContainer" class="md:col-span-12 flex flex-col gap-4 overflow-y-auto no-scrollbar pr-2 h-full transition-all duration-300">
+              <div id="chatMessages" class="flex flex-col gap-4">
+                <!-- Populated dynamically with user & AI message bubbles -->
+              </div>
+            </div>
+
+            <!-- Right Side: Recommended Buddy Profiles Sidebar -->
+            <div id="chatBuddySidebar" class="md:col-span-5 flex flex-col gap-4 overflow-y-auto no-scrollbar hidden border-l border-border/40 pl-4 md:pl-6 transition-all duration-300">
+              <div class="font-display font-bold text-base text-primary flex items-center gap-2 pb-2 border-b border-border/40 shrink-0">
+                <span class="material-symbols-outlined text-[20px]">account_circle</span> Recommended Peer Buddies
+              </div>
+              <div id="chatBuddyGrid" class="flex flex-col gap-4">
+                <!-- Dynamically populated when AI recommends buddies in chat -->
+              </div>
+            </div>
           </div>
         </section>
 
@@ -1073,6 +1091,6 @@
 
 
 
-  <script src="index.js?v=4.0.0"></script>
+  <script src="index.js?v=5.0.0"></script>
 </body>
 </html>
