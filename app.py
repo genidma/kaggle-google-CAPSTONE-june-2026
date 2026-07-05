@@ -1,4 +1,5 @@
 import os
+os.environ["GOOGLE_CLOUD_PROJECT"] = "kaggle-june-2026-capstone"
 import json
 import uuid
 import hashlib
@@ -22,7 +23,39 @@ app = FastAPI(
 )
 
 # Initialize GCP Firestore Client
-db = firestore.Client()
+db = firestore.Client(project="kaggle-june-2026-capstone")
+
+@app.on_event("startup")
+async def startup_event():
+    """Auto-seeds the default buddies and settings into Firestore if the database is empty."""
+    try:
+        buddies_ref = db.collection("buddies")
+        docs = list(buddies_ref.limit(1).stream())
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        resources_path = os.path.join(base_dir, "data", "resources.json")
+        
+        if not docs:
+            print("Seeding buddies to Firestore database...")
+            if os.path.exists(resources_path):
+                with open(resources_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                buddies = data.get("accredited_buddies", [])
+                for buddy in buddies:
+                    buddies_ref.document(buddy["id"]).set(buddy)
+                print(f"Successfully seeded {len(buddies)} buddies.")
+
+        crisis_ref = db.collection("settings").document("crisis_line")
+        if not crisis_ref.get().exists:
+            print("Seeding crisis line to settings collection...")
+            if os.path.exists(resources_path):
+                with open(resources_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                crisis_data = data.get("general_crisis_line", {})
+                if crisis_data:
+                    crisis_ref.set(crisis_data)
+                print("Successfully seeded crisis line settings.")
+    except Exception as e:
+        print(f"Error seeding buddies database: {e}")
 
 def hash_password(password: str, salt: bytes = None) -> str:
     if salt is None:

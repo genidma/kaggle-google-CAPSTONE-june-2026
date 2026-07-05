@@ -113,6 +113,9 @@
       <button id="btnProfile" class="px-3.5 py-1.5 rounded-lg border border-border bg-surface text-text-muted text-sm hover:text-text-main hover:bg-card transition-all font-medium hidden">
         Profile
       </button>
+      <button id="btnToggleSidebar" class="px-3.5 py-1.5 rounded-lg border border-border bg-surface text-text-muted text-sm hover:text-text-main hover:bg-card transition-all flex items-center gap-1.5 font-medium hidden">
+        <span class="material-symbols-outlined text-[18px]">people</span> Buddies
+      </button>
       <button id="btnAuth" class="px-3.5 py-1.5 rounded-lg text-text-muted text-sm hover:text-text-main hover:bg-card transition-all font-medium">
         Login
       </button>
@@ -301,6 +304,24 @@
 
       </div>
     </main>
+
+    <!-- RIGHT SIDEBAR (Available Buddies) -->
+    <aside id="buddySidebar" class="w-[320px] border-l border-border bg-surface flex flex-col shrink-0 p-6 gap-6 hidden">
+      <div class="flex items-center justify-between border-b border-border/40 pb-2">
+        <h3 class="text-text-main font-display text-sm font-semibold tracking-wide flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px] text-primary">account_circle</span> Available Buddies
+        </h3>
+        <button id="btnCloseBuddySidebar" class="text-text-muted hover:text-text-main">
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+      <p class="text-xs text-text-muted">Online peer supporters currently available to chat.</p>
+      
+      <!-- Sidebar Buddies List -->
+      <div id="sidebarBuddyList" class="flex flex-col gap-4 overflow-y-auto no-scrollbar flex-1">
+        <!-- Dynamically populated -->
+      </div>
+    </aside>
 
   </div>
 

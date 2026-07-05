@@ -21,6 +21,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnProfileBack = document.getElementById("btnProfileBack");
   const btnLogout      = document.getElementById("btnLogout");
   
+  const btnToggleSidebar     = document.getElementById("btnToggleSidebar");
+  const buddySidebar         = document.getElementById("buddySidebar");
+  const btnCloseBuddySidebar = document.getElementById("btnCloseBuddySidebar");
+  const sidebarBuddyList     = document.getElementById("sidebarBuddyList");
+  
   const authForm       = document.getElementById("authForm");
   const authEmail      = document.getElementById("authEmail");
   const authPassword   = document.getElementById("authPassword");
@@ -119,12 +124,16 @@ document.addEventListener("DOMContentLoaded", () => {
       btnAuth.classList.add("hidden");
       btnSignUp.classList.add("hidden");
       btnProfile.classList.remove("hidden");
+      btnToggleSidebar.classList.remove("hidden");
       profileEmail.textContent = currentUser.email;
       profileTier.textContent = `${currentUser.tier} Member`;
+      fetchSidebarBuddies();
     } else {
       btnAuth.classList.remove("hidden");
       btnSignUp.classList.remove("hidden");
       btnProfile.classList.add("hidden");
+      btnToggleSidebar.classList.add("hidden");
+      buddySidebar.classList.add("hidden");
     }
   }
 
@@ -291,6 +300,18 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---- Buddy View dialog ---- */
   btnViewBuddy.addEventListener("click",       () => { renderBuddyNotifications(); openDialog(buddyViewDialog); });
   btnCloseBuddyView.addEventListener("click",  () => closeDialog(buddyViewDialog));
+
+  /* ---- Available Buddies Sidebar ---- */
+  btnToggleSidebar.addEventListener("click", () => {
+    const isClosed = buddySidebar.classList.contains("hidden");
+    buddySidebar.classList.toggle("hidden");
+    if (isClosed && currentUser) {
+      fetchSidebarBuddies();
+    }
+  });
+  btnCloseBuddySidebar.addEventListener("click", () => {
+    buddySidebar.classList.add("hidden");
+  });
 
   /* ============================================================
      PROMPT CHIPS
@@ -624,6 +645,41 @@ document.addEventListener("DOMContentLoaded", () => {
       return errData.detail.map(d => `${d.loc.slice(1).join(".")}: ${d.msg}`).join("; ");
     }
     return JSON.stringify(errData.detail);
+  }
+
+  /* ============================================================
+     FETCH SIDEBAR BUDDIES
+  ============================================================ */
+  async function fetchSidebarBuddies() {
+    try {
+      const res = await fetch("/api/buddies");
+      if (!res.ok) throw new Error("Failed to load buddies");
+      const data = await res.json();
+      
+      const buddies = data.buddies || [];
+      const onlineBuddies = buddies.filter(b => b.availability?.toLowerCase() === "online");
+      
+      sidebarBuddyList.innerHTML = "";
+      if (onlineBuddies.length === 0) {
+        sidebarBuddyList.innerHTML = `
+          <div class="text-center py-8 text-text-muted text-xs italic">
+            All peer buddies are currently offline. Check back soon!
+          </div>
+        `;
+        return;
+      }
+
+      onlineBuddies.forEach(buddy => {
+        sidebarBuddyList.appendChild(createBuddyCard(buddy));
+      });
+    } catch (err) {
+      console.error("Error loading sidebar buddies:", err);
+      sidebarBuddyList.innerHTML = `
+        <div class="text-center py-8 text-rose text-xs italic">
+          Failed to load available buddies list.
+        </div>
+      `;
+    }
   }
 
 });
