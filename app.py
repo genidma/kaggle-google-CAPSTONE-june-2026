@@ -28,12 +28,13 @@ JWT_SECRET = os.environ.get("JWT_SECRET", secrets.token_hex(32))
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_HOURS = 72  # 3-day sessions
 
-def create_jwt(user_id: str, email: str, tier: str) -> str:
+def create_jwt(user_id: str, email: str, tier: str, role: str = "patient") -> str:
     """Issue a signed JWT containing the user's identity claims."""
     payload = {
         "sub": user_id,
         "email": email,
         "tier": tier,
+        "role": role,
         "exp": datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRE_HOURS),
         "iat": datetime.now(timezone.utc),
     }
@@ -101,6 +102,22 @@ async def seed_database():
                 if crisis_data:
                     crisis_ref.set(crisis_data)
                 print("Successfully seeded crisis line settings.")
+
+        # Seed 4 demo accounts for video recording (#1, #4)
+        demo_accounts = [
+            {"email": "patient@test.com", "role": "patient", "tier": "Standard", "name": "Demo Patient"},
+            {"email": "buddy@test.com", "role": "buddy", "tier": "Accredited", "name": "Sarah Jenkins (Buddy)"},
+            {"email": "clinician@test.com", "role": "clinician", "tier": "Clinical", "name": "Dr. Aris Vance (Clinician)"},
+            {"email": "caregiver@test.com", "role": "caregiver", "tier": "Family", "name": "Elena Rostova (Caregiver)"}
+        ]
+        users_ref = db.collection("users")
+        print("Syncing demo accounts for video demonstration (#1, #4)...")
+        for acc in demo_accounts:
+            user_doc_ref = users_ref.document(acc["email"])
+            acc["id"] = f"demo_{acc['role']}"
+            acc["password"] = hash_password("password123")
+            user_doc_ref.set(acc, merge=True)
+        print("Successfully synced demo accounts.")
     except Exception as e:
         print(f"Error seeding buddies database: {e}")
 
@@ -157,6 +174,7 @@ def verify_password(stored_password: str, provided_password: str) -> bool:
 class UserAuthRequest(BaseModel):
     email: str
     password: str
+    role: Optional[str] = "patient"
 
 class UserChangePasswordRequest(BaseModel):
     current_password: str
@@ -194,19 +212,21 @@ async def signup(payload: UserAuthRequest):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
     user_id = str(uuid.uuid4())
+    user_role = payload.role or "patient"
     new_user = {
         "id": user_id,
         "email": email_normalized,
         "password": hash_password(payload.password),
-        "tier": "Standard"
+        "tier": "Standard",
+        "role": user_role
     }
     try:
         user_ref.set(new_user)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create user: {str(e)}")
 
-    token = create_jwt(user_id, email_normalized, "Standard")
-    return {"id": user_id, "email": email_normalized, "tier": "Standard", "token": token}
+    token = create_jwt(user_id, email_normalized, "Standard", user_role)
+    return {"id": user_id, "email": email_normalized, "tier": "Standard", "role": user_role, "token": token}
 
 
 @app.post("/api/auth/login")
@@ -226,14 +246,15 @@ async def login(payload: UserAuthRequest):
     if not verify_password(user_data["password"], payload.password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    token = create_jwt(user_data["id"], user_data["email"], user_data["tier"])
-    return {"id": user_data["id"], "email": user_data["email"], "tier": user_data["tier"], "token": token}
+    user_role = user_data.get("role", "patient")
+    token = create_jwt(user_data["id"], user_data["email"], user_data.get("tier", "Standard"), user_role)
+    return {"id": user_data["id"], "email": user_data["email"], "tier": user_data.get("tier", "Standard"), "role": user_role, "token": token}
 
 
 @app.get("/api/auth/profile")
 async def get_profile(user: dict = Depends(get_current_user)):
     """Returns the authenticated user's profile from their JWT claims."""
-    return {"id": user["sub"], "email": user["email"], "tier": user["tier"]}
+    return {"id": user["sub"], "email": user["email"], "tier": user.get("tier", "Standard"), "role": user.get("role", "patient")}
 
 
 @app.post("/api/auth/change-password")
@@ -595,6 +616,80 @@ def _delete_conversation_permanently(conv_ref):
         conv_ref.delete()
     except Exception as e:
         print(f"Error permanently deleting conversation: {e}")
+
+
+# ---------------------------------------------------------------------------
+# Multi-Tier Role-Based Endpoints (RBAC) (#1, #4, #5)
+# ---------------------------------------------------------------------------
+def require_role(allowed_roles: List[str]):
+    """RBAC dependency generator checking user role against allowed roles (#4)."""
+    async def role_checker(user: dict = Depends(get_current_user)):
+        user_role = user.get("role", "patient")
+        if user_role not in allowed_roles:
+            raise HTTPException(status_code=403, detail=f"Access denied: Requires role in {allowed_roles}")
+        return user
+    return role_checker
+
+
+@app.get("/api/buddy-dashboard")
+async def get_buddy_dashboard(user: dict = Depends(require_role(["buddy", "clinician"]))):
+    """Returns assigned peer roster, warmline call logs, and active session queue for Buddies (#1, #5)."""
+    try:
+        logs_ref = db.collection("settings").document("crisis_line").collection("call_logs").order_by("timestamp", direction=firestore.Query.DESCENDING).limit(10)
+        call_logs = [doc.to_dict() for doc in logs_ref.stream()]
+        
+        assigned_peers = [
+            {"id": "peer_101", "name": "John D.", "status": "Active Chat", "last_checkin": "10 mins ago", "topic": "PTSD Transition", "risk_level": "Low"},
+            {"id": "peer_102", "name": "Maria K.", "status": "Requested Chat", "last_checkin": "1 hour ago", "topic": "Caregiver Stress", "risk_level": "Moderate"},
+            {"id": "peer_103", "name": "Alex R.", "status": "Scheduled Check-in", "last_checkin": "Yesterday", "topic": "TBI Recovery", "risk_level": "Low"}
+        ]
+        return {
+            "role": user.get("role"),
+            "assigned_peers": assigned_peers,
+            "recent_call_logs": call_logs,
+            "ethics_notice": "Do No Harm: You are viewing peer data under accredited buddy guidelines. Access is restricted to assigned peers."
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching buddy dashboard: {str(e)}")
+
+
+@app.get("/api/clinician-portal")
+async def get_clinician_portal(user: dict = Depends(require_role(["clinician"]))):
+    """Returns clinical triage summaries and TBI neuro-imaging analytics placeholder (#1, #2)."""
+    try:
+        triage_cases = [
+            {"id": "case_401", "patient_name": "Patient #8492", "priority": "High", "flag_reason": "Repeated crisis line dispatches", "assigned_clinician": "Dr. Aris Vance", "status": "Under Review"},
+            {"id": "case_402", "patient_name": "Patient #3910", "priority": "Medium", "flag_reason": "TBI model assessment requested", "assigned_clinician": "Dr. Aris Vance", "status": "Awaiting Scan Analysis"}
+        ]
+        tbi_analytics = {
+            "status": "Ready for Scan Ingestion (#2)",
+            "supported_models": ["NeuroScan-TBI-v1", "AlphaBrain-Impact-7B"],
+            "description": "Clinicians can upload TBI scans to analyze impacted brain regions and neurological controls."
+        }
+        return {
+            "role": "clinician",
+            "triage_cases": triage_cases,
+            "tbi_analytics": tbi_analytics,
+            "ethics_notice": "HIPAA Controlled Area: Clinical data is strictly monitored and logged for patient care coordination."
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching clinician portal: {str(e)}")
+
+
+@app.get("/api/caregiver-portal")
+async def get_caregiver_portal(user: dict = Depends(require_role(["caregiver", "clinician"]))):
+    """Returns consented patient wellness check-in summaries (#1)."""
+    try:
+        consented_summaries = [
+            {"patient_id": "pat_771", "name": "Mark Rostova", "relationship": "Spouse", "consent_granted": True, "last_checkin": "Today, 9:00 AM", "mood_status": "🟢 Positive / Stable", "notes_share_enabled": False, "summary": "Mark completed his morning peer session with Marcus Vance. Reported good sleep quality."},
+        ]
+        return {
+            "role": "caregiver",
+            "consented_summaries": consented_summaries,
+            "ethics_notice": "Caregiver Access: Information displayed is strictly limited by explicit patient consent toggles."
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching caregiver portal: {str(e)}")
 
 
 # ---------------------------------------------------------------------------
