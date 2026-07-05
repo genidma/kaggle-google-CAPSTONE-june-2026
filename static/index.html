@@ -939,10 +939,11 @@
   <!-- BOTTOM INPUT BAR -->
   <div class="input-bar w-full border-t border-border bg-background-dark px-6 md:px-10 py-4 shrink-0 z-10 mb-16 md:mb-0" id="inputBar">
     <div class="w-full max-w-[960px] mx-auto">
-      <form id="supportForm" class="flex items-center gap-3">
-        <textarea id="msgInput" placeholder="Share what's on your mind..." rows="1" class="flex-1 px-4 py-2.5 rounded-xl border border-border bg-card text-text-main focus:ring-1 focus:ring-primary focus:border-primary text-sm resize-none overflow-hidden max-h-[100px] no-scrollbar"></textarea>
-        <button type="submit" class="h-[42px] px-6 bg-primary hover:brightness-110 text-white font-semibold rounded-xl text-sm transition-all flex items-center justify-center gap-1.5 shrink-0 shadow-sm" id="btnSend">
-          Send
+      <form id="supportForm" class="flex items-center gap-3.5">
+        <textarea id="msgInput" placeholder="Share what's on your mind..." rows="2" class="flex-1 px-5 py-4 rounded-2xl border-2 border-border bg-card text-text-main focus:ring-2 focus:ring-primary focus:border-primary text-base resize-none overflow-hidden max-h-[160px] no-scrollbar shadow-inner"></textarea>
+        <button type="submit" class="min-h-[72px] md:min-h-[80px] px-10 md:px-14 bg-primary hover:brightness-110 text-white font-extrabold rounded-2xl text-lg md:text-xl transition-all flex items-center justify-center gap-2.5 shrink-0 shadow-lg transform active:scale-95" id="btnSend">
+          <span>Send</span>
+          <span class="material-symbols-outlined text-[24px]">send</span>
         </button>
       </form>
     </div>
