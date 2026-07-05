@@ -822,11 +822,18 @@ async def analyze_tbi_scan(payload: TbiAnalyzeRequest, user: dict = Depends(requ
                 "analyzed_at": datetime.now(timezone.utc).isoformat()
             },
             "slices": [
-                {"id": "slice_1", "title": "Frontal Lobe Impact", "view_type": "TBI Assessment: Patient ID 4912", "image_url": "/tbi/slice_1_frontal.png", "status": "Metabolic Depression", "impact_score": "4.2 / 10", "clinical_note": "Slight metabolic depression observed in prefrontal cortex; correlates with executive fatigue."},
-                {"id": "slice_2", "title": "Axial View", "view_type": "Regions: Frontal & Temporal", "image_url": "/tbi/slice_2_axial.png", "status": "Minor Inflammation", "impact_score": "3.8 / 10", "clinical_note": "Bilateral neural connectivity assessment shows localized temporal inflammation."},
-                {"id": "slice_3", "title": "Sagittal View", "view_type": "TBI Severity: Moderate (67% Conf.)", "image_url": "/tbi/slice_3_sagittal.png", "status": "Moderate Severity", "impact_score": "4.5 / 10", "clinical_note": "Correlates with reported executive dysfunction and sensory hypersensitivity."},
-                {"id": "slice_4", "title": "Rear View Assessment", "view_type": "Temporal & Parietal Involvement", "image_url": "/tbi/slice_4_rear.png", "status": "Stable / Unremarkable", "impact_score": "1.5 / 10", "clinical_note": "Parietal lobe connectivity intact; no focal hemorrhaging or hematoma detected."},
-                {"id": "slice_5", "title": "Detailed Regional Analysis", "view_type": "Right Frontal (14,500 Data Points)", "image_url": "/tbi/slice_5_regional.png", "status": "Damage Analysis Complete", "impact_score": "3.2 / 10", "clinical_note": "High-resolution neural mesh mapped. Cleared for supportive outpatient peer grounding."}
+                {"id": "slice_1", "title": "Frontal Lobe Impact (Raw Sectional View)", "view_type": "Slice 01 - Frontal Scan", "image_url": "/img/tbi/slice_1_frontal.png", "status": "Metabolic Depression", "impact_score": "4.2 / 10", "clinical_note": "Initial frontal lobe scan prior to diagnostic neural network overlay; slight metabolic depression observed in prefrontal cortex."},
+                {"id": "slice_2", "title": "Axial View (Raw Sectional View)", "view_type": "Slice 02 - Axial Scan", "image_url": "/img/tbi/slice_2_axial.png", "status": "Minor Inflammation", "impact_score": "3.8 / 10", "clinical_note": "Initial axial cross-section showing bilateral temporal symmetry and localized inflammation."},
+                {"id": "slice_3", "title": "Sagittal View (Raw Sectional View)", "view_type": "Slice 03 - Sagittal Scan", "image_url": "/img/tbi/slice_3_sagittal.png", "status": "Moderate Severity", "impact_score": "4.5 / 10", "clinical_note": "Mid-sagittal section displaying corpus callosum and brainstem anatomy; correlates with executive fatigue."},
+                {"id": "slice_4", "title": "Rear View Assessment (Raw Sectional View)", "view_type": "Slice 04 - Occipital/Parietal", "image_url": "/img/tbi/slice_4_rear.png", "status": "Stable / Unremarkable", "impact_score": "1.5 / 10", "clinical_note": "Posterior view showing occipital and parietal lobe structure intact; no focal hemorrhaging detected."},
+                {"id": "slice_5", "title": "Detailed Regional View (Raw Sectional View)", "view_type": "Slice 05 - Temporal/Regional", "image_url": "/img/tbi/slice_5_regional.png", "status": "Damage Analysis Complete", "impact_score": "3.2 / 10", "clinical_note": "High-resolution regional cross-section mapped prior to automated biomarker assessment."}
+            ],
+            "diag_slices": [
+                {"id": "diag_1", "title": "Frontal Lobe Impact — Neural Network Diagnostic Overlay", "view_type": "Diag 01 - Frontal Impact", "image_url": "/img/tbi/diag_1_frontal.png", "status": "Metabolic Depression", "impact_score": "4.2 / 10", "clinical_note": "Clinical Observations (Frontal Region): Impulsivity, Impaired judgment, Difficulty planning/executing tasks, Emotional regulation dysfunction."},
+                {"id": "diag_2", "title": "Multimodal Mood & Behavioral Profile — Temporal Focus", "view_type": "Diag 02 - Mood Assessment", "image_url": "/img/tbi/diag_2_axial.png", "status": "Minor Inflammation", "impact_score": "3.8 / 10", "clinical_note": "Multi-Site Mood Assessment: Frontal Lobe -> Impulsivity; Apathy. Temporal Lobe -> Depressive symptoms; Anxiety. Combined Effect -> Increased risk of chronic irritability."},
+                {"id": "diag_3", "title": "Sagittal Severity & Behavioral Diagnostics", "view_type": "Diag 03 - Sagittal Severity", "image_url": "/img/tbi/diag_3_sagittal.png", "status": "Moderate Severity (67% Conf.)", "impact_score": "4.5 / 10", "clinical_note": "Specific Behavioral Observations (Temporal Focus): Challenges with memory consolidation, Difficulty reading social cues, Altered perception of threat."},
+                {"id": "diag_4", "title": "Rear View Cognitive & Sensory Assessment", "view_type": "Diag 04 - Parietal / Temporal", "image_url": "/img/tbi/diag_4_rear.png", "status": "Stable / Unremarkable", "impact_score": "1.5 / 10", "clinical_note": "Cognitive & Sensory Impact: Spatial neglect errors, Sensory processing difficulties, Reduced attention span."},
+                {"id": "diag_5", "title": "Detailed Regional Analysis & Quantitative Mood Metrics", "view_type": "Diag 05 - Right Frontal Mesh", "image_url": "/img/tbi/diag_5_regional.png", "status": "14,500 Data Points Mapped", "impact_score": "3.2 / 10", "clinical_note": "Quantitative Mood Metrics (Detailed R Frontal): Affective Lability Score: High. Response Inhibition Score: Impaired. Decision Making Deficit: Moderate."}
             ],
             "findings": [
                 {"region": "Frontal Lobe Impact (Slice 1)", "status": "Metabolic Depression", "impact_score": "4.2 / 10", "clinical_note": "Slight metabolic depression observed; correlates with reported executive dysfunction."},
@@ -850,6 +857,10 @@ async def analyze_tbi_scan(payload: TbiAnalyzeRequest, user: dict = Depends(requ
 # ---------------------------------------------------------------------------
 # Static Frontend
 # ---------------------------------------------------------------------------
+img_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "img")
+if os.path.exists(img_dir):
+    app.mount("/img", StaticFiles(directory=img_dir), name="img")
+
 static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 if os.path.exists(static_dir):
     app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
