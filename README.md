@@ -1,23 +1,23 @@
 # MySupportBuddy — Peer Support & Crisis Resource Platform
 
-> **✅ Project Verified:** Setup and structure validated in Gemini CLI environment.
+> **✅ Project Live on Google Cloud Run:** [https://mysupportbuddy-170198436835.us-central1.run.app](https://mysupportbuddy-170198436835.us-central1.run.app)
 
 **MySupportBuddy** is an AI-powered peer support platform that connects individuals with **accredited, vetted peer support buddies** for warm, judgment-free conversations — and provides a direct link to a **General Support Warmline** when professional support is needed.
 
-Developed for the **Google & Kaggle AI Agents Capstone**, MySupportBuddy demonstrates a responsible, privacy-first multi-agent architecture built around human wellbeing.
+Developed for the **Google & Kaggle AI Agents Capstone**, MySupportBuddy demonstrates a responsible, privacy-first multi-agent architecture built around human wellbeing and veteran-friendly design principles.
 
 ---
 
 ## 💡 What MySupportBuddy Does
 
 1. **Talk to an Accredited Buddy**: Users can reach out to a certified, vetted peer support buddy at any time. Buddies are real people who have passed certification and vetting requirements before appearing on the platform.
-
-2. **Access the General Warmline**: For situations where the user feels overwhelmed or needs professional support, the General Support Warmline is always one tap away — confidential and available 24/7.
-
-3. **Privacy-Protected Buddy Notifications**: When a user calls the warmline through the app:
-   - ✅ The buddy is notified *that* their peer called, and *for how long*.
-   - ❌ The buddy is **never** told what was discussed — that is fully private.
-   - This allows the buddy to proactively check in with care, without compromising the user's privacy.
+2. **Interactive Demo Mode (Play Cards)**: Visitors can try instant one-click demonstration cards simulating real-world peer support scenarios (Veteran Transition, Peer Buddy Match, 24/7 Warmline Info, and Caregiver Support).
+3. **Access the General Warmline**: For situations where the user feels overwhelmed or needs professional support, the General Support Warmline is always one tap away — confidential and available 24/7.
+4. **Privacy-Protected Buddy Notifications & Persistent Logs**: When a user calls the warmline through the app:
+   - ✅ The buddy is notified *that* their peer called, and *for how long* (persisted securely in Google Cloud Firestore).
+   - ❌ The buddy is **never** told what was discussed — call content is discarded and never recorded.
+   - This allows the buddy to proactively check in with care, maintaining strict **Do No Harm** access boundaries.
+5. **Conversation History & Trash Bin**: Authenticated users can manage their chat sessions, view historical conversations, and utilize a soft-delete **30-Day Trash Bin** modeled after enterprise data retention standards.
 
 ---
 
@@ -42,7 +42,7 @@ graph TD
 
     User -->|Calls Warmline| CallTimer[In-App Call Timer]
     CallTimer -->|End Call| PrivacyGuard[Privacy Guard Agent]
-    PrivacyGuard -->|Metadata Only| BuddyNotif[Buddy Notification]
+    PrivacyGuard -->|Metadata Only| BuddyNotif[Firestore Call Logs]
     PrivacyGuard -->|No Transcript| NullStore[Content Discarded]
 ```
 
@@ -52,7 +52,7 @@ graph TD
 |---|---|
 | **Orchestrator Agent** (`agents/orchestrator.py`) | Classifies the user's emotional support needs (general/distressed), synthesizes warm responses, and routes to the appropriate resource. |
 | **Service Search Agent** (`agents/search_agent.py`) | Queries the buddy directory and warmline database, returning available buddies and crisis line info. |
-| **Privacy Guard** (via `app.py /api/crisis-call-log`) | Logs only call metadata (timestamp + duration) for the buddy. The call content is discarded and never stored or shared. |
+| **Privacy Guard** (`app.py /api/crisis-call-log`) | Logs only call metadata (timestamp + duration) to Firestore for buddy awareness. The call content is discarded and never stored or shared. |
 
 ---
 
@@ -66,10 +66,10 @@ graph TD
 ├── data/
 │   └── resources.json      # Accredited buddies + General Warmline data
 ├── static/
-│   ├── index.html          # Main UI dashboard
-│   ├── index.css           # Dark theme design system
-│   └── index.js            # Buddy cards, call timer, buddy notifications
-├── app.py                  # FastAPI server with support + call-log endpoints
+│   ├── index.html          # Main UI dashboard (with responsive Mobile Bottom Nav)
+│   ├── index.css           # Light cream/forest-green veteran-friendly design system
+│   └── index.js            # Stateful conversational UI, JWT auth, trash bin, and demo mode
+├── app.py                  # FastAPI server with JWT auth, Firestore CRUD, and call logs
 ├── requirements.txt
 ├── Dockerfile
 ├── docker-compose.yml
@@ -93,7 +93,7 @@ pip install -r requirements.txt
 
 # 3. Configure environment
 cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
+# Edit .env and configure your GEMINI_API_KEY and JWT_SECRET
 
 # 4. Run the server
 python app.py
@@ -101,17 +101,14 @@ python app.py
 
 Open **http://localhost:8080** in your browser.
 
-> **No API Key?** You can configure your key directly in the UI settings panel (🔑 API Key button) — it is stored in browser localStorage and sent securely per-request.
-
 ### Option B: Docker
 
 ```bash
-# 1. Build and run containers in the background (detached mode)
+# 1. Build and run containers in the background
 docker-compose up -d --build
 
 # 2. Check container status
 docker-compose ps
-# Or list all containers: docker ps -a
 
 # 3. Stream live application logs
 docker-compose logs -f
@@ -136,17 +133,18 @@ gcloud run deploy mysupportbuddy \
     --region us-central1 \
     --allow-unauthenticated \
     --set-env-vars="GEMINI_MODEL=gemini-2.5-flash" \
-    --set-secrets="GEMINI_API_KEY=gemini-api-key:latest"
+    --set-secrets="GEMINI_API_KEY=gemini-api-key:latest,JWT_SECRET=jwt-secret:latest"
 ```
 
 ---
 
 ## 🔒 Privacy Design & Database Principles
 
-- **Cloud Firestore Native Integration**: Authentications are persistent and securely processed using PBKDF2 SHA-256 password hashing.
-- **Content is never stored**: Warmline call transcripts are discarded. Only metadata (time, duration) is retained in-session for the buddy notification.
-- **No hardcoded secrets**: All API keys are loaded from environment variables (e.g. Secret Manager) or user-provided settings.
-- **Buddy boundary**: The buddy view shows only the notification card — never the conversation.
+- **Cloud Firestore Native Integration**: User accounts and persistent warmline logs are securely stored in Google Cloud Firestore.
+- **Stateless JWT Authentication**: Passwords are hashed using PBKDF2 SHA-256 with stateless bearer token authentication.
+- **Content is never stored**: Warmline call transcripts are discarded immediately. Only metadata (time, duration) is retained for buddy notifications.
+- **Do No Harm access boundaries**: Designed with role-specific access controls (Patient, Buddy, Clinician, Caregiver) ensuring maximum privacy.
+- **Pure Responsive CSS**: Responsive mobile bottom navigation and modals implemented without heavy external mobile frameworks.
 
 ---
 
