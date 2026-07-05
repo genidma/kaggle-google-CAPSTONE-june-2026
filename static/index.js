@@ -688,6 +688,67 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ============================================================
+     KEYBOARD COMBINATION SHORTCUTS & TOGGLE
+  ============================================================ */
+  let isEnterToSendMode = true;
+  const btnToggleKeyMode = document.getElementById("btnToggleKeyMode");
+  const keyModeLabel = document.getElementById("keyModeLabel");
+  const keyHelperText = document.getElementById("keyHelperText");
+
+  if (btnToggleKeyMode) {
+    btnToggleKeyMode.addEventListener("click", () => {
+      isEnterToSendMode = !isEnterToSendMode;
+      if (isEnterToSendMode) {
+        if (keyModeLabel) keyModeLabel.textContent = "Mode: Enter sends";
+        if (keyHelperText) {
+          keyHelperText.innerHTML = `
+            <span class="material-symbols-outlined text-[14px] text-primary">keyboard</span>
+            <span><strong class="text-text-main">Enter ↵</strong> to send</span>
+            <span>•</span>
+            <span><strong class="text-text-main">Shift + Enter</strong> for new line</span>
+          `;
+        }
+        notify("⌨️ Switched to Chat Mode: Enter sends message, Shift+Enter adds new line.", "info");
+      } else {
+        if (keyModeLabel) keyModeLabel.textContent = "Mode: Ctrl+Enter sends";
+        if (keyHelperText) {
+          keyHelperText.innerHTML = `
+            <span class="material-symbols-outlined text-[14px] text-primary">keyboard</span>
+            <span><strong class="text-text-main">Ctrl+Enter ↵</strong> to send</span>
+            <span>•</span>
+            <span><strong class="text-text-main">Enter</strong> for new line</span>
+          `;
+        }
+        notify("⌨️ Switched to Composer Mode: Ctrl+Enter (or Cmd+Enter) sends message, Enter adds new line.", "info");
+      }
+    });
+  }
+
+  if (msgInput) {
+    msgInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        if (isEnterToSendMode) {
+          // Mode 1: Enter sends, Shift+Enter (or Alt/Ctrl+Enter) new line
+          if (!e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.preventDefault();
+            if (msgInput.value.trim()) {
+              supportForm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+            }
+          }
+        } else {
+          // Mode 2: Ctrl+Enter / Cmd+Enter / Shift+Enter sends, plain Enter new line
+          if (e.ctrlKey || e.metaKey || e.shiftKey) {
+            e.preventDefault();
+            if (msgInput.value.trim()) {
+              supportForm.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+            }
+          }
+        }
+      }
+    });
+  }
+
+  /* ============================================================
      SUPPORT FORM SUBMIT
   ============================================================ */
   supportForm.addEventListener("submit", async (e) => {

@@ -939,12 +939,27 @@
   <!-- BOTTOM INPUT BAR -->
   <div class="input-bar w-full border-t border-border bg-background-dark px-6 md:px-10 py-4 shrink-0 z-10 mb-16 md:mb-0" id="inputBar">
     <div class="w-full max-w-[960px] mx-auto">
-      <form id="supportForm" class="flex items-center gap-3.5">
-        <textarea id="msgInput" placeholder="Share what's on your mind..." rows="2" class="flex-1 px-5 py-4 rounded-2xl border-2 border-border bg-card text-text-main focus:ring-2 focus:ring-primary focus:border-primary text-base resize-none overflow-hidden max-h-[160px] no-scrollbar shadow-inner"></textarea>
-        <button type="submit" class="min-h-[72px] md:min-h-[80px] px-10 md:px-14 bg-primary hover:brightness-110 text-white font-extrabold rounded-2xl text-lg md:text-xl transition-all flex items-center justify-center gap-2.5 shrink-0 shadow-lg transform active:scale-95" id="btnSend">
-          <span>Send</span>
-          <span class="material-symbols-outlined text-[24px]">send</span>
-        </button>
+      <form id="supportForm" class="flex flex-col gap-2">
+        <div class="flex items-center gap-3.5">
+          <textarea id="msgInput" placeholder="Share what's on your mind..." rows="2" class="flex-1 px-5 py-4 rounded-2xl border-2 border-border bg-card text-text-main focus:ring-2 focus:ring-primary focus:border-primary text-base resize-none overflow-hidden max-h-[160px] no-scrollbar shadow-inner"></textarea>
+          <button type="submit" class="min-h-[72px] md:min-h-[80px] px-10 md:px-14 bg-primary hover:brightness-110 text-white font-extrabold rounded-2xl text-lg md:text-xl transition-all flex items-center justify-center gap-2.5 shrink-0 shadow-lg transform active:scale-95" id="btnSend">
+            <span>Send</span>
+            <span class="material-symbols-outlined text-[24px]">send</span>
+          </button>
+        </div>
+        <!-- Gentle Keyboard Helper & Toggle -->
+        <div class="flex items-center justify-between text-xs text-text-muted px-2 pt-0.5">
+          <span id="keyHelperText" class="flex items-center gap-1.5 font-medium">
+            <span class="material-symbols-outlined text-[14px] text-primary">keyboard</span>
+            <span><strong class="text-text-main">Enter ↵</strong> to send</span>
+            <span>•</span>
+            <span><strong class="text-text-main">Shift + Enter</strong> for new line</span>
+          </span>
+          <button type="button" id="btnToggleKeyMode" class="text-[11px] text-primary hover:underline font-bold flex items-center gap-1 transition-all">
+            <span id="keyModeLabel">Mode: Enter sends</span>
+            <span class="material-symbols-outlined text-[14px]">swap_horiz</span>
+          </button>
+        </div>
       </form>
     </div>
   </div>
