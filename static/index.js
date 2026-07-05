@@ -523,7 +523,7 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({
             patient_name: "Alex W. (Anxiety & Panic Attack)",
             session_summary: summaryText,
-            risk_level: "Zero Lethality Risk",
+            risk_level: "Supportive / Low Acute Crisis Risk",
             recommended_followup: "Recommend clinical follow-up for chronic anxiety triggers."
           })
         });
@@ -542,7 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <span class="px-2 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-bold">New Handoff • Buddy: Care Team (#7)</span>
             </div>
             <p class="text-xs text-text-muted">
-              <strong class="text-text-main">Session Summary:</strong> ${summaryText} Verified zero self-harm risk. Recommend clinician follow-up for baseline anxiety assessment.
+              <strong class="text-text-main">Session Summary:</strong> ${summaryText} Verified supportive safety status. Recommend clinician follow-up for baseline anxiety assessment.
             </p>
             <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: ${timestamp} • HIPAA Handoff ID: #MSB-${Math.floor(1000 + Math.random() * 9000)}</span>
           </div>
@@ -552,7 +552,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         clinicianHandoffList.prepend(newReport);
       }
-      notify("📋 Clinical Care Handoff Report securely forwarded to Dr. Aris Vance (Clinician Portal #7)!", "success");
+      notify("📋 Clinical Care Handoff Report securely forwarded to Dr. Aris Fitzgerald (Clinician Portal #7)!", "success");
     });
   }
 

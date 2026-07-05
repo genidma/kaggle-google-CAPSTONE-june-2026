@@ -107,7 +107,7 @@ async def seed_database():
         demo_accounts = [
             {"email": "patient@test.com", "role": "patient", "tier": "Standard", "name": "Demo Patient"},
             {"email": "buddy@test.com", "role": "buddy", "tier": "Accredited", "name": "Sarah Jenkins (Buddy)"},
-            {"email": "clinician@test.com", "role": "clinician", "tier": "Clinical", "name": "Dr. Aris Vance (Clinician)"},
+            {"email": "clinician@test.com", "role": "clinician", "tier": "Clinical", "name": "Dr. Aris Fitzgerald (Clinician)"},
             {"email": "caregiver@test.com", "role": "caregiver", "tier": "Family", "name": "Elena Rostova (Caregiver)"}
         ]
         users_ref = db.collection("users")
@@ -202,7 +202,7 @@ class CrisisPlanRequest(BaseModel):
 class HandoffRequest(BaseModel):
     patient_name: str
     session_summary: str
-    risk_level: str = "Zero Lethality Risk"
+    risk_level: str = "Supportive / Low Acute Crisis Risk"
     recommended_followup: str = "Review baseline anxiety and grounding techniques."
 
 class TbiAnalyzeRequest(BaseModel):
@@ -716,8 +716,8 @@ async def get_clinician_portal(user: dict = Depends(require_role(["clinician"]))
     """Returns clinical triage summaries and TBI neuro-imaging analytics placeholder (#1, #2)."""
     try:
         triage_cases = [
-            {"id": "case_401", "patient_name": "Patient #8492", "priority": "High", "flag_reason": "Repeated crisis line dispatches", "assigned_clinician": "Dr. Aris Vance", "status": "Under Review"},
-            {"id": "case_402", "patient_name": "Patient #3910", "priority": "Medium", "flag_reason": "TBI model assessment requested", "assigned_clinician": "Dr. Aris Vance", "status": "Awaiting Scan Analysis"}
+            {"id": "case_401", "patient_name": "Patient #8492", "priority": "High", "flag_reason": "Repeated crisis line dispatches", "assigned_clinician": "Dr. Aris Fitzgerald", "status": "Under Review"},
+            {"id": "case_402", "patient_name": "Patient #3910", "priority": "Medium", "flag_reason": "TBI model assessment requested", "assigned_clinician": "Dr. Aris Fitzgerald", "status": "Awaiting Scan Analysis"}
         ]
         tbi_analytics = {
             "status": "Ready for Scan Ingestion (#2)",
@@ -739,7 +739,7 @@ async def get_caregiver_portal(user: dict = Depends(require_role(["caregiver", "
     """Returns consented patient wellness check-in summaries (#1)."""
     try:
         consented_summaries = [
-            {"patient_id": "pat_771", "name": "Mark Rostova", "relationship": "Spouse", "consent_granted": True, "last_checkin": "Today, 9:00 AM", "mood_status": "🟢 Positive / Stable", "notes_share_enabled": False, "summary": "Mark completed his morning peer session with Marcus Vance. Reported good sleep quality."},
+            {"patient_id": "pat_771", "name": "Mark Rostova", "relationship": "Spouse", "consent_granted": True, "last_checkin": "Today, 9:00 AM", "mood_status": "🟢 Positive / Stable", "notes_share_enabled": False, "summary": "Mark completed his morning peer session with Marcus T. Reported good sleep quality."},
         ]
         return {
             "role": "caregiver",
@@ -799,7 +799,7 @@ async def get_clinician_handoffs(user: dict = Depends(require_role(["clinician"]
                     "buddy_email": "sarah.j@supportbuddy.org",
                     "patient_name": "Alex W. (Anxiety & Panic Attack)",
                     "session_summary": "Patient experienced acute physiological panic symptoms. De-escalated via guided 4-4-4-4 Box Breathing. Zero self-harm risk detected.",
-                    "risk_level": "Zero Lethality Risk",
+                    "risk_level": "Supportive / Low Acute Crisis Risk",
                     "recommended_followup": "Recommend clinical follow-up for chronic anxiety triggers.",
                     "timestamp": datetime.now(timezone.utc).isoformat()
                 }
