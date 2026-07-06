@@ -936,7 +936,7 @@ document.addEventListener("DOMContentLoaded", () => {
     contactDiv.className = "emergency-contact-item p-4 border border-border/60 rounded-lg bg-background-dark relative flex flex-col gap-3";
     contactDiv.dataset.contactId = contactId;
     contactDiv.innerHTML = `
-      <button type="button" class="btn-remove-contact absolute top-2 right-2 text-text-muted hover:text-rose material-symbols-outlined text-base" title="Remove Contact">close</button>
+      <button type="button" class="btn-remove-contact absolute top-2 right-2 text-text-muted hover:text-rose font-bold text-xs" title="Remove Contact">✕</button>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
           <label for="emergContactName-${contactId}" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Contact Name</label>
