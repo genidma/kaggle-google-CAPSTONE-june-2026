@@ -358,7 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let fillClass = "fill-primary/20";
       if (d.minutes > 30) {
-        fillClass = "fill-rose";
+        fillClass = "fill-sky-400"; // Calming light blue for high support call engagement
       } else if (d.minutes > 15) {
         fillClass = "fill-amber";
       } else if (d.minutes > 0) {
