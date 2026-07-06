@@ -193,9 +193,14 @@ class CrisisCallRequest(BaseModel):
     duration_minutes: int
     timestamp: str
 
+class EmergencyContact(BaseModel):
+    name: str
+    phone: str
+    relationship: str
+    type: str # e.g., "Primary", "Secondary", "Tertiary"
+
 class CrisisPlanRequest(BaseModel):
-    emergency_contact_name: str
-    emergency_contact_phone: str
+    emergency_contacts: List[EmergencyContact] = []
     crisis_line_preference: str
     personal_grounding_trigger: str
 
@@ -391,8 +396,7 @@ async def save_crisis_plan(payload: CrisisPlanRequest, user: dict = Depends(get_
         raise HTTPException(status_code=503, detail="Database unavailable")
     try:
         plan_data = {
-            "emergency_contact_name": payload.emergency_contact_name,
-            "emergency_contact_phone": payload.emergency_contact_phone,
+            "emergency_contacts": [contact.model_dump() for contact in payload.emergency_contacts],
             "crisis_line_preference": payload.crisis_line_preference,
             "personal_grounding_trigger": payload.personal_grounding_trigger,
             "updated_at": datetime.now(timezone.utc).isoformat(),
@@ -412,12 +416,38 @@ async def get_crisis_plan(user: dict = Depends(get_current_user)):
     try:
         doc = db.collection("users").document(user["email"]).collection("settings").document("crisis_plan").get()
         if doc.exists:
-            return {"plan": doc.to_dict()}
+            plan_data = doc.to_dict()
+            plan_data["emergency_contacts"] = plan_data.get("emergency_contacts", [])
+            return {"plan": plan_data}
         return {"plan": None}
     except Exception as e:
         print(f"Error fetching crisis plan: {e}")
         return {"plan": None}
 
+
+@app.get("/api/patient/{patient_email}/emergency-contacts")
+async def get_patient_emergency_contacts(
+    patient_email: str,
+    user: dict = Depends(require_role(["buddy", "clinician", "caregiver"]))
+):
+    """Retrieve emergency contacts for a specific patient, accessible by authorized roles (#6)."""
+    if not db:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    try:
+        # Normalize the patient email
+        patient_email_normalized = patient_email.lower().strip()
+        doc = db.collection("users").document(patient_email_normalized).collection("settings").document("crisis_plan").get()
+        if doc.exists:
+            plan_data = doc.to_dict()
+            emergency_contacts = plan_data.get("emergency_contacts", [])
+            # Only return the emergency contacts, not the full crisis plan
+            return {"patient_email": patient_email, "emergency_contacts": emergency_contacts}
+        raise HTTPException(status_code=404, detail="Patient emergency contacts not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error fetching patient emergency contacts for {patient_email}: {e}")
+        raise HTTPException(status_code=500, detail=f"Error fetching emergency contacts: {str(e)}")
 
 # ---------------------------------------------------------------------------
 # Buddies

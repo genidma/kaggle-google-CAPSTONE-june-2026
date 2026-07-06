@@ -973,16 +973,12 @@
           <form id="crisisPlanForm" class="flex flex-col gap-3.5">
             <div id="crisisPlanMessage" class="hidden p-2.5 rounded-lg text-xs font-semibold"></div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <label for="emergContactName" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Emergency Contact Name</label>
-                <input type="text" id="emergContactName" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs" placeholder="e.g., Jane Doe (Sister)" required>
-              </div>
-              <div>
-                <label for="emergContactPhone" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Contact Phone Number</label>
-                <input type="tel" id="emergContactPhone" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs" placeholder="(555) 019-2831" required>
-              </div>
+            <div id="emergencyContactsContainer" class="flex flex-col gap-3.5">
+              <!-- Emergency contacts will be dynamically added here by JavaScript -->
             </div>
+            <button type="button" id="btnAddEmergencyContact" class="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary/20 font-bold rounded-lg text-xs transition-all self-start flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">add</span> Add Emergency Contact
+            </button>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>

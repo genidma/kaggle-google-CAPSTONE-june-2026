@@ -124,12 +124,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const changePasswordSuccess    = document.getElementById("changePasswordSuccess");
 
   const crisisPlanForm           = document.getElementById("crisisPlanForm");
-  const emergContactName         = document.getElementById("emergContactName");
-  const emergContactPhone        = document.getElementById("emergContactPhone");
   const crisisLinePref           = document.getElementById("crisisLinePref");
   const personalGrounding        = document.getElementById("personalGrounding");
   const crisisPlanMessage        = document.getElementById("crisisPlanMessage");
   const btnSaveCrisisPlan        = document.getElementById("btnSaveCrisisPlan");
+  const emergencyContactsContainer = document.getElementById("emergencyContactsContainer");
+  const btnAddEmergencyContact   = document.getElementById("btnAddEmergencyContact");
 
   const responseText     = document.getElementById("responseText");
   const buddySection     = document.getElementById("buddySection");
@@ -302,6 +302,43 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // --- Helper function to render patient emergency contacts in dashboard views ---
+  async function renderPatientEmergencyContacts(patientEmail, containerEl) {
+    if (!containerEl) return;
+    containerEl.innerHTML = `<div class="text-xs text-text-muted italic">Loading emergency contacts...</div>`;
+    try {
+      const res = await fetch(`/api/patient/${patientEmail}/emergency-contacts`, { headers: authHeaders() });
+      if (!res.ok) {
+        if (res.status === 404) {
+          containerEl.innerHTML = `<div class="text-xs text-text-muted italic">No emergency contacts set.</div>`;
+        } else {
+          throw new Error("Failed to load emergency contacts.");
+        }
+      }
+      const data = await res.json();
+      const contacts = data.emergency_contacts || [];
+
+      if (contacts.length > 0) {
+        containerEl.innerHTML = `
+          <div class="flex flex-col gap-1 mt-2">
+            ${contacts.map(c => `
+              <div class="flex items-center gap-2 text-xs text-text-main">
+                <span class="material-symbols-outlined text-sm text-primary">person</span>
+                <span>${c.name} (${c.relationship}) - ${c.phone}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary">${c.type}</span>
+              </div>
+            `).join("")}
+          </div>
+        `;
+      } else {
+        containerEl.innerHTML = `<div class="text-xs text-text-muted italic">No emergency contacts set.</div>`;
+      }
+    } catch (err) {
+      console.error(`Error loading emergency contacts for ${patientEmail}:`, err);
+      containerEl.innerHTML = `<div class="text-xs text-rose italic">Error loading contacts.</div>`;
+    }
+  }
+
   async function loadBuddyDashboardData() {
     const peersList = document.getElementById("buddyPeersList");
     const callLogsList = document.getElementById("buddyCallLogsList");
@@ -313,16 +350,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (data.assigned_peers && data.assigned_peers.length > 0) {
-        peersList.innerHTML = data.assigned_peers.map(p => `
-          <div class="p-4 rounded-xl border border-border bg-surface flex flex-col gap-2">
+        peersList.innerHTML = ""; // Clear list before adding new items
+        for (const p of data.assigned_peers) {
+          const peerCard = document.createElement("div");
+          peerCard.className = "p-4 rounded-xl border border-border bg-surface flex flex-col gap-2";
+          peerCard.innerHTML = `
             <div class="flex items-center justify-between">
               <span class="font-bold text-sm text-text-main">${p.name}</span>
               <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase">${p.status}</span>
             </div>
             <p class="text-xs text-text-muted">Last check-in: ${p.last_checkin}</p>
             <p class="text-xs italic text-text-main bg-background-dark p-2 rounded border border-border/50">"${p.notes}"</p>
-          </div>
-        `).join("");
+            <div id="buddy-peer-emergency-contacts-${p.email}" class="peer-emergency-contacts mt-2"></div>
+          `;
+          peersList.appendChild(peerCard);
+          await renderPatientEmergencyContacts(p.email, document.getElementById(`buddy-peer-emergency-contacts-${p.email}`));
+        }
       } else {
         peersList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic col-span-3">No active peers currently assigned to your queue.</div>`;
       }
@@ -356,23 +399,30 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (data.triage_cases && data.triage_cases.length > 0) {
-        triageList.innerHTML = data.triage_cases.map(c => `
-          <div class="p-4 rounded-xl border border-border bg-surface flex flex-col gap-2.5 shadow-sm">
+        triageList.innerHTML = ""; // Clear list before adding new items
+        for (const c of data.triage_cases) {
+          const caseCard = document.createElement("div");
+          caseCard.className = "p-4 rounded-xl border border-border bg-surface flex flex-col gap-2.5 shadow-sm";
+          caseCard.innerHTML = `
             <div class="flex items-center justify-between">
               <span class="font-bold text-sm text-text-main flex items-center gap-1.5">
-                <span>⚠️</span> Patient ${c.patient_id}
+                <span>⚠️</span> Patient ${getPatientDisplayName(c.patient_email, c.patient_id)}
               </span>
               <span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.risk_level === 'High' ? 'bg-rose/15 text-rose border border-rose/30' : 'bg-amber/15 text-amber border border-amber/30'} uppercase tracking-wider">${c.risk_level} Risk</span>
             </div>
             <div class="text-xs text-text-main bg-background-dark p-2.5 rounded-lg border border-border/60">
               <span class="font-semibold text-text-muted block mb-0.5">Primary Symptoms:</span> ${c.symptoms}
             </div>
+            <div id="clinician-patient-emergency-contacts-${c.patient_email}" class="patient-emergency-contacts mt-2"></div>
             <div class="flex items-center justify-between text-[11px] text-text-muted pt-1 border-t border-border/40">
               <span>Status: <strong class="text-text-main">${c.status}</strong></span>
               <span>Updated: ${c.last_updated}</span>
             </div>
-          </div>
-        `).join("");
+          `;
+          triageList.appendChild(caseCard);
+          // Assuming c.patient_email exists in the triage case data
+          await renderPatientEmergencyContacts(c.patient_email, document.getElementById(`clinician-patient-emergency-contacts-${c.patient_email}`));
+        }
       } else {
         triageList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic col-span-2">No active triage cases pending review.</div>`;
       }
@@ -423,26 +473,33 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (data.consented_summaries && data.consented_summaries.length > 0) {
-        summariesList.innerHTML = data.consented_summaries.map(s => `
-          <div class="p-4 rounded-xl border border-border bg-surface flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
+        summariesList.innerHTML = ""; // Clear list before adding new items
+        for (const s of data.consented_summaries) {
+          const summaryCard = document.createElement("div");
+          summaryCard.className = "p-4 rounded-xl border border-border bg-surface flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm";
+          summaryCard.innerHTML = `
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-lg shrink-0">
                 ${s.status === 'Thriving' ? '🌟' : '💛'}
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="font-bold text-sm text-text-main">${s.patient_name}</span>
+                  <span class="font-bold text-sm text-text-main">${getPatientDisplayName(s.patient_email, s.patient_name)}</span>
                   <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase">${s.status}</span>
                 </div>
                 <p class="text-xs text-text-muted mt-0.5">Recent activity: ${s.recent_activity}</p>
               </div>
             </div>
+            <div id="caregiver-patient-emergency-contacts-${s.patient_email}" class="patient-emergency-contacts mt-2"></div>
             <div class="text-xs text-right bg-background-dark md:bg-transparent p-2 md:p-0 rounded border border-border/50 md:border-0 shrink-0">
               <span class="text-text-muted block text-[10px]">Last Peer Session:</span>
               <span class="font-semibold text-text-main">${s.last_session}</span>
             </div>
-          </div>
-        `).join("");
+          `;
+          summariesList.appendChild(summaryCard);
+          // Assuming s.patient_email exists in the consented summary data
+          await renderPatientEmergencyContacts(s.patient_email, document.getElementById(`caregiver-patient-emergency-contacts-${s.patient_email}`));
+        }
       } else {
         summariesList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic">No consented check-in summaries available.</div>`;
       }
@@ -840,6 +897,63 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchCrisisPlan();
   }
 
+  // --- Emergency Contact Management Functions ---
+  function addEmergencyContactField(contact = {}) {
+    const contactId = uuidv4(); // Generate a unique ID for each contact field set
+    const contactDiv = document.createElement("div");
+    contactDiv.className = "emergency-contact-item p-4 border border-border/60 rounded-lg bg-background-dark relative flex flex-col gap-3";
+    contactDiv.dataset.contactId = contactId;
+    contactDiv.innerHTML = `
+      <button type="button" class="btn-remove-contact absolute top-2 right-2 text-text-muted hover:text-rose material-symbols-outlined text-base" title="Remove Contact">close</button>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label for="emergContactName-${contactId}" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Contact Name</label>
+          <input type="text" id="emergContactName-${contactId}" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs" placeholder="e.g., Jane Doe" value="${contact.name || ""}" required>
+        </div>
+        <div>
+          <label for="emergContactPhone-${contactId}" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Phone Number</label>
+          <input type="tel" id="emergContactPhone-${contactId}" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs" placeholder="(555) 019-2831" value="${contact.phone || ""}" required>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label for="emergContactRelationship-${contactId}" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Relationship</label>
+          <input type="text" id="emergContactRelationship-${contactId}" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs" placeholder="e.g., Sister" value="${contact.relationship || ""}" required>
+        </div>
+        <div>
+          <label for="emergContactType-${contactId}" class="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Type</label>
+          <select id="emergContactType-${contactId}" class="w-full px-3 py-2 rounded-lg border border-border bg-background-dark text-text-main focus:ring-1 focus:ring-primary text-xs" required>
+            <option value="Primary" ${contact.type === "Primary" ? "selected" : ""}>Primary</option>
+            <option value="Secondary" ${contact.type === "Secondary" ? "selected" : ""}>Secondary</option>
+            <option value="Tertiary" ${contact.type === "Tertiary" ? "selected" : ""}>Tertiary</option>
+          </select>
+        </div>
+      </div>
+    `;
+    emergencyContactsContainer.appendChild(contactDiv);
+
+    contactDiv.querySelector(".btn-remove-contact").addEventListener("click", () => {
+      contactDiv.remove();
+    });
+  }
+
+  function renderEmergencyContacts(contacts) {
+    emergencyContactsContainer.innerHTML = ""; // Clear existing fields
+    if (contacts && contacts.length > 0) {
+      contacts.forEach(contact => addEmergencyContactField(contact));
+    } else {
+      addEmergencyContactField(); // Add one empty field by default
+    }
+  }
+
+  // UUID generator (simple, for client-side unique IDs)
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
   async function fetchCrisisPlan() {
     if (!currentUser || !crisisPlanForm) return;
     try {
@@ -847,15 +961,21 @@ document.addEventListener("DOMContentLoaded", () => {
       if (res.ok) {
         const data = await res.json();
         if (data.plan) {
-          if (emergContactName) emergContactName.value = data.plan.emergency_contact_name || "";
-          if (emergContactPhone) emergContactPhone.value = data.plan.emergency_contact_phone || "";
+          renderEmergencyContacts(data.plan.emergency_contacts);
           if (crisisLinePref) crisisLinePref.value = data.plan.crisis_line_preference || "988 - Suicide & Crisis Lifeline";
           if (personalGrounding) personalGrounding.value = data.plan.personal_grounding_trigger || "";
+        } else {
+          renderEmergencyContacts([]); // Ensure at least one empty contact field if no plan exists
         }
       }
     } catch (e) {
       console.warn("Could not load crisis plan:", e);
+      renderEmergencyContacts([]); // Render empty fields on error
     }
+  }
+
+  if (btnAddEmergencyContact) {
+    btnAddEmergencyContact.addEventListener("click", () => addEmergencyContactField());
   }
 
   if (crisisPlanForm) {
@@ -870,13 +990,31 @@ document.addEventListener("DOMContentLoaded", () => {
         btnSaveCrisisPlan.disabled = true;
         btnSaveCrisisPlan.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Saving...`;
       }
+
+      const emergencyContacts = [];
+      document.querySelectorAll(".emergency-contact-item").forEach(item => {
+        const contactId = item.dataset.contactId;
+        const nameInput = document.getElementById(`emergContactName-${contactId}`);
+        const phoneInput = document.getElementById(`emergContactPhone-${contactId}`);
+        const relationshipInput = document.getElementById(`emergContactRelationship-${contactId}`);
+        const typeInput = document.getElementById(`emergContactType-${contactId}`);
+
+        if (nameInput && phoneInput && relationshipInput && typeInput) {
+          emergencyContacts.push({
+            name: nameInput.value,
+            phone: phoneInput.value,
+            relationship: relationshipInput.value,
+            type: typeInput.value,
+          });
+        }
+      });
+
       try {
         const res = await fetch("/api/crisis-plan", {
           method: "POST",
           headers: authHeaders(),
           body: JSON.stringify({
-            emergency_contact_name: emergContactName ? emergContactName.value : "",
-            emergency_contact_phone: emergContactPhone ? emergContactPhone.value : "",
+            emergency_contacts: emergencyContacts,
             crisis_line_preference: crisisLinePref ? crisisLinePref.value : "",
             personal_grounding_trigger: personalGrounding ? personalGrounding.value : ""
           })
