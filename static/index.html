@@ -203,8 +203,18 @@
         </section>
 
         <!-- c. DASHBOARD VIEW -->
-        <section id="dashboardView" class="flex-1 flex flex-col justify-center items-center py-12 max-w-xl mx-auto gap-8 hidden">
-          <!-- Content for Dashboard will go here -->
+        <section id="dashboardView" class="flex-1 flex flex-col justify-start py-6 max-w-xl mx-auto gap-6 hidden">
+          <!-- Patient Dashboard Pulse Card -->
+          <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4 w-full">
+            <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+              📈 My Resilience & Crisis Pulse
+            </h3>
+            <p class="text-xs text-text-muted">Track your daily crisis call minutes and grounding de-escalation history.</p>
+            <div id="patientPulseChartContainer" class="w-full h-40 bg-surface rounded-xl border border-border/40 p-4 relative">
+              <!-- Dynamic SVG chart gets inserted here -->
+            </div>
+          </div>
+
           <!-- INTERACTIVE DEMO MODE (Play Cards - Phase 4.2) -->
           <div class="w-full mt-4">
             <div class="text-center mb-4">
@@ -656,6 +666,15 @@
         </div>
       </div>
 
+      <!-- Assigned Patient Crisis Pulse -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+          📈 Assigned Patient Crisis Pulse
+        </h3>
+        <p class="text-xs text-text-muted">Track the aggregated crisis/warmline call minutes of your assigned patients.</p>
+        <div id="buddyPulseChartContainer" class="w-full h-40 bg-surface rounded-xl border border-border/40 p-4 relative"></div>
+      </div>
+
       <!-- Active Assigned Peers Queue -->
       <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
         <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
@@ -721,6 +740,15 @@
         <div id="clinicianTriageList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="text-center py-4 text-text-muted text-xs italic col-span-2">Loading clinical cases...</div>
         </div>
+      </div>
+
+      <!-- Patient Crisis & Triage Pulse -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+          📈 Patient Crisis & Triage Pulse
+        </h3>
+        <p class="text-xs text-text-muted">Monitor high-risk patient crisis call duration over the past 7 days.</p>
+        <div id="clinicianPulseChartContainer" class="w-full h-40 bg-surface rounded-xl border border-border/40 p-4 relative"></div>
       </div>
 
       <!-- Post-Session Clinical Care Handoff Reports (#7) -->
@@ -843,6 +871,15 @@
         <div class="bg-surface px-4 py-2 rounded-xl border border-border text-xs text-text-muted">
           <span class="font-bold text-text-main">Consent Policy:</span> Access is governed strictly by patient consent toggles.
         </div>
+      </div>
+
+      <!-- Consented Patient Crisis Pulse -->
+      <div class="bg-card border border-border rounded-2xl p-5 shadow-sm flex flex-col gap-4">
+        <h3 class="font-display text-text-main text-base font-bold flex items-center gap-2">
+          📈 Consented Patient Crisis Pulse
+        </h3>
+        <p class="text-xs text-text-muted">Monitor consented patient crisis call duration over the past 7 days.</p>
+        <div id="caregiverPulseChartContainer" class="w-full h-40 bg-surface rounded-xl border border-border/40 p-4 relative"></div>
       </div>
 
       <!-- Consented Summaries List -->

@@ -292,6 +292,16 @@ document.addEventListener("DOMContentLoaded", () => {
   btnProfileBack.addEventListener("click", () => show(welcomeView));
   if (headerLogo) headerLogo.addEventListener("click", () => show(welcomeView));
 
+  const dummyCrisisData = [
+    { day: "Tue", minutes: 15 },
+    { day: "Wed", minutes: 0 },
+    { day: "Thu", minutes: 45 },
+    { day: "Fri", minutes: 10 },
+    { day: "Sat", minutes: 0 },
+    { day: "Sun", minutes: 5 },
+    { day: "Mon", minutes: 0 }
+  ];
+
   function navigateToRoleDashboard() {
     if (!currentUser) {
       show(dashboardView);
@@ -301,15 +311,78 @@ document.addEventListener("DOMContentLoaded", () => {
     if (role === "buddy") {
       show(buddyDashboardView);
       loadBuddyDashboardData();
+      renderResiliencePulseChart("buddyPulseChartContainer", dummyCrisisData);
     } else if (role === "clinician") {
       show(clinicianPortalView);
       loadClinicianPortalData();
+      renderResiliencePulseChart("clinicianPulseChartContainer", dummyCrisisData);
     } else if (role === "caregiver") {
       show(caregiverPortalView);
       loadCaregiverPortalData();
+      renderResiliencePulseChart("caregiverPulseChartContainer", dummyCrisisData);
     } else {
       show(dashboardView);
+      renderResiliencePulseChart("patientPulseChartContainer", dummyCrisisData);
     }
+  }
+
+  function renderResiliencePulseChart(containerId, data) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const maxMinutes = Math.max(...data.map(d => d.minutes), 30);
+    
+    let svgContent = `
+      <svg class="w-full h-full" viewBox="0 0 500 130" preserveAspectRatio="none" style="display: block;">
+        <!-- Grid Lines -->
+        <line x1="40" y1="15" x2="480" y2="15" stroke="rgba(0,0,0,0.05)" stroke-dasharray="3,3" />
+        <line x1="40" y1="50" x2="480" y2="50" stroke="rgba(0,0,0,0.05)" stroke-dasharray="3,3" />
+        <line x1="40" y1="85" x2="480" y2="85" stroke="rgba(0,0,0,0.05)" stroke-dasharray="3,3" />
+        <line x1="40" y1="100" x2="480" y2="100" stroke="rgba(0,0,0,0.08)" />
+
+        <!-- Y-Axis Labels -->
+        <text x="10" y="18" font-size="9" font-weight="700" fill="#727785" text-anchor="start">${maxMinutes}m</text>
+        <text x="10" y="53" font-size="9" font-weight="700" fill="#727785" text-anchor="start">${Math.round(maxMinutes/2)}m</text>
+        <text x="10" y="88" font-size="9" font-weight="700" fill="#727785" text-anchor="start">0m</text>
+    `;
+
+    const barWidth = 32;
+    const startX = 50;
+    const endX = 470;
+    const spaceX = (endX - startX) / (data.length - 1);
+
+    data.forEach((d, i) => {
+      const x = startX + i * spaceX - barWidth/2;
+      const barHeight = d.minutes > 0 ? (d.minutes / maxMinutes) * 80 : 3; 
+      const y = 100 - barHeight;
+
+      let fillClass = "fill-primary/20";
+      if (d.minutes > 30) {
+        fillClass = "fill-rose";
+      } else if (d.minutes > 15) {
+        fillClass = "fill-amber";
+      } else if (d.minutes > 0) {
+        fillClass = "fill-primary";
+      } else if (d.minutes === 0) {
+        fillClass = "fill-border";
+      }
+
+      svgContent += `
+        <g class="cursor-pointer group">
+          <rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="3" class="${fillClass} transition-all duration-300 hover:brightness-90" />
+          <text x="${x + barWidth/2}" y="118" font-size="9" font-weight="700" fill="#727785" text-anchor="middle">${d.day}</text>
+          
+          <!-- Tooltip -->
+          <g class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+            <rect x="${Math.max(10, x - 30)}" y="${Math.max(2, y - 24)}" width="92" height="18" rx="4" fill="rgba(15, 23, 42, 0.9)" />
+            <text x="${Math.max(10, x - 30) + 46}" y="${Math.max(2, y - 24) + 12}" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">${d.minutes} mins</text>
+          </g>
+        </g>
+      `;
+    });
+
+    svgContent += `</svg>`;
+    container.innerHTML = svgContent;
   }
 
   // --- Helper function to render patient emergency contacts in dashboard views ---
