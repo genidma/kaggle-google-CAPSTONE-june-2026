@@ -2073,13 +2073,12 @@ document.addEventListener("DOMContentLoaded", () => {
       el.className = "flex items-center justify-between p-2.5 rounded-lg border border-border/60 bg-background-dark hover:border-primary/50 transition-all cursor-pointer text-xs";
       el.innerHTML = `
         <div class="flex items-center gap-2 truncate flex-1 mr-2">
-          <span class="material-symbols-outlined text-[16px] text-primary">chat_bubble</span>
           <span class="font-semibold text-text-main truncate">${c.title || "Untitled Conversation"}</span>
         </div>
         <div class="flex items-center gap-2 shrink-0">
           <span class="text-[10px] text-text-muted">${new Date(c.updated_at || c.created_at || Date.now()).toLocaleDateString()}</span>
           <button class="text-text-muted hover:text-rose p-1 btn-trash-convo" data-id="${c.id}" title="Move to trash">
-            <span class="material-symbols-outlined text-[14px]">delete</span>
+            🗑️
           </button>
         </div>
       `;
