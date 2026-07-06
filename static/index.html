@@ -587,21 +587,21 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div class="p-3.5 rounded-xl bg-amber/10 border border-amber/30 flex flex-col gap-1 cursor-help" title="Detected via NLP pattern matching for heightened physiological stress words ('pounding heart', 'overwhelmed').">
               <span class="text-[11px] font-bold text-amber uppercase tracking-wider flex items-center justify-between">
-                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">analytics</span> Sentiment Analysis</span>
+                <span class="flex items-center gap-1">📊 Sentiment Analysis</span>
                 <span class="text-[10px] underline decoration-dotted">Why?</span>
               </span>
               <span id="coPilotSentiment" class="text-xs font-bold text-text-main">⚠️ Acute Anxiety / Hyperarousal</span>
             </div>
             <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col gap-1 cursor-help" title="Do No Harm safety check confirmed supportive / low acute crisis risk. Priority is immediate grounding.">
               <span class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider flex items-center justify-between">
-                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">verified_user</span> Do No Harm Safety</span>
+                <span class="flex items-center gap-1">🛡️ Do No Harm Safety</span>
                 <span class="text-[10px] underline decoration-dotted">Why?</span>
               </span>
               <span id="coPilotSafety" class="text-xs font-bold text-text-main">✅ Low Acute Crisis Risk • Supportive De-escalation</span>
             </div>
             <div class="p-3.5 rounded-xl bg-primary/10 border border-primary/30 flex flex-col gap-1 cursor-help" title="Recommended by clinical supervision protocol for acute panic: tactile rhythmic grounding restores autonomic nervous system balance.">
               <span class="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center justify-between">
-                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">psychology</span> Supervisor Rec</span>
+                <span class="flex items-center gap-1">💡 Supervisor Rec</span>
                 <span class="text-[10px] underline decoration-dotted">Why?</span>
               </span>
               <span id="coPilotRec" class="text-xs font-bold text-text-main">💡 Guided Tactile Breathing & Grounding</span>
@@ -617,7 +617,7 @@
               <button id="btnUseEmpatheticPhrase" class="flex-1 text-left p-3 rounded-xl bg-card hover:bg-primary/10 border border-border hover:border-primary/50 transition-all group flex flex-col gap-1 shadow-sm">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">auto_awesome</span> Insert Empathetic Response
+                    ✨ Insert Empathetic Response
                   </span>
                   <span class="text-[10px] bg-surface px-2 py-0.5 rounded text-text-muted group-hover:text-primary font-bold">Click to Use</span>
                 </div>
@@ -627,7 +627,7 @@
               <button id="btnUseGroundingExercise" class="flex-1 text-left p-3 rounded-xl bg-card hover:bg-primary/10 border border-border hover:border-primary/50 transition-all group flex flex-col gap-1 shadow-sm">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px]">self_improvement</span> Send Grounding Exercise
+                    🧘 Send Grounding Exercise
                   </span>
                   <span class="text-[10px] bg-surface px-2 py-0.5 rounded text-text-muted group-hover:text-primary font-bold">Click to Send</span>
                 </div>
@@ -645,14 +645,14 @@
             <textarea id="coPilotDraftText" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-primary/40 bg-surface text-sm text-text-main focus:ring-2 focus:ring-primary focus:outline-none shadow-inner resize-none" placeholder="Select an AI Co-Pilot suggestion above or type your response..."></textarea>
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
               <span id="coPilotStatusToast" class="text-xs font-bold text-emerald-600 hidden flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">check_circle</span> Sent to peer! Generating Clinical Handoff Report...
+                ✅ Sent to peer! Generating Clinical Handoff Report...
               </span>
               <div class="flex items-center gap-2 sm:ml-auto">
                 <button id="btnSendCoPilotResponse" class="px-5 py-2 bg-primary hover:brightness-110 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-[16px]">send</span> Send to Peer
+                  Send to Peer
                 </button>
                 <button id="btnForwardToClinician" class="px-5 py-2 bg-amber hover:brightness-110 text-white font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-[16px]">medical_services</span> Forward Clinical Handoff (#7)
+                  Forward Clinical Handoff (#7)
                 </button>
               </div>
             </div>
