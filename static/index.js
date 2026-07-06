@@ -2267,7 +2267,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateFavoriteButtonUI(isFav) {
-    if (favIcon) favIcon.textContent = isFav ? "star" : "star_border";
+    if (favIcon) favIcon.textContent = isFav ? "⭐" : "☆";
     if (favLabel) favLabel.textContent = isFav ? "Remove from Support Buddies" : "Add to Support Buddies";
     if (btnToggleFavoriteBuddy) {
       if (isFav) {
