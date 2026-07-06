@@ -1500,10 +1500,9 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="mt-auto flex items-center gap-2 pt-3 border-t border-border/40">
         <button class="flex-1 h-11 bg-surface hover:bg-card border border-border text-text-main rounded-lg font-display font-bold hover:border-primary/50 transition-all duration-200 flex items-center justify-center gap-1.5 text-sm btn-info" title="View Full Profile">
-          <span class="material-symbols-outlined text-[18px]">info</span> Info
+          Info
         </button>
         <button class="flex-1 h-11 ${isOnline ? "bg-primary hover:brightness-110 text-white" : "bg-surface/50 text-text-muted cursor-not-allowed border border-border/50"} rounded-lg font-display font-bold transition-all duration-200 flex items-center justify-center gap-1.5 text-sm btn-connect" data-buddy-id="${buddy.id}" ${!isOnline ? "disabled title='Buddy is offline'" : ""}>
-          <span class="material-symbols-outlined text-[18px]">${isOnline ? "chat" : "lock"}</span>
           ${buttonText}
         </button>
       </div>
@@ -2320,10 +2319,10 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div class="flex items-center gap-2">
           <button class="px-2.5 py-1.5 rounded-lg border border-border bg-card text-text-muted hover:text-text-main text-[11px] font-bold btn-fav-info flex items-center gap-1 transition-all">
-            <span class="material-symbols-outlined text-[14px]">info</span> Info
+            Info
           </button>
           <button class="px-3 py-1.5 rounded-lg ${isOnline ? 'bg-primary hover:brightness-110 text-white' : 'bg-surface/50 text-text-muted border border-border/50 cursor-not-allowed'} text-[11px] font-bold btn-fav-connect flex items-center gap-1 transition-all" ${!isOnline ? 'disabled' : ''}>
-            <span class="material-symbols-outlined text-[14px]">${isOnline ? 'chat' : 'lock'}</span> Connect
+            Connect
           </button>
         </div>
       `;
