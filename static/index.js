@@ -82,6 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnToggleFavoriteBuddy = document.getElementById("btnToggleFavoriteBuddy");
   const favIcon = document.getElementById("favIcon");
   const favLabel = document.getElementById("favLabel");
+  const btnMicToggle = document.getElementById("btnMicToggle");
+  const micIcon = document.getElementById("micIcon");
   const inputBar     = document.getElementById("inputBar");
   const loadingLabel = document.getElementById("loadingLabel");
   const connectButton = document.getElementById("connectButton");
@@ -181,6 +183,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let authToken = localStorage.getItem("msb_token") || null;
   let currentUser = null;
   let myBuddiesList = [];
+  let recognition = null;
+  let isListening = false;
+  let originalInputText = "";
 
   // Decode JWT claims for display (no verification needed client-side)
   function parseJwtClaims(token) {
@@ -1078,6 +1083,85 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateAuthUI();
 
+  /* ---- Voice-to-Text Speech Recognition (Issue #11) ---- */
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && btnMicToggle && micIcon && msgInput) {
+    btnMicToggle.classList.remove("hidden");
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    recognition.onstart = () => {
+      isListening = true;
+      originalInputText = msgInput.value;
+      micIcon.textContent = "mic_noise_off";
+      btnMicToggle.classList.remove("text-text-muted", "bg-card");
+      btnMicToggle.classList.add("text-rose-500", "bg-rose-500/10", "border-rose-500", "animate-pulse");
+      msgInput.placeholder = "Listening...";
+    };
+
+    recognition.onresult = (event) => {
+      let interimTranscript = "";
+      let finalTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+
+      const currentSpeech = finalTranscript || interimTranscript;
+      if (currentSpeech) {
+        msgInput.value = (originalInputText + " " + currentSpeech).trim();
+        msgInput.scrollTop = msgInput.scrollHeight;
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      stopSpeechRecognition();
+    };
+
+    recognition.onend = () => {
+      stopSpeechRecognition();
+    };
+
+    btnMicToggle.onclick = () => {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        try {
+          recognition.start();
+        } catch (err) {
+          console.error("Failed to start speech recognition:", err);
+        }
+      }
+    };
+
+    // Stop listening if user types manually
+    msgInput.addEventListener("input", () => {
+      if (isListening) {
+        recognition.stop();
+      }
+    });
+  }
+
+  function stopSpeechRecognition() {
+    isListening = false;
+    if (micIcon) micIcon.textContent = "mic";
+    if (btnMicToggle) {
+      btnMicToggle.classList.remove("text-rose-500", "bg-rose-500/10", "border-rose-500", "animate-pulse");
+      btnMicToggle.classList.add("text-text-muted", "bg-card");
+    }
+    if (msgInput) {
+      msgInput.placeholder = "Share what's on your mind...";
+    }
+  }
+
   /* ---- Buddy View dialog ---- */
   btnViewBuddy.addEventListener("click",       () => {
     if (currentUser && currentUser.role === "patient") {
@@ -1245,6 +1329,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ============================================================ */
   supportForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    stopSpeechRecognition();
     const message = msgInput.value.trim();
     if (!message) return;
 
