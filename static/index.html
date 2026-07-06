@@ -216,7 +216,6 @@
               <button class="demo-card group p-4 rounded-xl border border-border bg-card/80 hover:bg-card hover:border-primary/60 text-left transition-all shadow-sm flex flex-col justify-between gap-2" data-msg="I'm a military veteran feeling overwhelmed after transitioning to civilian life. Can I talk to someone who understands?">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1.5">🪖 Veteran Support</span>
-                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors"></span>
                 </div>
                 <p class="text-xs text-text-main/90 font-medium line-clamp-2">"Overwhelmed after transitioning to civilian life..."</p>
                 <div class="text-[10px] text-text-muted">Matches with military veteran peer buddies</div>
@@ -225,7 +224,6 @@
               <button class="demo-card group p-4 rounded-xl border border-border bg-card/80 hover:bg-card hover:border-primary/60 text-left transition-all shadow-sm flex flex-col justify-between gap-2" data-msg="I'd like to connect with a peer buddy who understands chronic anxiety and panic attacks.">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1.5">🤝 Peer Buddy Match</span>
-                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors"></span>
                 </div>
                 <p class="text-xs text-text-main/90 font-medium line-clamp-2">"Connect with a peer buddy who understands anxiety..."</p>
                 <div class="text-[10px] text-text-muted">AI-powered personalized peer specialist matching</div>
@@ -234,7 +232,6 @@
               <button class="demo-card group p-4 rounded-xl border border-border bg-card/80 hover:bg-card hover:border-primary/60 text-left transition-all shadow-sm flex flex-col justify-between gap-2" data-msg="How does the confidential 24/7 Support Warmline work? What are my privacy guarantees?">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1.5">📞 24/7 Warmline & Privacy</span>
-                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors"></span>
                 </div>
                 <p class="text-xs text-text-main/90 font-medium line-clamp-2">"How does the confidential 24/7 Warmline work?"</p>
                 <div class="text-[10px] text-text-muted">Zero recording, metadata-only Do No Harm logs</div>
@@ -243,7 +240,6 @@
               <button class="demo-card group p-4 rounded-xl border border-border bg-card/80 hover:bg-card hover:border-primary/60 text-left transition-all shadow-sm flex flex-col justify-between gap-2" data-msg="What peer support resources and counseling are available for family caregivers?">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-primary flex items-center gap-1.5">🌟 Caregiver Support</span>
-                  <span class="material-symbols-outlined text-[16px] text-text-muted group-hover:text-primary transition-colors"></span>
                 </div>
                 <p class="text-xs text-text-main/90 font-medium line-clamp-2">"What peer support resources exist for family caregivers?"</p>
                 <div class="text-[10px] text-text-muted">Dedicated support for family & caregivers</div>
@@ -272,7 +268,7 @@
             <!-- Search Bar -->
             <div class="w-full max-w-[360px]">
               <div class="flex w-full items-center rounded-xl bg-surface px-3 h-11">
-                <span class="material-symbols-outlined text-text-muted mr-2 text-[20px]">search</span>
+                <span>🔍</span>
                 <input id="supportRosterSearch" class="w-full bg-transparent text-text-main placeholder:text-text-muted text-sm focus:outline-none" placeholder="Search by name or specialty..." />
               </div>
             </div>
@@ -444,7 +440,7 @@
           
           <!-- Back Button -->
           <button id="btnBack" class="px-4 py-2 rounded-lg border border-border bg-surface text-text-muted text-xs font-semibold hover:text-text-main hover:bg-card self-start flex items-center gap-1.5 transition-all">
-            <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back to Home
+            ← Back to Home
           </button>
 
           <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
@@ -470,7 +466,7 @@
                   <div class="flex items-center justify-between pb-2 border-b border-border/40">
                     <span class="text-text-muted">Connection Security</span>
                     <span class="text-primary font-semibold flex items-center gap-1">
-                      <span class="material-symbols-outlined text-[14px]">lock</span> Encrypted & Private
+                      🔒 Encrypted & Private
                     </span>
                   </div>
                   <div class="flex items-center justify-between pb-2 border-b border-border/40">
@@ -492,7 +488,7 @@
               <!-- Accredited Buddies Section -->
               <div id="buddySection" class="flex flex-col gap-4">
                 <h3 class="font-display font-bold text-lg text-text-main flex items-center gap-2">
-                  <span class="material-symbols-outlined text-primary">account_circle</span> Accredited Buddies
+                  👥 Accredited Buddies
                 </h3>
                 <div id="buddyGrid" class="flex flex-col gap-4">
                   <!-- Dynamically populated via index.js -->
@@ -502,7 +498,7 @@
               <!-- Crisis Line Section -->
               <div id="crisisSection" class="bg-surface border border-rose/30 rounded-xl p-6 flex flex-col gap-4 shadow-sm hidden">
                 <div class="flex items-center gap-2 text-rose">
-                  <span class="material-symbols-outlined text-[26px]">emergency</span>
+                  <span>🚨</span>
                   <h3 id="crisisLineName" class="font-display font-bold text-lg">Crisis Line</h3>
                 </div>
                 <p id="crisisLineDesc" class="text-xs text-text-muted leading-relaxed">
@@ -510,14 +506,14 @@
                 </p>
                 <div class="flex flex-col gap-1.5 text-xs text-text-muted">
                   <p class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[14px]">call</span> <strong class="text-text-main" id="crisisLinePhone">988</strong>
+                    📞 <strong class="text-text-main" id="crisisLinePhone">988</strong>
                   </p>
                   <p class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[14px]">schedule</span> <span id="crisisLineHours">24/7</span>
+                    🕒 <span id="crisisLineHours">24/7</span>
                   </p>
                 </div>
                 <button id="btnCallFromResults" class="w-full py-2.5 bg-rose hover:brightness-110 text-white font-semibold rounded-lg text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm">
-                  <span class="material-symbols-outlined text-[16px]">call</span> Call Now
+                  📞 Call Now
                 </button>
               </div>
 
@@ -770,14 +766,14 @@
           </div>
           <div class="flex items-center gap-2.5 shrink-0 self-start md:self-center">
             <button id="btnSimulateTbiScan" class="px-5 py-2.5 rounded-xl border-2 border-primary bg-primary/15 text-primary hover:bg-primary hover:text-white transition-all text-xs font-bold shadow-sm flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[18px]">biotech</span> Simulate Scan Analysis
+              🔬 Simulate Scan Analysis
             </button>
           </div>
         </div>
 
         <!-- TBI Scan Dropzone Area -->
         <div id="tbiDropzone" class="border-2 border-dashed border-primary/30 rounded-xl p-6 text-center bg-surface/50 hover:bg-primary/5 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer">
-          <span class="material-symbols-outlined text-[36px] text-primary/70">upload_file</span>
+          <span>📁</span>
           <p class="text-xs text-text-main font-semibold">Drag & drop DICOM / NIfTI neuro-imaging slice here, or click to browse</p>
           <span class="text-[11px] text-text-muted">Supported AI engines: NeuroScan-TBI-v1, AlphaBrain-Impact-7B (GR38 validated)</span>
         </div>
@@ -806,7 +802,7 @@
           <div id="tbiDiagSection" class="hidden flex-col gap-4 pt-6 border-t-2 border-border/80 animate-fade-in">
             <div class="flex items-center justify-between border-b border-border/40 pb-2.5 flex-wrap gap-2">
               <h4 class="text-sm font-bold text-primary uppercase tracking-wider flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">biotech</span> Neural Network Diagnostic Overlays & Biomarker Analysis (01 to 05):
+                🔬 Neural Network Diagnostic Overlays & Biomarker Analysis (01 to 05):
               </h4>
               <span id="tbiDiagProgress" class="text-primary font-mono text-xs font-bold">Processing Overlays...</span>
             </div>
@@ -817,7 +813,7 @@
 
           <div class="p-4 rounded-xl bg-surface border border-border flex flex-col gap-2 shadow-inner mt-2">
             <span class="text-xs font-bold text-text-main uppercase tracking-wider text-primary flex items-center gap-1">
-              <span class="material-symbols-outlined text-[16px]">verified</span> Neurological Recovery Protocol & Controls (#2)
+              ✅ Neurological Recovery Protocol & Controls (#2)
             </span>
             <p id="tbiRecoveryProtocol" class="text-xs text-text-muted leading-relaxed font-medium">
               Level 2 Cognitive Rest: Limit screen exposure to <2 hrs/day; integrate tactile grounding sessions prior to high-focus tasks.
@@ -866,10 +862,10 @@
     <aside id="buddySidebar" class="w-[320px] border-l border-border bg-surface flex flex-col shrink-0 p-6 gap-6 hidden">
       <div class="flex items-center justify-between border-b border-border/40 pb-2">
         <h3 class="text-text-main font-display text-sm font-semibold tracking-wide flex items-center gap-2">
-          <span class="material-symbols-outlined text-[18px] text-primary">account_circle</span> Available Buddies
+          👥 Available Buddies
         </h3>
-        <button id="btnCloseBuddySidebar" class="text-text-muted hover:text-text-main">
-          <span class="material-symbols-outlined text-[18px]">close</span>
+        <button id="btnCloseBuddySidebar" class="text-text-muted hover:text-text-main font-bold text-sm">
+          ✕
         </button>
       </div>
       <p class="text-xs text-text-muted">Online peer supporters currently available to chat.</p>
@@ -994,7 +990,7 @@
             </div>
 
             <button type="submit" id="btnSaveCrisisPlan" class="px-4 py-2 bg-primary hover:brightness-110 text-white font-bold rounded-lg text-xs transition-all self-start mt-1 shadow-sm flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[16px]">save</span> Save Emergency & Safety Plan
+              💾 Save Emergency & Safety Plan
             </button>
           </form>
         </div>
@@ -1061,7 +1057,7 @@
         <!-- Gentle Keyboard Helper & Toggle -->
         <div class="flex items-center justify-between text-xs text-text-muted px-2 pt-0.5">
           <span id="keyHelperText" class="flex items-center gap-1.5 font-medium">
-            <span class="material-symbols-outlined text-[14px] text-primary">keyboard</span>
+            <span>⌨️</span>
             <span><strong class="text-text-main">Enter ↵</strong> to send</span>
             <span>•</span>
             <span><strong class="text-text-main">Shift + Enter</strong> for new line</span>
@@ -1077,25 +1073,25 @@
   <!-- MOBILE BOTTOM NAVIGATION BAR (Phase 4.1 - Pure Responsive CSS) -->
   <nav class="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card/95 backdrop-blur-md border-t border-border px-2 py-1.5 flex items-center justify-around shadow-lg" id="mobileBottomNav">
     <button id="mobNavHome" class="flex flex-col items-center gap-0.5 text-text-muted hover:text-primary transition-colors py-1 px-2">
-      <span class="material-symbols-outlined text-[20px]">home</span>
+      <span class="text-lg">🏠</span>
       <span class="text-[10px] font-bold">Home</span>
     </button>
     <button id="mobNavChat" class="flex flex-col items-center gap-0.5 text-text-muted hover:text-primary transition-colors py-1 px-2">
-      <span class="material-symbols-outlined text-[20px]">chat</span>
+      <span class="text-lg">💬</span>
       <span class="text-[10px] font-bold">Chat</span>
     </button>
     <button id="mobNavCall" class="flex flex-col items-center gap-0.5 text-primary hover:brightness-110 transition-all font-bold -mt-4">
-      <div class="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center shadow-md border-2 border-card">
-        <span class="material-symbols-outlined text-[22px]">call</span>
+      <div class="w-11 h-11 rounded-full bg-primary text-white flex items-center justify-center shadow-md border-2 border-card text-lg">
+        📞
       </div>
       <span class="text-[10px]">Warmline</span>
     </button>
     <button id="mobNavBuddies" class="flex flex-col items-center gap-0.5 text-text-muted hover:text-primary transition-colors py-1 px-2">
-      <span class="material-symbols-outlined text-[20px]">group</span>
+      <span class="text-lg">👥</span>
       <span class="text-[10px] font-bold">Buddies</span>
     </button>
     <button id="mobNavProfile" class="flex flex-col items-center gap-0.5 text-text-muted hover:text-primary transition-colors py-1 px-2">
-      <span class="material-symbols-outlined text-[20px]">person</span>
+      <span class="text-lg">👤</span>
       <span class="text-[10px] font-bold">Profile</span>
     </button>
   </nav>

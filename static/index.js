@@ -333,7 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="flex flex-col gap-1 mt-2">
             ${contacts.map(c => `
               <div class="flex items-center gap-2 text-xs text-text-main">
-                <span class="material-symbols-outlined text-sm text-primary">person</span>
+                <span>👤</span>
                 <span>${c.name} (${c.relationship}) - ${c.phone}</span>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary">${c.type}</span>
               </div>
