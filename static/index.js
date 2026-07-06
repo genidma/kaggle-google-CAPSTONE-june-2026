@@ -618,20 +618,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Helper function to render blown-up widescreen cards without text embossing
         const renderCardHtml = (slice) => `
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-border/60 pb-3.5 flex-wrap">
-            <div class="min-w-0 flex-1 pr-2">
-              <span class="inline-block px-2.5 py-0.5 rounded bg-primary/10 text-primary font-mono text-xs font-bold mb-1">${slice.view_type}</span>
-              <h4 class="text-base sm:text-lg md:text-xl font-display font-bold text-text-main break-words">${slice.title}</h4>
-            </div>
-            <div class="flex items-center gap-2 self-start md:self-center shrink-0 flex-wrap">
-              <span class="px-3 py-1 rounded-lg text-xs font-bold ${slice.status.includes('Stable') || slice.status.includes('Normal') || slice.status.includes('Complete') ? 'bg-emerald-500/15 text-emerald-600' : 'bg-amber/15 text-amber'} whitespace-nowrap">${slice.status}</span>
-              <span class="px-3 py-1 rounded-lg text-xs font-bold bg-card border border-border text-text-main font-mono whitespace-nowrap">Impact: ${slice.impact_score}</span>
+          <div class="flex flex-col gap-2 border-b border-border/60 pb-3.5">
+            <span class="inline-block px-2.5 py-0.5 rounded bg-primary/10 text-primary font-mono text-xs font-bold self-start">${slice.view_type}</span>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 flex-wrap">
+              <h4 class="text-lg sm:text-xl font-display font-bold text-text-main leading-snug">${slice.title}</h4>
+              <div class="flex items-center gap-2 flex-wrap shrink-0">
+                <span class="px-3 py-1 rounded-lg text-xs font-bold whitespace-nowrap ${slice.status.includes('Stable') || slice.status.includes('Normal') || slice.status.includes('Complete') ? 'bg-emerald-500/15 text-emerald-600' : 'bg-amber/15 text-amber'}">${slice.status}</span>
+                <span class="px-3 py-1 rounded-lg text-xs font-bold bg-card border border-border text-text-main font-mono whitespace-nowrap">Impact: ${slice.impact_score}</span>
+              </div>
             </div>
           </div>
-          <div class="w-full bg-black/5 rounded-2xl border border-border/80 overflow-hidden flex items-center justify-center p-3 sm:p-6 shadow-inner min-h-[420px]">
-            <img src="${slice.image_url}" alt="${slice.title}" class="w-full h-auto max-h-[900px] object-contain rounded-xl shadow-md transition-transform duration-500 hover:scale-[1.01]" />
+          <div class="w-full bg-black/5 rounded-2xl border border-border/80 overflow-hidden flex items-center justify-center p-3 sm:p-6 shadow-inner min-h-[400px]">
+            <img src="${slice.image_url}" alt="${slice.title}" class="w-full h-auto max-h-[880px] object-contain rounded-xl shadow-md transition-transform duration-500 hover:scale-[1.01]" />
           </div>
-          <div class="bg-card p-4 rounded-xl border border-border/60 text-xs sm:text-sm text-text-muted leading-relaxed shadow-sm">
+          <div class="bg-card p-4 rounded-xl border border-border/60 text-sm text-text-muted leading-relaxed shadow-sm">
             <strong class="text-text-main block mb-1">Clinical Observations & Biomarker Note:</strong>
             ${slice.clinical_note}
           </div>
@@ -1572,6 +1572,10 @@ document.addEventListener("DOMContentLoaded", () => {
       else            { v.classList.add("hidden"); }
     });
 
+    // Always reset scroll to top when switching views
+    const mainEl = document.querySelector(".main-layout main");
+    if (mainEl) mainEl.scrollTop = 0;
+
     if (view !== chatView) {
       const sidebar = document.getElementById("chatBuddySidebar");
       const container = document.getElementById("chatMessagesContainer");
@@ -1587,10 +1591,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const isMainView = [welcomeView, loadingView, resultsView, chatView, dashboardView, supportBuddiesView, buddyDetailView, buddyDashboardView, clinicianPortalView, caregiverPortalView].includes(view);
+    const layoutPanel = document.querySelector(".layout-content-container");
     if (isMainView) {
       document.querySelector(".main-layout").classList.remove("hidden");
+      if (layoutPanel) layoutPanel.classList.add("hidden");
     } else {
       document.querySelector(".main-layout").classList.add("hidden");
+      if (layoutPanel) layoutPanel.classList.remove("hidden");
     }
 
     const showInputBar = [welcomeView, chatView, resultsView, supportBuddiesView, buddyDetailView].includes(view);
