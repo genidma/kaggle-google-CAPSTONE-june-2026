@@ -727,9 +727,9 @@ async def get_buddy_dashboard(user: dict = Depends(require_role(["buddy", "clini
         call_logs = [doc.to_dict() for doc in logs_ref.stream()]
         
         assigned_peers = [
-            {"id": "peer_101", "name": "John D.", "status": "Active Chat", "last_checkin": "10 mins ago", "topic": "PTSD Transition", "risk_level": "Low"},
-            {"id": "peer_102", "name": "Maria K.", "status": "Requested Chat", "last_checkin": "1 hour ago", "topic": "Caregiver Stress", "risk_level": "Moderate"},
-            {"id": "peer_103", "name": "Alex R.", "status": "Scheduled Check-in", "last_checkin": "Yesterday", "topic": "TBI Recovery", "risk_level": "Low"}
+            {"id": "peer_101", "name": "John D.", "email": "patient@test.com", "status": "Active Chat", "last_checkin": "10 mins ago", "topic": "PTSD Transition", "risk_level": "Low"},
+            {"id": "peer_102", "name": "Maria K.", "email": "maria.k@test.com", "status": "Requested Chat", "last_checkin": "1 hour ago", "topic": "Caregiver Stress", "risk_level": "Moderate"},
+            {"id": "peer_103", "name": "Alex R.", "email": "alex.r@test.com", "status": "Scheduled Check-in", "last_checkin": "Yesterday", "topic": "TBI Recovery", "risk_level": "Low"}
         ]
         return {
             "role": user.get("role"),
@@ -746,8 +746,8 @@ async def get_clinician_portal(user: dict = Depends(require_role(["clinician"]))
     """Returns clinical triage summaries and TBI neuro-imaging analytics placeholder (#1, #2)."""
     try:
         triage_cases = [
-            {"id": "case_401", "patient_name": "Patient #8492", "priority": "High", "flag_reason": "Repeated crisis line dispatches", "assigned_clinician": "Dr. Aris Fitzgerald", "status": "Under Review"},
-            {"id": "case_402", "patient_name": "Patient #3910", "priority": "Medium", "flag_reason": "TBI model assessment requested", "assigned_clinician": "Dr. Aris Fitzgerald", "status": "Awaiting Scan Analysis"}
+            {"id": "case_401", "patient_name": "Patient #8492", "patient_email": "patient@test.com", "priority": "High", "flag_reason": "Repeated crisis line dispatches", "assigned_clinician": "Dr. Aris Fitzgerald", "status": "Under Review"},
+            {"id": "case_402", "patient_name": "Patient #3910", "patient_email": "maria.k@test.com", "priority": "Medium", "flag_reason": "TBI model assessment requested", "assigned_clinician": "Dr. Aris Fitzgerald", "status": "Awaiting Scan Analysis"}
         ]
         tbi_analytics = {
             "status": "Ready for Scan Ingestion (#2)",
@@ -769,7 +769,7 @@ async def get_caregiver_portal(user: dict = Depends(require_role(["caregiver", "
     """Returns consented patient wellness check-in summaries (#1)."""
     try:
         consented_summaries = [
-            {"patient_id": "pat_771", "name": "Mark Rostova", "relationship": "Spouse", "consent_granted": True, "last_checkin": "Today, 9:00 AM", "mood_status": "🟢 Positive / Stable", "notes_share_enabled": False, "summary": "Mark completed his morning peer session with Marcus T. Reported good sleep quality."},
+            {"patient_id": "pat_771", "name": "Mark Rostova", "patient_email": "patient@test.com", "relationship": "Spouse", "consent_granted": True, "last_checkin": "Today, 9:00 AM", "mood_status": "🟢 Positive / Stable", "notes_share_enabled": False, "summary": "Mark completed his morning peer session with Marcus T. Reported good sleep quality."},
         ]
         return {
             "role": "caregiver",
