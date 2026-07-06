@@ -28,6 +28,10 @@ class SupportAnalysis(BaseModel):
         default=False,
         description="Whether safety filters or auto-moderation flags were triggered by the user input."
     )
+    is_out_of_scope: bool = Field(
+        default=False,
+        description="Whether the user message is off-topic, spam, homework, coding, or unrelated to mental health/peer support."
+    )
 
 
 class OrchestratorAgent:
@@ -56,7 +60,7 @@ class OrchestratorAgent:
             return None
 
     def check_auto_moderation(self, user_message: str) -> SupportAnalysis:
-        """Deterministic pre-moderation scan for acute crisis indicators."""
+        """Deterministic pre-moderation scan for acute crisis indicators and out-of-scope messages."""
         msg = user_message.lower()
         self_harm_words = [
             "suicide", "suicidal", "kill myself", "end my life", "want to die", 
@@ -69,7 +73,24 @@ class OrchestratorAgent:
                 urgency_level="critical",
                 summary="Acute crisis indicators detected in user message.",
                 suggested_action="use_crisis_line",
-                safety_triggered=True
+                safety_triggered=True,
+                is_out_of_scope=False
+            )
+
+        # Out-of-scope keywords: homework, coding, equations, programming languages
+        oos_words = [
+            "python", "javascript", "write code", "html", "css", "c++", "java", "coding", 
+            "write a function", "solve equation", "do my homework", "solve this", "math problem"
+        ]
+        if any(word in msg for word in oos_words):
+            return SupportAnalysis(
+                needs_support=False,
+                needs_crisis_line=False,
+                urgency_level="low",
+                summary="Out-of-scope inquiry detected.",
+                suggested_action="none",
+                safety_triggered=False,
+                is_out_of_scope=True
             )
         return None
 
@@ -93,7 +114,9 @@ class OrchestratorAgent:
             "Your role is to gently and empathetically assess what kind of support the user needs. "
             "The platform connects users with accredited peer support buddies for general emotional support, "
             "and with a professional warmline when the user is feeling significantly distressed. "
-            "Classify the user's message carefully. Always be compassionate and non-judgmental."
+            "Classify the user's message carefully. Always be compassionate and non-judgmental. "
+            "If the user message is off-topic, spam, homework help, writing code, or unrelated to mental health/peer support, "
+            "set is_out_of_scope to True and needs_support to False."
         )
 
         # Configure standard safety guards for the API call
@@ -122,7 +145,7 @@ class OrchestratorAgent:
             print(f"GenAI API Call/Safety Block: {e}. Falling back to safe triage.")
             return self._fallback_analyze(user_message, safety_triggered=True)
 
-    def _fallback_analyze(self, message: str, safety_triggered: bool = False) -> SupportAnalysis:
+    def _fallback_analyze(self, message: str, safety_triggered: bool = False, is_out_of_scope: bool = False) -> SupportAnalysis:
         """Rule-based heuristic triage when API is unavailable."""
         msg = message.lower()
 
@@ -151,7 +174,8 @@ class OrchestratorAgent:
             urgency_level=urgency,
             summary=f"User seeks support. (Fallback analysis: '{message[:60]}...')" if len(message) > 60 else f"User: '{message}'",
             suggested_action=action,
-            safety_triggered=safety_triggered
+            safety_triggered=safety_triggered,
+            is_out_of_scope=is_out_of_scope
         )
 
 
@@ -164,14 +188,13 @@ class OrchestratorAgent:
         """
         analysis = self.analyze_message(user_message)
 
-        if not analysis.needs_support:
+        if not analysis.needs_support or analysis.is_out_of_scope:
             return {
                 "status": "general_inquiry",
                 "analysis": analysis.model_dump(),
                 "response": (
-                    "Hello! I'm MySupportBuddy, a peer-support platform. I'm here to connect you with "
-                    "accredited support buddies or a professional warmline whenever you need someone to talk to. "
-                    "Feel free to share what's on your mind."
+                    "Hello! I am MySupportBuddy, a safe peer-support and wellness platform. I am only designed to assist you with "
+                    "emotional support, stress relief, and connecting with buddies or crisis warmlines. How can I help you today?"
                 ),
                 "resources": {}
             }
