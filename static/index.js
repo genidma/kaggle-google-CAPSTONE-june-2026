@@ -2138,6 +2138,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function emptyTrashBin() {
+    if (!confirm("Permanently delete all conversations in trash? This cannot be undone.")) return;
+    try {
+      const res = await fetch("/api/conversations/trash/empty", {
+        method: "DELETE",
+        headers: authHeaders()
+      });
+      if (!res.ok) throw new Error("Failed to empty trash");
+      notify("Trash bin emptied. ✓");
+      fetchTrashList();
+    } catch (err) {
+      console.error("Empty trash error:", err);
+      notify("Error emptying trash.", "error");
+    }
   }
 
   async function fetchMyBuddies() {
