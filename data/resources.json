@@ -7,124 +7,634 @@
   },
   "accredited_buddies": [
     {
-      "id": "buddy_alex",
-      "name": "Alex M.",
-      "pronouns": "he/him",
-      "certification": "Certified Peer Support Specialist",
-      "specialties": ["Anxiety", "LGBTQ+"],
-      "languages": ["English"],
-      "availability": "Online",
-      "reply_time": "Usually replies in 5m",
-      "stats": {
-        "conversations": "342",
-        "hours": "1.2k",
-        "months": "18"
-      },
-      "quote": "\"In medicine, as in life, the most important thing you can give anyone is hope.\" — Doogie Howser, M.D.",
-      "approach": "I tend to listen quietly and ask gentle clarifying questions. I won't jump to giving advice unless you specifically ask for it. I view our time as a shared safe container where your feelings are valid just as they are.",
-      "grounding_exercises": [
-        "5-4-3-2-1 Sensory technique",
-        "Box breathing (4-4-4-4)",
-        "Naming objects in the room"
-      ],
-      "bio": "Empathetic listener specializing in anxiety management and LGBTQ+ community support. Safe, judgment-free space.",
-      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuDyW8KwNUWY77IGGVscaDo9h7xmpsGh9H-DhyNKIs744YXgy2PV6p3ep4Xg3nkNCYIP2-dZ5sjgIAyuAiw6JSiHTvsspgt9RVa7_Wh073Jm8TeWGIJLk7J795tEPuTmJTGLf21aYkpJfp1cr1IFkjGp2p-_xwvssF-_ydLsGUy8md1lzRADDYbD7Hjg4J8PtcwENLw4WbUY62o4WQTqN2WstuHqruj5VIEjob8FYCmobHkHhSdDxGU0jfU9_RSUNCifgc1Oq_GO7xU"
-    },
-    {
-      "id": "buddy_sarah",
+      "id": "buddy_sarah_j",
       "name": "Sarah J.",
       "pronouns": "she/her",
       "certification": "Certified Peer Support Specialist",
-      "specialties": ["Crisis", "Trauma", "Anxiety"],
-      "languages": ["English"],
-      "availability": "Online",
-      "reply_time": "Usually replies in 3m",
-      "stats": {
-        "conversations": "512",
-        "hours": "1.8k",
-        "months": "24"
-      },
-      "quote": "\"Every challenge we face is an opportunity to learn, to grow, and to become a better version of ourselves.\" — Doogie Howser, M.D.",
-      "approach": "I specialize in crisis de-escalation and trauma-informed peer listening. My goal is to help you feel grounded, heard, and supported without rushing your healing process.",
-      "grounding_exercises": [
-        "Guided rhythmic breathing",
-        "Progressive muscle relaxation",
-        "Grounding via tactile objects"
+      "specialties": [
+        "Crisis",
+        "Anxiety"
       ],
-      "bio": "Certified in active listening. Here to provide a supportive ear for crisis de-escalation, trauma recovery, and daily stress.",
-      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBf9rx7Z6l90E-dEQNOHkY2L9MBL-BEWZw9xYFqtDLhTUanPJXcYsq_SLLQp9-1L7agsP9D6pvCfsF25EIMB8sho5heSobTuGewdesyf6K_uzKDkPhp26x65Vknl8xE2u16XPc-zYwemNefLq8_8SyOBx69qPDIcj74AKiDEKVdQf2pNm3Ng8qCXEIzvG7Pcyw7MEQZBDTInukBK_Or35fUL5P0HxZ7U78vldyRd_lanroKUI8Mphi4Rk2D0BVj6ymZiRXv4Y7oQoo"
+      "languages": [
+        "English"
+      ],
+      "availability": "Online",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Empathetic listener specializing in anxiety management and community support.\"",
+      "approach": "I tend to listen quietly and ask gentle clarifying questions. I view our time as a shared safe container, focusing on validating your feelings without judgment.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "A simple way to anchor yourself in the present moment by naming things you see, touch, hear, smell, and taste.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLvZsgxGOrSJ1THXHh2FWW6Veiv0klNSoNlo89DzNbbAGwtBPPgoRWpt4p_OULoHDu6i-QxCEWMvFvXU1uHGowmdxxjbFlC4bA64R5o246PMrKYLViWm0H1HnC6iQuKiaj9zpVVFL5Vjgu4172sX0cHZo0RlcsTb7dCuopGTuGhOSsYHp6gBrZPsUqjMUlP21KlZ0V65ngSmjPp1RmkLeWccH8H-jE6xcWrW5PjVvuFz93VZlREmfawmutQ"
     },
     {
-      "id": "buddy_marcus",
+      "id": "buddy_david_l",
+      "name": "David L.",
+      "pronouns": "he/him",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Anxiety"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Every day is a new opportunity for healing and growth.\" \u2014 David L.",
+      "approach": "Supporting others through life transitions and chronic stress with patience and active listening.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "I provide a non-judgmental space where you can express your thoughts freely. My goal is to listen deeply and help you find your own pace of calm amidst the noise of stress.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLvPKtlo3YWkY56TcoWSAwxGJvykTbOnhMdU6liRh2mxBhu5u9Ys36B50barlgR0ZUMyS3qBR_Q81a_yw0Jwb3F1GksDSFSSYxyJtPJtrSoXKT3YHuKWXwC3UUXw5w8Ve40oNprJqNpOwyQbgmxTkN2nepcoqBYjBn4Oo57ZD5gONDwrSzE9BVLIdBgWpj11_ISRJl_ZIszk44r15ibjVhsjnsbefI7214Ib3zajvUpoesiP4XvGKhc08XaX"
+    },
+    {
+      "id": "buddy_riley_p",
+      "name": "Riley P.",
+      "pronouns": "they/them",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Crisis",
+        "Trauma",
+        "LGBTQ+"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Every day is a new opportunity for healing and growth.\" \u2014 Riley P.",
+      "approach": "Providing a safe, affirmative space for queer and trans folk seeking community and emotional grounding. I believe that healing is not linear, and having a witness to your experience is a fundamental human right.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "Identity exploration, gender transition support, and queer-informed crisis de-escalation.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLtRdCOFlhArCRFxl64EOsdMD_X7j3-yhcuU5QQr_rbqcM8s74XV4RSqx3FIN0KF-NmCWOOolEy2eKcURBVbj5pRO6Wb0kvRGEilloBHUiHWyxIKuxI73lUb3suXUWGzt7sUnICA4QEX9RQTcFFfEefSNK4bDZqlxK9iby_ilYXY4WBWLwnxElEwt4u-2N1izf5sG_Dk13d7dygI9ZJxM2oT0uT17_DgHW7MmGUkj-1VI9OLXm0hXx4aVDuE"
+    },
+    {
+      "id": "buddy_sam_k",
+      "name": "Sam K.",
+      "pronouns": "he/him",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Trauma",
+        "Veterans"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"The brave man is not he who does not feel afraid, but he who conquers that fear.\"",
+      "approach": "Focusing on the unique mental health needs of military veterans and their families. I understand the weight of transition, the complexities of service-related stress, and the quiet resilience required to navigate civilian life.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "I provide a direct, steady, and non-judgmental space. I listen for the tactical details as much as the emotional ones, creating a \"shared safe container\" where you don't have to translate your experiences.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLu30MzhOHPY0Xelsx7BgcbBGcnQlOv2CxHrfP6IX_i-NmA5MypTpbsDNsa313CDE8x4Fh2p6LQOq-RFxV5CDExAlrjollFKLPFngppEkjOo6vsnAAD98PPck1mjsPMnq-1jbolU8QZmQArdTJsvwJ06Rv2mvLyNiC7eC8eFShGdQ-nJXaLW7cSYWeqIybBcQgWCfhV3T1moTMbkHkC--iULTzsI2Kkott7xb8-5OWzJ0UwKstFSjy-X93GS"
+    },
+    {
+      "id": "buddy_isabella_n",
+      "name": "Isabella N.",
+      "pronouns": "she/her",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Anxiety"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Gentle and patient. I offer a space where you don't have to 'have it all together'.\"",
+      "approach": "I believe in creating a supportive environment built on empathy and non-judgment. My goal is to listen deeply, helping you process your feelings at your own pace without pressure.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "Dedicated peer support specialist focusing on emotional wellbeing, grounding, and active listening.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLuyPm8ntQW3TWypx5F0vbZo1KLaf6tenqDTyAUJT_9zils3Nmf7Yc0Zl03tzrGkPEKKI9BF6pGW6gn1tNcoHNtxnC6f4QsZLTXV-HTAN4YWFbZRI5zIC5d-viXRIZ7Tjb4aDXuGBT6PLGHCiYMuQkc2DxUfTa7d2LcvPH4dSn5NeF6f-doaPklCFkDm8MuiRGK3hxj6PNgYHWOT_8GGLcUvQld4AM7aO2pACxGO36HnbaM7kFTSHQvX_bLN"
+    },
+    {
+      "id": "buddy_ava_c",
+      "name": "Ava C.",
+      "pronouns": "she/her",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Anxiety",
+        "LGBTQ+"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Online",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"I lead with affirmation and radical empathy, especially for those in the LGBTQ+ community. I believe that simply being heard and validated in one's true identity is a profoundly healing experience. In our sessions, you can expect a calm, non-judgmental atmosphere where your thoughts and feelings are given the space they deserve.\"",
+      "approach": "Focusing entirely on the physical sensation of feet touching the ground, regulating breath with each step to return to the present moment.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "face\n                            (they/them)",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLuDzJbt98BIciMsMSxYFAJy9AeWO1Mo92e3LqAJxA6RjAtOqrEKrXdYoFdAReXPr3DzvyvGszDO_ZIM9cjcTXV_79fbPRW0p-z4o6fC_Bgpsy-l658r2imCcyjDPS9ELYThLAHIYPTYurt-LW3dy13bvpPwoEi-y7t4j8mRj8h4lRzWJh-x8snvJWYwb9iLYyAFyUaeRK07aOwGA8VJWpOddeczVD89XbmM8gKGd56Lkxczc7DkpWIy3L3W"
+    },
+    {
+      "id": "buddy_maya_r",
+      "name": "Maya R.",
+      "pronouns": "she/her",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Crisis"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Online",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Specializing in acute stress management and finding calm in high-pressure situations.\"",
+      "approach": "I believe that true support starts with a radical, uninterrupted presence. In moments of crisis, the world feels chaotic; my role is to be the steady ground beneath your feet. I don't listen to fix; I listen to understand and validate the weight of what you're carrying.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "Finding a physical object\u2014a stone, a fabric, a ring\u2014to focus your senses and tether yourself to the 'now'.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLti9uL2qf5sqOukn4jECMU-lOPIyq0MxhfyjP3d4Yx_4R5bfM0gYC6hVdZ-zDDg_ls8ipLycrIUT5PhqN-AU-gYz-SDsBONYwqa8Og4Txy-Nx1fQjL-wupjFzQ6CPtsVdzmVLoylMHcKoWfbLrHAGP_z9HPzuyeTJhSKG-QNsBDyzup-wyL8l7-3IEBgiq-GBj-ggj2DhV6pQDHzF5qV37r8pP41u3NDuAhWInAyayDrlipGTRmbxl2ITWc"
+    },
+    {
+      "id": "buddy_elena_g",
+      "name": "Elena G.",
+      "pronouns": "she/her",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Crisis",
+        "Anxiety"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"In medicine, as in life, the most important thing you can give anyone is hope.\"",
+      "approach": "verified\n                            Crisis Specialist \u2022 Accredited Peer Responder",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "I specialize in navigating high-stress moments with patience and deep presence. My goal is to be a steady anchor when the waves feel too high, helping you find your breath and your way back to solid ground.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLuMAD26uEEIUoXsxlFJMvVPjIzWKXULIw6sbPy2RZNIYmRLMXEYATWocrohrJoL0b9ejG4xVquLShw4JJSBe5O_DFOZKwUZ3a0e4KnJ0zRw1x5GouwYGSSfrhBDc9q9KDhamIxTNribqqAgTwsHKCzbZ1vEhJRDg5Dp0r7xC9sdn8yl1QXlVbpx05RISpwRwrQaPGVpu5wII8qidAyo3_Ig0m8TrJ-R9pvZFa-HNxCY3EV65mUot-ys2ybc"
+    },
+    {
+      "id": "buddy_ethan_h",
+      "name": "Ethan H.",
+      "pronouns": "he/him",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Veterans",
+        "PTSD"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Navigating the transition back to civilian life together. I've been there.\"",
+      "approach": "Direct, empathetic support for veterans and those dealing with PTSD. I believe in holding space without judgment, focusing on practical coping strategies alongside emotional validation. My goal is to provide a steady anchor when things feel chaotic.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "Dedicated peer support specialist focusing on emotional wellbeing, grounding, and active listening.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLuVp0VL_EOkjzf57cwU5dcTRmbTiXPbC6z-X7HqK6Mu3Qy__haWgM0zGcMhBy1sTiK7hW2eCIMIp6-_ZVLBWyLrJQagl0IF61TPSWG2Jk4eQ96Y6p90sWOyxpqGstDwrEct04eQ-iwhU_xKeAb6sEJ8d-MENCW41C45EItSGHLWUaw4tsJYm5Vb6M4kxeMBtejzzq3QKgGBW1_fOADpVG0m41N_lxXLTfeeHEYJ2K1qeOB6sRJwyReS-EG9"
+    },
+    {
+      "id": "buddy_marcus_t",
       "name": "Marcus T.",
       "pronouns": "he/him",
-      "certification": "Vetted Mental Health Buddy",
-      "specialties": ["Veterans", "PTSD", "Anxiety"],
-      "languages": ["English", "Mandarin"],
-      "availability": "Online",
-      "reply_time": "Available Now",
-      "stats": {
-        "conversations": "420",
-        "hours": "1.5k",
-        "months": "20"
-      },
-      "quote": "\"True strength is not about never failing, but about having the courage to stand up and try again.\" — Doogie Howser, M.D.",
-      "approach": "As a veteran support specialist, I bring a calm, tactical, and empathetic approach to overcoming stress and PTSD triggers. You are never alone in the fight.",
-      "grounding_exercises": [
-        "Tactical 4-4-4-4 Box Breathing",
-        "Sensory environmental scan",
-        "Mindful posture & physical reset"
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Veterans"
       ],
-      "bio": "Vetted peer buddy and veteran support specialist focusing on mindfulness, stress reduction, and PTSD coping strategies.",
-      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBdvQdfniU1Vpcb_4ItQ4Q7iEmayLdpGu2QM2ac42aVVTUk4F5jurHsQicYccjbw-9I2wqKvl6bala2o-VdHyNserH7iNv31E2IEf5i9swrW6aXnLP7P_PHIM6PpCF7NF-1d9bNmZv3qchnsHakgcPLcoMY4w6R1S9U_-TA56d3T5TNAXIt6HCScTqkLrQqCfhJ7Qh40Lm8d9CIixVyvTIIRaW-sfBsurNb5hQ5s9-S1HKS5luQr_mPnZ0xCTHiRQKATsA1Ynq74II"
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Helping brothers and sisters navigate the transition back to civilian life with understanding and shared experience.\"",
+      "approach": "This reminds me that our skills and experiences aren't lost, they just need a new context. I help peers find that context every day.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "Focusing on environment to break a spiral.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLsjDerm7oT53EL-5aenYCqBM5BjxEZKSAYaKnI7mAreiwCJxUsj5zLCQYRvGeWzfVR7Dx2b46ZDDve6QmfV79yRrNUNVAWQuvmBAGqHb4fraHtxHIM6W89et9WsRBfA4mA-_mdUbapUDjsp3QUADPUHvL_b_Dh6EmMzdbl4roCxfxyGm7ybt5JORJVFGZArgB4znPOzQ2HjfBocIK7z_xXeyD_4TRfUx73ZKg0RcjYyAJ0Bcvtn9ar_a8Hx"
     },
     {
-      "id": "buddy_elena",
-      "name": "Elena R.",
+      "id": "buddy_mason_d",
+      "name": "Mason D.",
+      "pronouns": "he/him",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Crisis"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Calm, steady presence during high-stress moments. I listen for the underlying need.\"",
+      "approach": "I provide a warm, non-judgmental listening ear to support you through whatever challenges you are facing.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "Completed Tier 3 Crisis De-escalation Training",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLtqnezipozTf9uCEJAQWF3a7DYCueOdowQ263CqKj9flMVT6aZJfDij50rR5ZeEQdkmhcSorEVsSixrk4iSx3JwuQvaxHZ20re0LpE-yKLKixuWjoqXZm0Jsic-cTxXPdLseFGTWMkn1csfFHjgG86oYBKYAl2DNJdfDSvHyqkkufWvKro-ajzFjZlNWkioINiZJNRBK2xF1a0aOGzrmkFhyuZIjUo3BWrTvby46iiVWalA_3dT0tdq9V-p"
+    },
+    {
+      "id": "buddy_fatima_a",
+      "name": "Fatima A.",
       "pronouns": "she/her",
-      "certification": "Certified Peer Specialist",
-      "specialties": ["Anxiety", "Depression", "Grief"],
-      "languages": ["English", "Spanish"],
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Anxiety"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Supporting individuals through generalized anxiety with gentle, culturally-informed care.\"",
+      "approach": "I believe in radical listening. My approach combines evidence-based peer support techniques with a deep understanding of cultural nuances and intergenerational experiences.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "We focus on grounding you in the present moment, creating a safe container where anxiety doesn't have to be the loudest voice in the room.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLu4IUE-XO5Tv93_WIidJM0GLVenGM-zDOuNVrRMUN9mjwmwYnpmWQUv8e-_fH_xypasX8eSroNp9NAJjCk7rr5Z9KlNzEaGHKDYFlmgOTopAXgUr8rFAM9unN2ctYfazAScPweguQRf0mT9u8NM-3XO554tst4SAnsmv6s54QBv099f0GcNK3QN65Xorls0izVMQNJMyb5eFv6WAOF5aAAYlkOTUAcVuDp-ZLTBACi4KL79nc7bXds0IeA9"
+    },
+    {
+      "id": "buddy_chloe_b",
+      "name": "Chloe B.",
+      "pronouns": "she/her",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Anxiety"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Chloe helped me realize that my intrusive thoughts weren't facts. I finally feel like I'm back in the driver's seat.\"",
+      "approach": "I believe that anxiety isn't something to be fixed, but a powerful signal to be understood. My journey with anxiety started years ago, and through Peer Support, I discovered that having a compassionate witness makes the heaviest days feel lighter. I focus on creating a non-judgmental space where you can let your guard down and explore the roots of your worries.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "A 4-4-4-4 rhythm to reset your nervous system instantly.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLuq7xZIgi0grxRgY0bAGwB2AVX0vucwTvlSBvYPsMKpKOoCgvv58e4n8Ae1tr7cERdfvrz4OcHcqrvuIdiPN8BIlcoiviAGHkH773HRDqLntOtrR24yXXHTxeFZFy9jeQXm8QJrpvVWg2aeB2xmKb_peQHj6_8oRJv4mIbeEN8-xFRXerglvrc6RB7J2E0TNKj1YuvuCq5Hwq0YIVsmmIePOqicnCfvBiG9ACLVT_yRKtvRC5PE7IYNO37M"
+    },
+    {
+      "id": "buddy_sophia_l",
+      "name": "Sophia L.",
+      "pronouns": "she/her",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Anxiety"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"I focus on the present moment, helping you navigate anxious thoughts with compassion. My goal is to create a safe, non-judgmental space where you feel truly heard and supported. We'll work together at your pace, exploring gentle techniques to bring you back to center when things feel overwhelming.\"",
+      "approach": "Here are a few techniques we might explore together during a session to help manage anxiety.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "A simple, structured breathing technique to calm the nervous system. Inhale, hold, exhale, hold\u2014each for 4 seconds.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLuaQqCkDlh5Ulfcd2uUoUMqRHNC6ecrqUkadvKccf8h-aeciFiTZIUyDbv373sNEdO9x0FeQV4zWQR6Q4hCcrQyHjVMcPC3N6RNe1yE--_vvn8xa3-15Wj9P7PWyxsdulHPYRO1JizsYajezgbAP8gPtO5pz0u1VzpLwZyWTpIKI7g2ysECYzyQpyE8y_xSFx5IN4DrCVdxBXeVa7KRUXVxHJEL6dU-5C-RCG0EkBjz4PzxB53rzcO6qiWU"
+    },
+    {
+      "id": "buddy_lee_s",
+      "name": "Lee S.",
+      "pronouns": "they/them",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Anxiety",
+        "LGBTQ+"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"I believe that lived experience is one of our most powerful tools. We aren't here to diagnose or fix; we're here to walk alongside one another through the fog.\"",
+      "approach": "I believe peer support should feel like a safe harbor. My approach is rooted in intersectionality and radical empathy. I focus on creating a non-judgmental space where identity exploration is celebrated, not questioned. Whether you're navigating the complexities of coming out, dealing with family transitions, or simply need someone who 'gets it,' I'm here to listen and hold space for your authentic self.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "Validation of your pronouns, names, and personal journey.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLvvITxP8Sfp6SQDmltNfLwnbuMwIkT_9h-KdGwGKjfCE0iRD2tHBWqS5J8G1VN5XPPj_fZ7cwu0oZW_OMYwXdhj2ZWWCn4xFsx3sSsfUzAX8zIMf-epEepbaEBumpHdyMBd4Pk-N8f8kVXJ_tFSOngTFOso47D2VVH1qGdPKTsHI2ztgsbHAEDIW16beyVVAQWy4P6ARQyHzeRz9hTHxnzoHiBnJ84sy9NARWVCmvIVvf9okyXtQhd2IfE"
+    },
+    {
+      "id": "buddy_jordan_m",
+      "name": "Jordan M.",
+      "pronouns": "he/him",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Trauma",
+        "LGBTQ+"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Online",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"Providing an affirming space for identity exploration and community care.\"",
+      "approach": "I believe that every person deserves a space where their full identity is not just tolerated, but celebrated. My practice is rooted in trauma-informed care and queer-affirming principles.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "Jordan is currently online and accepting new support requests.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLu94j-o-u_7WPwbwLPJOIaCwU7mCnwneUrw5ei-T7plupUoT347IY2qXsMTZ2E2gQdSaXDLjH43RjJjTLd-NjxnlrgMMx1nxfNdUxM9whxRQN7OuUz7e3loNnzVRnyB3eRmmo_zKvtPe9MM9mutU7k3xRqc7ei_QlOBG-4gerfWclDrK3-RLBMX2TODwBEx2dgu3_dePBGTLOd2xmUUAD3pOdH1dfQowt1I2kq5KpOK26o6EbcaijYPT7ux"
+    },
+    {
+      "id": "buddy_leo_v",
+      "name": "Leo V.",
+      "pronouns": "he/him",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Anxiety"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Online",
+      "reply_time": "Usually replies in 5m",
+      "stats": {
+        "conversations": "150",
+        "hours": "500",
+        "months": "6"
+      },
+      "quote": "\"I believe in radical listening and creating a space where silence is just as valuable as words.\"",
+      "approach": "My sessions focus on validation, non-judgmental holding of space, and gently guiding you back to your center when you feel overwhelmed. I do not offer advice, but rather a sturdy sounding board.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Guided slow breathing",
+        "Naming blue objects in view"
+      ],
+      "bio": "Techniques we can practice together if things feel too intense:",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLv2r-F4pj91Jd4OuFnJcLfIajWUUjGI0JIIQE6mypbGsqlnT3ArDeOW74IqhjllSE-ecrTSfVa6oJovQoHc4_WyHe2j2OAdZvlF8Q0UXRpTjZbTBVwKPVAo2gOzDaUT7x87d9fw_lCktfogkz_3_rAF-JuiQvxlH2BtEUinXkhXBJeCJnDxyXKJl4cYJjq0uiGiJ0iyseGkOmGkmK9AgbpliPzS3FIXqqXu05sb8x_0WQnI-9Qd0S1Ftf4"
+    },
+    {
+      "id": "buddy_alex_w",
+      "name": "Alex W.",
+      "pronouns": "they/them",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Crisis",
+        "LGBTQ+"
+      ],
+      "languages": [
+        "English"
+      ],
       "availability": "Online",
       "reply_time": "Usually replies in 10m",
       "stats": {
-        "conversations": "289",
-        "hours": "950",
-        "months": "14"
+        "conversations": "120",
+        "hours": "420",
+        "months": "12"
       },
-      "quote": "\"You do not have to walk on your knees for a hundred miles repenting. You only have to let the soft animal of your body love what it loves.\"",
-      "approach": "I provide a warm, patient presence for navigating grief, depression, and family stressors. Together, we move at your own pace without judgment.",
+      "quote": "\"You are worthy of support exactly as you are. Let's find your grounding together.\"",
+      "approach": "I provide a calm, affirmative space to explore your feelings and return to center without pressure.",
       "grounding_exercises": [
-        "Hand-over-heart self-compassion",
-        "Gentle mindful walking",
-        "Sensing warm light visualization"
+        "5-4-3-2-1 Sensory grounding",
+        "Tactical Box Breathing",
+        "Naming objects in the room"
       ],
-      "bio": "Certified support buddy with compassionate experience navigating depression, anxiety, grief, and family dynamic stressors.",
-      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuCY2AeYR7cTA2WE28LN5Qp-geWh6IiHmBTRvLggOexvVoo-R6gUi2s95Tdze9UJqWpzokGOhTk2nOLBTUd2LJnSn1EMoWa26Icv4GF71nPZIfYkmoQakzM1Hv1YF9dl0_DUJppDbNaYL-lUZrdc8KWl6kyQca9AdjLVittQX8GwBqQSM5fgTAqIaAchlec6Y3jUiwtaVo-r3cz5WDOIZ9tSXLqokn9oNq80hiL4w3tr1doN_044TVjegN_9LreLKrR4rPJi5I0RVSA"
+      "bio": "Empathetic listener specializing in LGBTQ+ and identity-affirming crisis support.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLsO62prmSuRk2iqu_A7k_bnJ79mTs89wM2OkSz0V5NvbQrwjjlHwAYQDvpRH5OxAVKGLyLpYEGLPg2hNtQ2Vi2SJtZnl1wYTll2wEIhOPLpnfu_yAcZeDyw8M6TgKh2X5EexpxVwzebsBOxRqdlvX5K8VIM0uGjIQoM3BIzlff11GxZk0KjvBoAW7TK7VdHBF_sH5JbRjehMnb-Q6KKrcDdn4HQm1UVOPy8iwc6e8RhJiJW6a-Hfuo8oICE"
     },
     {
-      "id": "buddy_david",
-      "name": "David K.",
-      "pronouns": "he/him",
-      "certification": "Peer Recovery Specialist",
-      "specialties": ["Addiction", "Crisis"],
-      "languages": ["English"],
-      "availability": "In a Session",
-      "reply_time": "Back online shortly",
-      "stats": {
-        "conversations": "615",
-        "hours": "2.1k",
-        "months": "30"
-      },
-      "quote": "\"In medicine, as in life, the most important thing you can give anyone is hope.\" — Doogie Howser, M.D.",
-      "approach": "Lived experience in addiction recovery and crisis listening. I believe in honest, non-judgmental peer connections where every step forward is celebrated.",
-      "grounding_exercises": [
-        "One day at a time mindfulness",
-        "Cold water facial reset",
-        "Anchor phrase repetition"
+      "id": "buddy_taylor_s",
+      "name": "Taylor S.",
+      "pronouns": "they/them",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Veterans",
+        "PTSD"
       ],
-      "bio": "Dedicated peer recovery specialist with lived experience in addiction recovery and crisis listening. Here when you're ready.",
-      "avatar": "https://lh3.googleusercontent.com/aida-public/AB6AXuBCRuOp-Z1wi5pGKy6m8GCVUonw1KcfFDl2HO0ksn4duDsBgaUQhVz2hI-qHBJpzr9i62_zK6JxJSEqIUIJUHUe0dro5diQLD1qmQB0HXROVWfRDoDnnl9bxQij2uPT0UISAK56dtGF6VYeRywk0n9mSajSz8Oe53XSqjYApv18xvc6GgXjZUAYkao1Y2QG5vbD2bkhVuSD5U0Fh34DGOte7FMkjhQ-p_CBbm1Q5YswhclgmWq_8rZ9FbJ5v0xALULz1i-XoiBYAU4"
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 10m",
+      "stats": {
+        "conversations": "120",
+        "hours": "420",
+        "months": "12"
+      },
+      "quote": "\"Lived experience teaches us that no one has to carry their heaviest burdens alone.\"",
+      "approach": "My approach is steady, direct, and structured, combining active listening with physical grounding.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Tactical Box Breathing",
+        "Naming objects in the room"
+      ],
+      "bio": "Certified specialist supporting veterans and peers navigating PTSD and transition stress.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLuDzJbt98BIciMsMSxYFAJy9AeWO1Mo92e3LqAJxA6RjAtOqrEKrXdYoFdAReXPr3DzvyvGszDO_ZIM9cjcTXV_79fbPRW0p-z4o6fC_Bgpsy-l658r2imCcyjDPS9ELYThLAHIYPTYurt-LW3dy13bvpPwoEi-y7t4j8mRj8h4lRzWJh-x8snvJWYwb9iLYyAFyUaeRK07aOwGA8VJWpOddeczVD89XbmM8gKGd56Lkxczc7DkpWIy3L3W"
+    },
+    {
+      "id": "buddy_mia_r",
+      "name": "Mia R.",
+      "pronouns": "she/her",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Grief",
+        "Anxiety"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 10m",
+      "stats": {
+        "conversations": "120",
+        "hours": "420",
+        "months": "12"
+      },
+      "quote": "\"Grief has no timeline. I am here to walk alongside you at whatever pace you need.\"",
+      "approach": "I offer a warm, patient container to process hard emotions, offering self-compassion tools.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Tactical Box Breathing",
+        "Naming objects in the room"
+      ],
+      "bio": "Compassionate peer helper focusing on grief, bereavement, and anxiety management.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLv1SXlkp7rz1cK5AD9bRNDNlYXioexxX2Wfvnr-7PXRjl8YFlZQGGHWa3WKBgz-f9oAD9MdsdQGblHl2m6S23SK07CxS-IzQV1lFo9BGeXTVfoFN0oauRjiwMcBNTzPFipC5r7MMTyaCaBoFDUqIhBzpKF4vj74w3Y96rq0kTJGgrw_LLygv7FyXtdY-_76YnabyBRm0RARtmUnokjSm8RmI8iVyiQ1f0Cq6hOWqGvWsrlFhfh2cBRq0w6C"
+    },
+    {
+      "id": "buddy_noah_j",
+      "name": "Noah J.",
+      "pronouns": "he/him",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Anxiety",
+        "Depression"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Offline",
+      "reply_time": "Usually replies in 10m",
+      "stats": {
+        "conversations": "120",
+        "hours": "420",
+        "months": "12"
+      },
+      "quote": "\"Every small step is a victory. Let's celebrate your progress, no matter how small.\"",
+      "approach": "I listen for your strengths and help you build small, manageable daily habits to support recovery.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Tactical Box Breathing",
+        "Naming objects in the room"
+      ],
+      "bio": "Support peer with a focus on depression recovery and daily anxiety coping strategies.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLt-Q5dgGRsnH4LaLd5ue0_kuPEC4vJBckf6zxF3iMQG5Nm2YLDF1DiopGeFVq99KJzW1vrjubylfHrddylmTJgH_XIlJfOMCXVzJiBwqco0DO_BaG3s1NvqeC3bhqetUceFV-SVwufl4BEeeYx1ZXspjbJAQ0Ja_ycgjzQ04TJ7ACbAS0VeZeA6OqYLeYlQqDVohwRwBYAwumDatZin4Za41AIWb5ieVo9sj_L0kUjenVvrM2EIBT6Nxuv-"
+    },
+    {
+      "id": "buddy_julian_k",
+      "name": "Julian K.",
+      "pronouns": "he/him",
+      "certification": "Certified Peer Support Specialist",
+      "specialties": [
+        "Addiction",
+        "Crisis"
+      ],
+      "languages": [
+        "English"
+      ],
+      "availability": "Online",
+      "reply_time": "Usually replies in 10m",
+      "stats": {
+        "conversations": "120",
+        "hours": "420",
+        "months": "12"
+      },
+      "quote": "\"Honesty and connection are the foundation of healing. I am here when you are ready.\"",
+      "approach": "I offer real, non-judgmental conversations based on shared recovery pathways and active coping.",
+      "grounding_exercises": [
+        "5-4-3-2-1 Sensory grounding",
+        "Tactical Box Breathing",
+        "Naming objects in the room"
+      ],
+      "bio": "Dedicated support specialist with lived experience in substance recovery and crisis de-escalation.",
+      "avatar": "https://lh3.googleusercontent.com/aida/AP1WRLsKJs5m-WepTklSGGEZh07egbN45wusYptfoWHjjNHkwZhSKTH8mR8EPcOmNS2T5ko7FsQtou_LC39pURJCN5WEnT6BhP4l-g2YF7g6BHW_2ZO6KRvup6CKw9qVkeNuCuHemPHrQKaSeb90q5g0sZmVxr_QkYiIPZSy1fbS1JGdZKuMcOOKpdGf6WrzovdCUdF-ehdUwzmHiWSxvFlQs8ILDgyphIKUTshDPKYO7UllP2i08yJPEDRN275T"
     }
   ]
 }

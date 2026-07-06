@@ -719,6 +719,53 @@ async def get_patient_emergency_contacts(
         raise HTTPException(status_code=500, detail=f"Error fetching emergency contacts: {str(e)}")
 
 
+@app.get("/api/my-buddies")
+async def get_my_buddies(user: dict = Depends(require_role(["patient"]))):
+    """Retrieve the list of buddy IDs added to the patient's pool."""
+    if not db:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    try:
+        doc = db.collection("users").document(user["email"].lower().strip()).collection("settings").document("my_buddies").get()
+        if doc.exists:
+            return {"buddies": doc.to_dict().get("buddies", [])}
+        return {"buddies": []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching my-buddies: {str(e)}")
+
+
+@app.post("/api/my-buddies")
+async def save_my_buddies(payload: dict, user: dict = Depends(require_role(["patient"]))):
+    """Save/update the list of buddy IDs in the patient's pool."""
+    if not db:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    try:
+        buddies = payload.get("buddies", [])
+        db.collection("users").document(user["email"].lower().strip()).collection("settings").document("my_buddies").set({"buddies": buddies}, merge=True)
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving my-buddies: {str(e)}")
+
+
+@app.get("/api/patient/{patient_email}/my-buddies")
+async def get_patient_my_buddies(
+    patient_email: str,
+    user: dict = Depends(require_role(["buddy", "clinician", "caregiver"]))
+):
+    """Retrieve the support buddies list for a specific patient, accessible by authorized roles."""
+    if not db:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    try:
+        patient_email_normalized = patient_email.lower().strip()
+        doc = db.collection("users").document(patient_email_normalized).collection("settings").document("my_buddies").get()
+        if doc.exists:
+            return {"buddies": doc.to_dict().get("buddies", [])}
+        return {"buddies": []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching patient my-buddies: {str(e)}")
+
+
+
+
 @app.get("/api/buddy-dashboard")
 async def get_buddy_dashboard(user: dict = Depends(require_role(["buddy", "clinician"]))):
     """Returns assigned peer roster, warmline call logs, and active session queue for Buddies (#1, #5)."""

@@ -79,6 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const detailGroundingList = document.getElementById("detailGroundingList");
   const btnDetailConnect = document.getElementById("btnDetailConnect");
   const detailConnectLabel = document.getElementById("detailConnectLabel");
+  const btnToggleFavoriteBuddy = document.getElementById("btnToggleFavoriteBuddy");
+  const favIcon = document.getElementById("favIcon");
+  const favLabel = document.getElementById("favLabel");
   const inputBar     = document.getElementById("inputBar");
   const loadingLabel = document.getElementById("loadingLabel");
   const connectButton = document.getElementById("connectButton");
@@ -177,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---- State ---- */
   let authToken = localStorage.getItem("msb_token") || null;
   let currentUser = null;
+  let myBuddiesList = [];
 
   // Decode JWT claims for display (no verification needed client-side)
   function parseJwtClaims(token) {
@@ -241,6 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       fetchSidebarBuddies();
       fetchConversations();
+      fetchMyBuddies();
     } else {
       btnAuth.classList.remove("hidden");
       btnSignUp.classList.remove("hidden");
@@ -422,6 +427,17 @@ document.addEventListener("DOMContentLoaded", () => {
           triageList.appendChild(caseCard);
           // Assuming c.patient_email exists in the triage case data
           await renderPatientEmergencyContacts(c.patient_email, document.getElementById(`clinician-patient-emergency-contacts-${c.patient_email}`));
+          
+          // Render clinician-patient-support-buddies container dynamically
+          const clinicianBuddiesContainerId = `clinician-patient-support-buddies-${c.patient_email}`;
+          let clinicianBuddiesContainer = document.getElementById(clinicianBuddiesContainerId);
+          if (!clinicianBuddiesContainer) {
+            clinicianBuddiesContainer = document.createElement("div");
+            clinicianBuddiesContainer.id = clinicianBuddiesContainerId;
+            clinicianBuddiesContainer.className = "mt-2";
+            document.getElementById(`clinician-patient-emergency-contacts-${c.patient_email}`).after(clinicianBuddiesContainer);
+          }
+          await renderPatientSupportBuddies(c.patient_email, clinicianBuddiesContainer);
         }
       } else {
         triageList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic col-span-2">No active triage cases pending review.</div>`;
@@ -499,6 +515,17 @@ document.addEventListener("DOMContentLoaded", () => {
           summariesList.appendChild(summaryCard);
           // Assuming s.patient_email exists in the consented summary data
           await renderPatientEmergencyContacts(s.patient_email, document.getElementById(`caregiver-patient-emergency-contacts-${s.patient_email}`));
+          
+          // Render caregiver-patient-support-buddies container dynamically
+          const caregiverBuddiesContainerId = `caregiver-patient-support-buddies-${s.patient_email}`;
+          let caregiverBuddiesContainer = document.getElementById(caregiverBuddiesContainerId);
+          if (!caregiverBuddiesContainer) {
+            caregiverBuddiesContainer = document.createElement("div");
+            caregiverBuddiesContainer.id = caregiverBuddiesContainerId;
+            caregiverBuddiesContainer.className = "mt-2";
+            document.getElementById(`caregiver-patient-emergency-contacts-${s.patient_email}`).after(caregiverBuddiesContainer);
+          }
+          await renderPatientSupportBuddies(s.patient_email, caregiverBuddiesContainer);
         }
       } else {
         summariesList.innerHTML = `<div class="text-center py-4 text-text-muted text-xs italic">No consented check-in summaries available.</div>`;
@@ -1052,7 +1079,14 @@ document.addEventListener("DOMContentLoaded", () => {
   updateAuthUI();
 
   /* ---- Buddy View dialog ---- */
-  btnViewBuddy.addEventListener("click",       () => { renderBuddyNotifications(); openDialog(buddyViewDialog); });
+  btnViewBuddy.addEventListener("click",       () => {
+    if (currentUser && currentUser.role === "patient") {
+      renderMySupportBuddiesDialog();
+    } else {
+      renderBuddyNotifications();
+    }
+    openDialog(buddyViewDialog);
+  });
   btnCloseBuddyView.addEventListener("click",  () => closeDialog(buddyViewDialog));
 
   /* ---- Available Buddies Sidebar ---- */
@@ -1456,6 +1490,46 @@ document.addEventListener("DOMContentLoaded", () => {
         btnDetailConnect.classList.add("opacity-50", "cursor-not-allowed");
         if (detailConnectLabel) detailConnectLabel.textContent = "Currently Offline";
         btnDetailConnect.onclick = null;
+      }
+    }
+
+    // Handle Toggle Favorite Buddy button
+    if (btnToggleFavoriteBuddy) {
+      if (currentUser && currentUser.role === "patient") {
+        btnToggleFavoriteBuddy.classList.remove("hidden");
+        const isFavorite = myBuddiesList.includes(buddy.id);
+        updateFavoriteButtonUI(isFavorite);
+        
+        btnToggleFavoriteBuddy.onclick = async () => {
+          const idx = myBuddiesList.indexOf(buddy.id);
+          let added = false;
+          if (idx === -1) {
+            myBuddiesList.push(buddy.id);
+            added = true;
+          } else {
+            myBuddiesList.splice(idx, 1);
+          }
+          
+          // Save to backend
+          try {
+            const res = await fetch("/api/my-buddies", {
+              method: "POST",
+              headers: authHeaders(),
+              body: JSON.stringify({ buddies: myBuddiesList })
+            });
+            if (res.ok) {
+              updateFavoriteButtonUI(added);
+              notify(added ? `${buddy.name} added to My Support Buddies.` : `${buddy.name} removed from My Support Buddies.`, "success");
+            } else {
+              throw new Error("Failed to save favorites");
+            }
+          } catch (err) {
+            console.error("Error toggling favorite buddy:", err);
+            notify("Failed to update support buddies. Please try again.", "error");
+          }
+        };
+      } else {
+        btnToggleFavoriteBuddy.classList.add("hidden");
       }
     }
 
@@ -2064,20 +2138,139 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function emptyTrashBin() {
-    if (!confirm("Permanently delete all conversations in trash? This cannot be undone.")) return;
+  }
+
+  async function fetchMyBuddies() {
+    if (!currentUser || currentUser.role !== "patient") {
+      myBuddiesList = [];
+      return;
+    }
     try {
-      const res = await fetch("/api/conversations/trash/empty", {
-        method: "DELETE",
-        headers: authHeaders()
-      });
-      if (!res.ok) throw new Error("Failed to empty trash");
-      notify("Trash bin emptied. ✓");
-      fetchTrashList();
+      const res = await fetch("/api/my-buddies", { headers: authHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        myBuddiesList = data.buddies || [];
+      }
     } catch (err) {
-      console.error("Empty trash error:", err);
-      notify("Error emptying trash.", "error");
+      console.error("Error fetching my support buddies:", err);
     }
   }
 
-});
+  function updateFavoriteButtonUI(isFav) {
+    if (favIcon) favIcon.textContent = isFav ? "star" : "star_border";
+    if (favLabel) favLabel.textContent = isFav ? "Remove from Support Buddies" : "Add to Support Buddies";
+    if (btnToggleFavoriteBuddy) {
+      if (isFav) {
+        btnToggleFavoriteBuddy.classList.remove("text-primary", "border-primary", "hover:bg-primary/5");
+        btnToggleFavoriteBuddy.classList.add("text-rose-500", "border-rose-500", "hover:bg-rose-500/5");
+      } else {
+        btnToggleFavoriteBuddy.classList.remove("text-rose-500", "border-rose-500", "hover:bg-rose-500/5");
+        btnToggleFavoriteBuddy.classList.add("text-primary", "border-primary", "hover:bg-primary/5");
+      }
+    }
+  }
+
+  function renderMySupportBuddiesDialog() {
+    const area = document.getElementById("buddyNotificationArea");
+    if (!area) return;
+    
+    if (myBuddiesList.length === 0) {
+      area.innerHTML = `
+        <div class="text-center py-8 text-text-muted text-xs italic">
+          You haven't added any support buddies yet. Browse the directory to build your support pool!
+        </div>
+      `;
+      return;
+    }
+    
+    area.innerHTML = "";
+    
+    // Filter matching buddies
+    const favBuddies = allRosterBuddies.filter(b => myBuddiesList.includes(b.id));
+    
+    favBuddies.forEach(buddy => {
+      const row = document.createElement("div");
+      row.className = "flex items-center justify-between p-3.5 rounded-xl border border-border bg-surface shadow-sm";
+      
+      const isOnline = buddy.availability?.toLowerCase() === "online";
+      const statusClass = isOnline ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" : "bg-slate-500";
+      
+      row.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="relative shrink-0">
+            <img src="${buddy.avatar || 'https://lh3.googleusercontent.com/aida-public/AB6AXuBf9rx7Z6l90E-dEQNOHkY2L9MBL-BEWZw9xYFqtDLhTUanPJXcYsq_SLLQp9-1L7agsP9D6pvCfsF25EIMB8sho5heSobTuGewdesyf6K_uzKDkPhp26x65Vknl8xE2u16XPc-zYwemNefLq8_8SyOBx69qPDIcj74AKiDEKVdQf2pNm3Ng8qCXEIzvG7Pcyw7MEQZBDTInukBK_Or35fUL5P0HxZ7U78vldyRd_lanroKUI8Mphi4Rk2D0BVj6ymZiRXv4Y7oQoo'}" class="w-10 h-10 rounded-full object-cover border border-border/50" />
+            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 ${statusClass} border-2 border-surface rounded-full"></div>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-text-main leading-tight">${buddy.name}</h4>
+            <p class="text-[10px] text-text-muted font-medium">${buddy.certification || 'Certified Specialist'}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="px-2.5 py-1.5 rounded-lg border border-border bg-card text-text-muted hover:text-text-main text-[11px] font-bold btn-fav-info flex items-center gap-1 transition-all">
+            <span class="material-symbols-outlined text-[14px]">info</span> Info
+          </button>
+          <button class="px-3 py-1.5 rounded-lg ${isOnline ? 'bg-primary hover:brightness-110 text-white' : 'bg-surface/50 text-text-muted border border-border/50 cursor-not-allowed'} text-[11px] font-bold btn-fav-connect flex items-center gap-1 transition-all" ${!isOnline ? 'disabled' : ''}>
+            <span class="material-symbols-outlined text-[14px]">${isOnline ? 'chat' : 'lock'}</span> Connect
+          </button>
+        </div>
+      `;
+      
+      row.querySelector(".btn-fav-info").onclick = () => {
+        closeDialog(buddyViewDialog);
+        openBuddyProfileModal(buddy);
+      };
+      
+      if (isOnline) {
+        row.querySelector(".btn-fav-connect").onclick = () => {
+          closeDialog(buddyViewDialog);
+          selectedBuddyId = buddy.id;
+          startCrisisCall();
+        };
+      }
+      
+      area.appendChild(row);
+    });
+  }
+
+  async function renderPatientSupportBuddies(patientEmail, containerEl) {
+    if (!containerEl) return;
+    containerEl.innerHTML = `<div class="text-xs text-text-muted italic">Loading support buddies...</div>`;
+    try {
+      const res = await fetch(`/api/patient/${patientEmail}/my-buddies`, { headers: authHeaders() });
+      if (!res.ok) {
+        containerEl.innerHTML = `<div class="text-xs text-text-muted italic">No support buddies set.</div>`;
+        return;
+      }
+      const data = await res.json();
+      const buddyIds = data.buddies || [];
+      if (buddyIds.length === 0) {
+        containerEl.innerHTML = `<div class="text-xs text-text-muted italic">No support buddies selected.</div>`;
+        return;
+      }
+
+      // Map IDs to buddy profiles
+      const patientBuddies = buddyIds.map(id => {
+        return allRosterBuddies.find(b => b.id === id) || { name: id.replace('buddy_', '').replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase()), avatar: "" };
+      });
+
+      containerEl.innerHTML = `
+        <div class="flex flex-col gap-1.5 mt-2">
+          <span class="text-xs font-semibold text-text-muted block">Support Buddies Pool:</span>
+          <div class="flex items-center gap-2 flex-wrap">
+            ${patientBuddies.map(b => `
+              <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary">
+                ${b.avatar ? `<img src="${b.avatar}" class="w-4 h-4 rounded-full object-cover" />` : `👤`}
+                <span>${b.name}</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    } catch (err) {
+      console.error("Error rendering patient support buddies:", err);
+      containerEl.innerHTML = `<div class="text-xs text-rose italic">Error loading support buddies.</div>`;
+    }
+  }
+
+  });
