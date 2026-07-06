@@ -2137,11 +2137,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function appendChatMessage(role, content, scrollToBottom = true) {
     if (!chatMessages) return;
     const isUser = role === "user";
+    const isSafetyAlert = !isUser && content.includes("Critical Care/Safety Alert");
     const bubble = document.createElement("div");
     bubble.className = `flex flex-col gap-1 max-w-[80%] ${isUser ? "self-end items-end" : "self-start items-start"}`;
     bubble.innerHTML = `
-      <div class="text-[11px] font-bold uppercase tracking-wider text-text-muted px-1">${isUser ? "You" : "AI Support Buddy"}</div>
-      <div class="p-4 rounded-2xl text-sm md:text-base leading-relaxed ${isUser ? "bg-primary text-white rounded-br-none" : "bg-card border border-border text-text-main rounded-bl-none shadow-sm"}">
+      <div class="text-[11px] font-bold uppercase tracking-wider text-text-muted px-1">${isUser ? "You" : (isSafetyAlert ? "⚠️ Safety Guard" : "AI Support Buddy")}</div>
+      <div class="p-4 rounded-2xl text-sm md:text-base leading-relaxed ${isUser ? "bg-primary text-white rounded-br-none" : (isSafetyAlert ? "bg-rose-500/10 border-2 border-rose-500 text-rose-700 rounded-bl-none shadow-sm font-semibold" : "bg-card border border-border text-text-main rounded-bl-none shadow-sm")}">
         ${isUser ? content : mdToHtml(content)}
       </div>
     `;

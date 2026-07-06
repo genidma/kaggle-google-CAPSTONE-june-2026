@@ -24,6 +24,10 @@ class SupportAnalysis(BaseModel):
     suggested_action: str = Field(
         description="Suggested next step: 'connect_buddy' (talk to an accredited buddy), 'use_crisis_line' (call the warmline), or 'both' (offer both options)."
     )
+    safety_triggered: bool = Field(
+        default=False,
+        description="Whether safety filters or auto-moderation flags were triggered by the user input."
+    )
 
 
 class OrchestratorAgent:
@@ -51,11 +55,35 @@ class OrchestratorAgent:
             print(f"Error initializing Google GenAI Client: {e}")
             return None
 
+    def check_auto_moderation(self, user_message: str) -> SupportAnalysis:
+        """Deterministic pre-moderation scan for acute crisis indicators."""
+        msg = user_message.lower()
+        self_harm_words = [
+            "suicide", "suicidal", "kill myself", "end my life", "want to die", 
+            "ending my life", "overdose", "cutting myself", "self-harm", "self harm", "harm myself"
+        ]
+        if any(word in msg for word in self_harm_words):
+            return SupportAnalysis(
+                needs_support=True,
+                needs_crisis_line=True,
+                urgency_level="critical",
+                summary="Acute crisis indicators detected in user message.",
+                suggested_action="use_crisis_line",
+                safety_triggered=True
+            )
+        return None
+
     def analyze_message(self, user_message: str) -> SupportAnalysis:
         """
         Uses Gemini Structured Outputs to classify the user's support need.
-        Falls back to rule-based heuristics if API is unavailable.
+        Enforces safety filters and falls back to rule-based heuristics if needed.
         """
+        # 1. Run deterministic auto-moderation pre-check
+        moderation_alert = self.check_auto_moderation(user_message)
+        if moderation_alert:
+            print("Auto-moderation triggered on user input.")
+            return moderation_alert
+
         client = self._get_client()
         if not client:
             return self._fallback_analyze(user_message)
@@ -68,6 +96,14 @@ class OrchestratorAgent:
             "Classify the user's message carefully. Always be compassionate and non-judgmental."
         )
 
+        # Configure standard safety guards for the API call
+        safety_settings = [
+            types.SafetySetting(category="HARM_CATEGORY_HATE_SPEECH", threshold="BLOCK_LOW_AND_ABOVE"),
+            types.SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="BLOCK_LOW_AND_ABOVE"),
+            types.SafetySetting(category="HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold="BLOCK_LOW_AND_ABOVE"),
+            types.SafetySetting(category="HARM_CATEGORY_DANGEROUS_CONTENT", threshold="BLOCK_LOW_AND_ABOVE")
+        ]
+
         try:
             response = client.models.generate_content(
                 model=self.model_name,
@@ -76,16 +112,17 @@ class OrchestratorAgent:
                     response_mime_type="application/json",
                     response_schema=SupportAnalysis,
                     system_instruction=system_prompt,
-                    temperature=0.0
+                    temperature=0.0,
+                    safety_settings=safety_settings
                 )
             )
             data = json.loads(response.text)
             return SupportAnalysis(**data)
         except Exception as e:
-            print(f"GenAI API Error: {e}. Falling back to heuristics.")
-            return self._fallback_analyze(user_message)
+            print(f"GenAI API Call/Safety Block: {e}. Falling back to safe triage.")
+            return self._fallback_analyze(user_message, safety_triggered=True)
 
-    def _fallback_analyze(self, message: str) -> SupportAnalysis:
+    def _fallback_analyze(self, message: str, safety_triggered: bool = False) -> SupportAnalysis:
         """Rule-based heuristic triage when API is unavailable."""
         msg = message.lower()
 
@@ -94,13 +131,13 @@ class OrchestratorAgent:
         medium_keywords = ["stressed", "anxious", "sad", "worried", "struggling", "not okay",
                            "difficult", "hard time", "feeling low", "upset"]
 
-        needs_crisis = any(kw in msg for kw in crisis_keywords)
+        needs_crisis = any(kw in msg for kw in crisis_keywords) or safety_triggered
         needs_medium = any(kw in msg for kw in medium_keywords)
         needs_support = needs_crisis or needs_medium or "help" in msg or "talk" in msg
 
-        if needs_crisis:
-            urgency = "high"
-            action = "both"
+        if needs_crisis or safety_triggered:
+            urgency = "critical" if safety_triggered else "high"
+            action = "use_crisis_line" if safety_triggered else "both"
         elif needs_medium:
             urgency = "medium"
             action = "connect_buddy"
@@ -112,9 +149,11 @@ class OrchestratorAgent:
             needs_support=needs_support,
             needs_crisis_line=needs_crisis,
             urgency_level=urgency,
-            summary=f"User seems to be seeking support. (Fallback analysis: '{message[:60]}...')" if len(message) > 60 else f"User: '{message}'",
-            suggested_action=action
+            summary=f"User seeks support. (Fallback analysis: '{message[:60]}...')" if len(message) > 60 else f"User: '{message}'",
+            suggested_action=action,
+            safety_triggered=safety_triggered
         )
+
 
     def process_request(self, user_message: str) -> Dict[str, Any]:
         """
@@ -153,6 +192,16 @@ class OrchestratorAgent:
 
     def _synthesize_response(self, analysis: SupportAnalysis) -> str:
         """Generates a warm, empathetic, action-oriented response."""
+        if getattr(analysis, "safety_triggered", False):
+            return (
+                "**Critical Care/Safety Alert**\n\n"
+                "Please know that you are not alone, and there is support available right now. "
+                "Because your message contains indicators of acute crisis or distress, we want to connect you "
+                "immediately with professional care. "
+                "Our General Support Warmline is confidential, free, and available 24/7/365. "
+                "Please click the **Connect** button below or dial 988 (Crisis Lifeline) to speak with a professional immediately."
+            )
+
         base = f"**{analysis.summary}**\n\n"
 
         if analysis.suggested_action == "connect_buddy":
