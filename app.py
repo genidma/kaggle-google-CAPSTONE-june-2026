@@ -629,10 +629,11 @@ async def list_trash(user: dict = Depends(get_current_user)):
                 "id": doc.id,
                 "title": data.get("title", "Untitled"),
                 "trashed_at": trashed_at_str,
+                "deleted_at": trashed_at_str,
                 "days_remaining": days_remaining,
                 "message_count": data.get("message_count", 0),
             })
-        return {"trash": result}
+        return {"trash": result, "trashed": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
