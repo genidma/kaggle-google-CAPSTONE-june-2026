@@ -1095,7 +1095,12 @@ document.addEventListener("DOMContentLoaded", () => {
     recognition.onstart = () => {
       isListening = true;
       originalInputText = msgInput.value;
-      micIcon.textContent = "mic_noise_off";
+      if (micIcon.tagName === "IMG") {
+        micIcon.classList.remove("opacity-60");
+        micIcon.classList.add("opacity-100");
+      } else {
+        micIcon.textContent = "mic_noise_off";
+      }
       btnMicToggle.classList.remove("text-text-muted", "bg-card");
       btnMicToggle.classList.add("text-rose-500", "bg-rose-500/10", "border-rose-500", "animate-pulse");
       msgInput.placeholder = "Listening...";
@@ -1152,7 +1157,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function stopSpeechRecognition() {
     isListening = false;
-    if (micIcon) micIcon.textContent = "mic";
+    if (micIcon) {
+      if (micIcon.tagName === "IMG") {
+        micIcon.classList.remove("opacity-100");
+        micIcon.classList.add("opacity-60");
+      } else {
+        micIcon.textContent = "mic";
+      }
+    }
     if (btnMicToggle) {
       btnMicToggle.classList.remove("text-rose-500", "bg-rose-500/10", "border-rose-500", "animate-pulse");
       btnMicToggle.classList.add("text-text-muted", "bg-card");
