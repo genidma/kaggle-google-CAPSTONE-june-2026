@@ -424,31 +424,6 @@ async def get_crisis_plan(user: dict = Depends(get_current_user)):
         print(f"Error fetching crisis plan: {e}")
         return {"plan": None}
 
-
-@app.get("/api/patient/{patient_email}/emergency-contacts")
-async def get_patient_emergency_contacts(
-    patient_email: str,
-    user: dict = Depends(require_role(["buddy", "clinician", "caregiver"]))
-):
-    """Retrieve emergency contacts for a specific patient, accessible by authorized roles (#6)."""
-    if not db:
-        raise HTTPException(status_code=503, detail="Database unavailable")
-    try:
-        # Normalize the patient email
-        patient_email_normalized = patient_email.lower().strip()
-        doc = db.collection("users").document(patient_email_normalized).collection("settings").document("crisis_plan").get()
-        if doc.exists:
-            plan_data = doc.to_dict()
-            emergency_contacts = plan_data.get("emergency_contacts", [])
-            # Only return the emergency contacts, not the full crisis plan
-            return {"patient_email": patient_email, "emergency_contacts": emergency_contacts}
-        raise HTTPException(status_code=404, detail="Patient emergency contacts not found")
-    except HTTPException:
-        raise
-    except Exception as e:
-        print(f"Error fetching patient emergency contacts for {patient_email}: {e}")
-        raise HTTPException(status_code=500, detail=f"Error fetching emergency contacts: {str(e)}")
-
 # ---------------------------------------------------------------------------
 # Buddies
 # ---------------------------------------------------------------------------
@@ -717,6 +692,31 @@ def require_role(allowed_roles: List[str]):
             raise HTTPException(status_code=403, detail=f"Access denied: Requires role in {allowed_roles}")
         return user
     return role_checker
+
+
+@app.get("/api/patient/{patient_email}/emergency-contacts")
+async def get_patient_emergency_contacts(
+    patient_email: str,
+    user: dict = Depends(require_role(["buddy", "clinician", "caregiver"]))
+):
+    """Retrieve emergency contacts for a specific patient, accessible by authorized roles (#6)."""
+    if not db:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    try:
+        # Normalize the patient email
+        patient_email_normalized = patient_email.lower().strip()
+        doc = db.collection("users").document(patient_email_normalized).collection("settings").document("crisis_plan").get()
+        if doc.exists:
+            plan_data = doc.to_dict()
+            emergency_contacts = plan_data.get("emergency_contacts", [])
+            # Only return the emergency contacts, not the full crisis plan
+            return {"patient_email": patient_email, "emergency_contacts": emergency_contacts}
+        raise HTTPException(status_code=404, detail="Patient emergency contacts not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error fetching patient emergency contacts for {patient_email}: {e}")
+        raise HTTPException(status_code=500, detail=f"Error fetching emergency contacts: {str(e)}")
 
 
 @app.get("/api/buddy-dashboard")
