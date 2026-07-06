@@ -954,6 +954,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function getPatientDisplayName(email, fallbackVal) {
+    if (!email) return fallbackVal || "Unknown Patient";
+    if (email.toLowerCase().trim() === "patient@test.com") {
+      return "Demo Patient";
+    }
+    return fallbackVal || email;
+  }
+
   async function fetchCrisisPlan() {
     if (!currentUser || !crisisPlanForm) return;
     try {
