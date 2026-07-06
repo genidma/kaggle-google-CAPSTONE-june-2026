@@ -1904,7 +1904,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "How can I be of assistance?",
     "I'm here. Where should we start?",
     "How are things feeling right now?",
-    "How can I support you today? Why don't you take a breath and tell me what's going on",
+    "How can I help?",
     "What is on your mind right now?",
     "How can I be of support to you today?",
     "Let's take this one step at a time. What's going on?",
