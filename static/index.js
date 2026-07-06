@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </p>
                     <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: Today • HIPAA ID: #${h.handoff_id} • Follow-up: ${h.recommended_followup}</span>
                   </div>
-                  <button onclick="alert('Opening clinical chart and patient EHR for ${h.patient_name}...')" class="px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold text-xs transition-all shrink-0">
+                  <button onclick="openClinicalChart('${h.patient_name}', '${h.session_summary.replace(/'/g, "\\'")}', '${h.recommended_followup.replace(/'/g, "\\'")}', '${h.patient_email}')" class="px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold text-xs transition-all shrink-0">
                     Review Chart
                   </button>
                 </div>
@@ -635,7 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </p>
             <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: ${timestamp} • HIPAA Handoff ID: #MSB-${Math.floor(1000 + Math.random() * 9000)}</span>
           </div>
-          <button onclick="alert('Opening clinical chart and patient electronic health record for Alex W...')" class="px-4 py-2 rounded-xl bg-primary text-white hover:brightness-110 font-bold text-xs transition-all shrink-0 shadow-sm">
+          <button onclick="openClinicalChart('Alex W.', '${summaryText.replace(/'/g, "\\'")}', 'Clinical follow-up for baseline anxiety assessment', 'alex.w@example.com')" class="px-4 py-2 rounded-xl bg-primary text-white hover:brightness-110 font-bold text-xs transition-all shrink-0 shadow-sm">
             Review Chart
           </button>
         `;
@@ -1184,6 +1184,52 @@ document.addEventListener("DOMContentLoaded", () => {
     openDialog(buddyViewDialog);
   });
   btnCloseBuddyView.addEventListener("click",  () => closeDialog(buddyViewDialog));
+
+  const btnCloseClinicalChart = document.getElementById("btnCloseClinicalChart");
+  if (btnCloseClinicalChart) {
+    btnCloseClinicalChart.addEventListener("click", () => {
+      document.getElementById("clinicalChartDialog")?.close();
+    });
+  }
+
+  window.openClinicalChart = async function(patientName, summaryText, recommendedFollowup, patientEmail) {
+    const dialog = document.getElementById("clinicalChartDialog");
+    if (!dialog) return;
+
+    document.getElementById("chartPatientName").textContent = patientName;
+    document.getElementById("chartSessionSummary").textContent = summaryText;
+    document.getElementById("chartRecommendedFollowup").textContent = recommendedFollowup;
+
+    // Fetch and render emergency contacts
+    const contactsContainer = document.getElementById("chartEmergencyContacts");
+    if (contactsContainer) {
+      contactsContainer.innerHTML = `<div class="italic text-[10px] text-text-muted">Loading emergency contacts...</div>`;
+      try {
+        const res = await fetch(`/api/patient/${patientEmail}/emergency-contacts`, { headers: authHeaders() });
+        if (res.ok) {
+          const data = await res.json();
+          const contacts = data.emergency_contacts || [];
+          if (contacts.length > 0) {
+            contactsContainer.innerHTML = contacts.map(c => `
+              <div class="flex items-center gap-1.5 py-0.5 text-[11px]">
+                <span>👤</span>
+                <span>${c.name} (${c.relationship}) - ${c.phone}</span>
+                <span class="px-1.5 py-0.2 rounded bg-primary/10 text-primary text-[8px] font-bold uppercase">${c.type}</span>
+              </div>
+            `).join("");
+          } else {
+            contactsContainer.innerHTML = `<div class="italic text-[10px] text-text-muted">No emergency contacts set.</div>`;
+          }
+        } else {
+          contactsContainer.innerHTML = `<div class="italic text-[10px] text-text-muted">No emergency contacts set.</div>`;
+        }
+      } catch (err) {
+        contactsContainer.innerHTML = `<div class="italic text-[10px] text-rose">Error loading contacts.</div>`;
+      }
+    }
+
+    dialog.showModal();
+  };
 
   /* ---- Available Buddies Sidebar ---- */
   btnToggleSidebar.addEventListener("click", () => {

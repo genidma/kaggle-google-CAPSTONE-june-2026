@@ -744,7 +744,7 @@
               </p>
               <span class="text-[10px] text-text-muted/80 mt-0.5">Timestamp: Today • HIPAA Handoff ID: #MSB-7842</span>
             </div>
-            <button onclick="alert('Opening clinical chart and patient electronic health record for Alex W...')" class="px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold text-xs transition-all shrink-0">
+            <button onclick="openClinicalChart('Alex W.', 'Patient experienced acute physiological panic symptoms. De-escalated via guided 4-4-4-4 Box Breathing. Zero self-harm risk detected. Recommend clinical follow-up for chronic anxiety triggers.', 'Clinical follow-up for chronic anxiety triggers', 'alex.w@example.com')" class="px-4 py-2 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold text-xs transition-all shrink-0">
               Review Chart
             </button>
           </div>
@@ -1173,6 +1173,56 @@
   <dialog id="buddyProfileDialog" class="rounded-2xl border border-border bg-card p-6 max-w-md w-[90%] focus:outline-none shadow-xl">
     <div class="flex flex-col gap-4" id="buddyProfileContent">
       <!-- Populated dynamically -->
+    </div>
+  </dialog>
+
+  <!-- CLINICAL CHART / EHR DIALOG (Issue #14) -->
+  <dialog id="clinicalChartDialog" class="rounded-2xl border border-border bg-card p-6 max-w-lg w-[90%] focus:outline-none shadow-xl">
+    <div class="flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-border/40 pb-2">
+        <h2 class="font-display font-bold text-lg text-text-main flex items-center gap-2">
+          🩺 Patient Clinical Chart (EHR)
+        </h2>
+        <button id="btnCloseClinicalChart" class="text-text-muted hover:text-text-main font-bold text-sm">
+          ✕
+        </button>
+      </div>
+      
+      <div class="flex items-center gap-3 bg-surface p-4 rounded-xl border border-border/50 shadow-inner">
+        <div class="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-xl shrink-0">
+          👤
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <h4 id="chartPatientName" class="font-bold text-sm text-text-main">Alex W.</h4>
+            <span id="chartRiskBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber/15 text-amber border border-amber/30 uppercase">High Risk</span>
+          </div>
+          <p class="text-[10px] text-text-muted mt-0.5">ID: #8492 • Age: 28 • Pronouns: he/him</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2.5">
+        <div class="bg-surface p-3 rounded-lg border border-border/60 text-xs">
+          <span class="font-semibold text-text-muted block mb-1">Session Handoff Summary:</span>
+          <p id="chartSessionSummary" class="text-text-main leading-relaxed">
+            Patient experienced acute physiological panic symptoms. De-escalated via guided Box Breathing. Zero self-harm risk.
+          </p>
+        </div>
+
+        <div class="bg-surface p-3 rounded-lg border border-border/60 text-xs">
+          <span class="font-semibold text-text-muted block mb-1">Recommended Follow-up:</span>
+          <p id="chartRecommendedFollowup" class="text-text-main leading-relaxed font-semibold text-primary">
+            Clinical follow-up for chronic anxiety triggers.
+          </p>
+        </div>
+
+        <div class="bg-surface p-3 rounded-lg border border-border/60 text-xs">
+          <span class="font-semibold text-text-muted block mb-1">Emergency Contacts:</span>
+          <div id="chartEmergencyContacts" class="flex flex-col gap-1 mt-1 text-text-main">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
     </div>
   </dialog>
 
