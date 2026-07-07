@@ -13,7 +13,7 @@ Welcome to the **v1.0 Release** of **MySupportBuddy**, built for the Google & Ka
 
 ### 2. 🔌 Model Context Protocol (MCP) Server (`mcp_server.py`)
 * Fully compliant with the official MCP specification (`2024-11-05`).
-* Exposes resource URIs (`buddies://directory`, `crisis://resources`) and search/triage tools (`lookup_buddy_specialties`, `get_crisis_resources`) over a dependency-free JSON-RPC standard input/output transport.
+* Shares resource URIs (`buddies://directory`, `crisis://resources`) and search/triage tools (`lookup_buddy_specialties`, `get_crisis_resources`) over a dependency-free JSON-RPC standard input/output transport.
 
 ### 3. 🧠 Multimodal Vision-Language TBI Scan Analyzer
 * Integrates a clinical diagnostic pipeline displaying 10 sequential widescreen scans (5 raw sectional views and 5 neural network diagnostic overlays) mapping regional brain impact, cognitive symptoms, and mood metrics.
