@@ -6,6 +6,8 @@
 
 Developed for the **Google & Kaggle AI Agents Capstone**, MySupportBuddy demonstrates a responsible, privacy-first multi-agent architecture built around human wellbeing and veteran-friendly design principles.
 
+![MySupportBuddy Architecture & Submission Flow](img/assets/main-readme01.png)
+
 ---
 
 ## 💡 What MySupportBuddy Does
