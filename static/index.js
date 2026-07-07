@@ -2462,9 +2462,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  async function ensureRosterBuddiesLoaded() {
+    if (allRosterBuddies && allRosterBuddies.length > 0) return;
+    try {
+      const res = await fetch("/api/buddies");
+      if (res.ok) {
+        const data = await res.json();
+        allRosterBuddies = data.buddies || [];
+      }
+    } catch (err) {
+      console.error("Error pre-loading roster buddies:", err);
+    }
+  }
+
   async function renderPatientSupportBuddies(patientEmail, containerEl) {
     if (!containerEl) return;
     containerEl.innerHTML = `<div class="text-xs text-text-muted italic">Loading support buddies...</div>`;
+    
+    await ensureRosterBuddiesLoaded();
+
     try {
       const res = await fetch(`/api/patient/${patientEmail}/my-buddies`, { headers: authHeaders() });
       if (!res.ok) {
@@ -2502,8 +2518,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  window.openSupportBuddyDetails = function(buddyId) {
+  window.openSupportBuddyDetails = async function(buddyId) {
     if (!buddyId) return;
+    await ensureRosterBuddiesLoaded();
     const buddy = allRosterBuddies.find(b => b.id === buddyId);
     if (buddy) {
       openBuddyProfileModal(buddy);
