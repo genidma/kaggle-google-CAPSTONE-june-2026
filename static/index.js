@@ -1861,7 +1861,10 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const res = await fetch("/api/crisis-call-log", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            ...authHeaders()
+          },
           body: JSON.stringify({
             buddy_id: selectedBuddyId,
             duration_minutes: durationMinutes,
