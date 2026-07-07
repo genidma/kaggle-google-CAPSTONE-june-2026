@@ -174,6 +174,35 @@ gcloud run deploy mysupportbuddy \
 
 ---
 
+## 🔌 Model Context Protocol (MCP) Server Integration (#20)
+
+MySupportBuddy includes a native Model Context Protocol (MCP) server implementation (`mcp_server.py`) that conforms to the official protocol version `2024-11-05`. This allows external AI models or client agents to securely interface with our verified peer directories and support resources.
+
+### Exposed Schema
+
+* **Resources**:
+  * `buddies://directory` — Exposes the JSON database of accredited, vetted peer support buddies.
+  * `crisis://resources` — Exposes the 24/7 general listening warmline referral contact details.
+* **Tools**:
+  * `lookup_buddy_specialties(specialty)` — A tool allowing client agents to search peer buddies by specific specialty categories (e.g. `Anxiety`, `Crisis`).
+  * `get_crisis_resources()` — Returns the active hotline referrals.
+
+### Running the MCP Server
+Since the server uses standard input/output (`stdin`/`stdout`) transport, it requires zero external python library installations and can be integrated into any MCP-capable client (like Claude Desktop or Cursor):
+
+```json
+{
+  "mcpServers": {
+    "mysupportbuddy-mcp": {
+      "command": "python3",
+      "args": ["/path/to/mysupportbuddy/mcp_server.py"]
+    }
+  }
+}
+```
+
+---
+
 ## 📋 Evaluation Track
 
 This project is submitted under the **Agents for Good** track of the Kaggle AI Agents Capstone.
