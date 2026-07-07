@@ -55,25 +55,25 @@ MySupportBuddy enforces strict role-based access boundaries to protect human wel
 
 ```mermaid
 graph TD
-    User([User Message]) --> Orchestrator[Orchestrator Agent]
+    User(["User Message"]) --> Orchestrator["Orchestrator Agent"]
 
-    Orchestrator -->|Classify need| Analysis{Support Type}
-    Analysis -->|General support| Buddy[Connect to Accredited Buddy]
-    Analysis -->|Feeling distressed| Both[Buddy + Warmline Recommended]
+    Orchestrator -->|Classify need| Analysis{"Support Type"}
+    Analysis -->|General support| Buddy["Connect to Accredited Buddy"]
+    Analysis -->|Feeling distressed| Both["Buddy + Warmline Recommended"]
 
-    Buddy --> Search[Service Search Agent]
+    Buddy --> Search["Service Search Agent"]
     Both  --> Search
 
-    Search --> BuddyDB[(Buddy Directory)]
-    Search --> CrisisDB[(Warmline Info)]
+    Search --> BuddyDB[("Buddy Directory")]
+    Search --> CrisisDB[("Warmline Info")]
 
-    Buddy  --> Response[Synthesized Response & Buddy Cards]
+    Buddy  --> Response["Synthesized Response & Buddy Cards"]
     Both   --> Response
 
-    User -->|Calls Warmline| CallTimer[In-App Call Timer]
-    CallTimer -->|End Call| PrivacyGuard[Privacy Guard Agent]
-    PrivacyGuard -->|Metadata Only| BuddyNotif[Firestore Call Logs]
-    PrivacyGuard -->|No Transcript| NullStore[Content Discarded]
+    User -->|Calls Warmline| CallTimer["In-App Call Timer"]
+    CallTimer -->|End Call| PrivacyGuard["Privacy Guard Agent"]
+    PrivacyGuard -->|Metadata Only| BuddyNotif["Firestore Call Logs"]
+    PrivacyGuard -->|No Transcript| NullStore["Content Discarded"]
 ```
 
 ### Agent Roles
