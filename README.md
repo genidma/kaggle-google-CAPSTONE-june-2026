@@ -178,11 +178,11 @@ gcloud run deploy mysupportbuddy \
 
 MySupportBuddy includes a native Model Context Protocol (MCP) server implementation (`mcp_server.py`) that conforms to the official protocol version `2024-11-05`. This allows external AI models or client agents to securely interface with our verified peer directories and support resources.
 
-### Exposed Schema
+### MCP Shared Schema
 
 * **Resources**:
-  * `buddies://directory` — Exposes the JSON database of accredited, vetted peer support buddies.
-  * `crisis://resources` — Exposes the 24/7 general listening warmline referral contact details.
+  * `buddies://directory` — Shares the JSON database of accredited, vetted peer support buddies.
+  * `crisis://resources` — Shares the 24/7 general listening warmline referral contact details.
 * **Tools**:
   * `lookup_buddy_specialties(specialty)` — A tool allowing client agents to search peer buddies by specific specialty categories (e.g. `Anxiety`, `Crisis`).
   * `get_crisis_resources()` — Returns the active hotline referrals.
