@@ -121,7 +121,10 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env and configure your GEMINI_API_KEY and JWT_SECRET
 
-# 4. Run the server
+# 4. Run the automated evaluation & benchmarking harness
+python evaluate_agent.py
+
+# 5. Run the server
 python app.py
 ```
 
