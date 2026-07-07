@@ -205,6 +205,6 @@ Since the server uses standard input/output (`stdin`/`stdout`) transport, it req
 
 ## 📋 Evaluation Track
 
-This project is submitted under the **Agents for Good** track of the Kaggle AI Agents Capstone.
+This project is submitted under the **Agents for Good** track of the Kaggle AI Agents Capstone [link](https://www.kaggle.com/competitions/5-day-ai-agents-intensive-vibecoding-course-with-google/discussion/709721).
 
 **License**: Developed for educational purposes under Kaggle AI Agents Capstone guidelines. All rights reserved by the author. [@genidma](https://github.com/genidma)
