@@ -2,7 +2,9 @@
 
 > **✅ Project Live on Google Cloud Run:** [https://mysupportbuddy-170198436835.us-central1.run.app](https://mysupportbuddy-170198436835.us-central1.run.app)
 
-**MySupportBuddy** is an AI-powered peer support platform that connects individuals with **accredited, vetted peer support buddies** for warm, judgment-free conversations — and provides a direct link to a **General Support Warmline** when professional support is needed.
+**MySupportBuddy** is imagined as an AI-powered peer support platform that connects individuals with **accredited, vetted peer support buddies** for warm, judgment-free conversations — and provides a direct link to a **General Support Warmline** when professional support is needed.
+
+In particular, it is conceived as an idea for civilians and veterans who have had a traumatic brain injury (TBI). And MySupportBuddy is imagined to be a holistic support system for those who have had a TBI and their caregivers.So that the individuals and their caregivers have the absolute best support that they need. 
 
 Developed for the **Google & Kaggle AI Agents Capstone**, MySupportBuddy demonstrates a responsible, privacy-first multi-agent architecture built around human wellbeing and veteran-friendly design principles.
 
