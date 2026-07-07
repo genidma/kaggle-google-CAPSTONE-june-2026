@@ -816,8 +816,39 @@ async def get_clinician_portal(user: dict = Depends(require_role(["clinician"]))
 async def get_caregiver_portal(user: dict = Depends(require_role(["caregiver", "clinician"]))):
     """Returns consented patient wellness check-in summaries (#1)."""
     try:
+        # Default fallback values
+        last_checkin = "Today, 9:00 AM"
+        recent_activity = "Mark completed his morning peer session with Marcus T. Reported good sleep quality."
+        
+        # Dynamically retrieve last crisis call metadata if available
+        if db:
+            try:
+                calls_ref = db.collection("crisis_calls").where("user_email", "==", "patient@test.com").get()
+                if calls_ref:
+                    # Sort by created_at descending in Python to avoid composite index requirements
+                    sorted_calls = sorted(calls_ref, key=lambda doc: doc.to_dict().get("created_at", ""), reverse=True)
+                    latest_call = sorted_calls[0].to_dict()
+                    call_time = latest_call.get("timestamp", "")
+                    duration = latest_call.get("duration_minutes", 0)
+                    buddy_name = latest_call.get("buddy_name", "Support Buddy")
+                    if call_time:
+                        last_checkin = f"{call_time}"
+                        recent_activity = f"Initiated 24/7 warmline support call with matched buddy {buddy_name} ({duration} mins)."
+            except Exception as db_err:
+                print(f"Warning: Could not fetch dynamic summaries from DB: {db_err}")
+                
         consented_summaries = [
-            {"patient_id": "pat_771", "name": "Mark Rostova", "patient_email": "patient@test.com", "relationship": "Spouse", "consent_granted": True, "last_checkin": "Today, 9:00 AM", "mood_status": "🟢 Positive / Stable", "notes_share_enabled": False, "summary": "Mark completed his morning peer session with Marcus T. Reported good sleep quality."},
+            {
+                "patient_id": "pat_771", 
+                "name": "Mark Rostova", 
+                "patient_email": "patient@test.com", 
+                "relationship": "Spouse", 
+                "consent_granted": True, 
+                "last_checkin": last_checkin, 
+                "mood_status": "🟢 Positive / Stable", 
+                "notes_share_enabled": False, 
+                "summary": recent_activity
+            },
         ]
         return {
             "role": "caregiver",

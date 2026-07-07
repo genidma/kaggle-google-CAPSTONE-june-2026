@@ -574,20 +574,20 @@ document.addEventListener("DOMContentLoaded", () => {
           summaryCard.innerHTML = `
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-lg shrink-0">
-                ${s.status === 'Thriving' ? '🌟' : '💛'}
+                🩺
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="font-bold text-sm text-text-main">${getPatientDisplayName(s.patient_email, s.patient_name)}</span>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase">${s.status}</span>
+                  <span class="font-bold text-sm text-text-main">${getPatientDisplayName(s.patient_email, s.name)}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase">${s.mood_status}</span>
                 </div>
-                <p class="text-xs text-text-muted mt-0.5">Recent activity: ${s.recent_activity}</p>
+                <p class="text-xs text-text-muted mt-0.5">Recent activity: ${s.summary}</p>
               </div>
             </div>
             <div id="caregiver-patient-emergency-contacts-${s.patient_email}" class="patient-emergency-contacts mt-2"></div>
             <div class="text-xs text-right bg-background-dark md:bg-transparent p-2 md:p-0 rounded border border-border/50 md:border-0 shrink-0">
               <span class="text-text-muted block text-[10px]">Last Peer Session:</span>
-              <span class="font-semibold text-text-main">${s.last_session}</span>
+              <span class="font-semibold text-text-main">${s.last_checkin}</span>
             </div>
           `;
           summariesList.appendChild(summaryCard);
@@ -1062,7 +1062,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function getPatientDisplayName(email, fallbackVal) {
     if (!email) return fallbackVal || "Unknown Patient";
     if (email.toLowerCase().trim() === "patient@test.com") {
-      return "Demo Patient";
+      return "Demo Patient (patient@test.com)";
     }
     return fallbackVal || email;
   }
@@ -2480,7 +2480,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Map IDs to buddy profiles
       const patientBuddies = buddyIds.map(id => {
-        return allRosterBuddies.find(b => b.id === id) || { name: id.replace('buddy_', '').replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase()), avatar: "" };
+        return allRosterBuddies.find(b => b.id === id) || { id: id, name: id.replace('buddy_', '').replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase()), avatar: "" };
       });
 
       containerEl.innerHTML = `
@@ -2488,10 +2488,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="text-xs font-semibold text-text-muted block">Support Buddies Pool:</span>
           <div class="flex items-center gap-2 flex-wrap">
             ${patientBuddies.map(b => `
-              <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary">
+              <button onclick="window.openSupportBuddyDetails('${b.id || ''}')" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
                 ${b.avatar ? `<img src="${b.avatar}" class="w-4 h-4 rounded-full object-cover" />` : `👤`}
-                <span>${b.name}</span>
-              </div>
+                <span>${b.name} 🔗</span>
+              </button>
             `).join("")}
           </div>
         </div>
@@ -2501,5 +2501,15 @@ document.addEventListener("DOMContentLoaded", () => {
       containerEl.innerHTML = `<div class="text-xs text-rose italic">Error loading support buddies.</div>`;
     }
   }
+
+  window.openSupportBuddyDetails = function(buddyId) {
+    if (!buddyId) return;
+    const buddy = allRosterBuddies.find(b => b.id === buddyId);
+    if (buddy) {
+      openBuddyProfileModal(buddy);
+    } else {
+      notify("Details for this buddy are not available.", "info");
+    }
+  };
 
   });
