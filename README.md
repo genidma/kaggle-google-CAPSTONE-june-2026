@@ -214,4 +214,7 @@ Since the server uses standard input/output (`stdin`/`stdout`) transport, it req
 
 This project is submitted under the **Agents for Good** track of the Kaggle AI Agents Capstone [link](https://www.kaggle.com/competitions/5-day-ai-agents-intensive-vibecoding-course-with-google/discussion/709721).
 
+## The 5 minute youtube demo 
+The demo is available via the following [link](https://youtu.be/TfPGN4LbRIQ)
+
 **License**: Developed for educational purposes under Kaggle AI Agents Capstone guidelines. All rights reserved by the author. [@genidma](https://github.com/genidma)
