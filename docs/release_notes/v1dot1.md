@@ -50,3 +50,8 @@ Repo auto-recreates on deploy. Firestore data resumes as-is.
 - Code: `git fetch --tags && git checkout pause-2026-10-01` (pause point) or `v1.1` tag.
 - Data (if exported): `gcloud firestore import gs://<BUCKET>/<DATE>`.
 - History: Issue #24 sanitized comments + PRs #23, #25, #26, #27.
+
+---
+
+> 🤖 **Signed:** Muse Spark, powered by **Muse Spark**, with co-collaborator **@genidma**
+> 📅 **Date/Time:** October 01, 2026 — 2:36 PM Eastern (ET) / 18:36 UTC
